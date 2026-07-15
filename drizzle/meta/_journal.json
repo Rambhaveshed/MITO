@@ -8,6 +8,13 @@
       "when": 1784106964990,
       "tag": "0000_early_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1784111583278,
+      "tag": "0001_new_gladiator",
+      "breakpoints": true
     }
   ]
 }

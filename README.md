@@ -14,6 +14,14 @@ The first release establishes the production interface and provenance model with
 - Normalized D1 schema for sources, places, geometries, price evidence and verification events
 - Desktop and 390px mobile layouts
 
+## OMR evidence programme
+
+The first complete-coverage target is the OMR corridor from Adyar and Taramani to Mamallapuram. MITO now tracks 24 candidate corridor registration villages across six official sub-registrar offices using public TNREGINET identifiers.
+
+This is a collection boundary, not a completeness claim. Jurisdictions have been identified, but street-register totals, official guideline values and registered transactions remain incomplete. `data/coverage/omr-corridor.json` is the auditable release ledger. The app cannot call OMR complete until every target unit has a known street total, 100% street-register capture and at least one verified official guideline record.
+
+The machine-readable status is available from `/api/coverage`.
+
 The map markers in this pilot are approximate locality anchors. They are not parcel, property or transaction coordinates. Individual listing evidence stays unplotted until the location can be independently verified.
 
 ## Local development

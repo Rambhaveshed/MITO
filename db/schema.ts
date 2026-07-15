@@ -76,3 +76,68 @@ export const verificationEvents = sqliteTable("verification_events", {
   verifiedAt: text("verified_at").notNull(),
   modelVersion: text("model_version"),
 }, (table) => [index("verification_entity_idx").on(table.entityType, table.entityId)]);
+
+export const coverageScopes = sqliteTable("coverage_scopes", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  definition: text("definition").notNull(),
+  coverageUnit: text("coverage_unit").notNull(),
+  status: text("status", { enum: ["planning", "collecting", "audited", "published"] }).notNull(),
+  sourceId: text("source_id").notNull().references(() => sources.id),
+  releaseGate: text("release_gate", { mode: "json" }).$type<Record<string, number | boolean>>().notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
+export const coverageUnits = sqliteTable("coverage_units", {
+  id: text("id").primaryKey(),
+  scopeId: text("scope_id").notNull().references(() => coverageScopes.id),
+  placeId: text("place_id").references(() => places.id),
+  officialSroCode: text("official_sro_code").notNull(),
+  officialVillageCode: text("official_village_code").notNull(),
+  jurisdictionStatus: text("jurisdiction_status", { enum: ["pending", "verified", "rejected", "conflicted"] }).notNull(),
+  streetRegisterStatus: text("street_register_status", { enum: ["not_started", "collecting", "captured", "verified", "blocked"] }).notNull(),
+  streetTargetCount: integer("street_target_count"),
+  officialGuidelineRecords: integer("official_guideline_records").notNull().default(0),
+  registeredTransactionRecords: integer("registered_transaction_records").notNull().default(0),
+  blocker: text("blocker"),
+  verifiedAt: text("verified_at"),
+}, (table) => [
+  uniqueIndex("coverage_scope_village_idx").on(table.scopeId, table.officialSroCode, table.officialVillageCode),
+  index("coverage_scope_status_idx").on(table.scopeId, table.streetRegisterStatus),
+]);
+
+export const sourceCaptureRuns = sqliteTable("source_capture_runs", {
+  id: text("id").primaryKey(),
+  scopeId: text("scope_id").references(() => coverageScopes.id),
+  sourceId: text("source_id").notNull().references(() => sources.id),
+  method: text("method").notNull(),
+  status: text("status", { enum: ["started", "succeeded", "partial", "failed", "blocked"] }).notNull(),
+  recordsSeen: integer("records_seen").notNull().default(0),
+  recordsAccepted: integer("records_accepted").notNull().default(0),
+  recordsRejected: integer("records_rejected").notNull().default(0),
+  startedAt: text("started_at").notNull(),
+  finishedAt: text("finished_at"),
+  notes: text("notes"),
+});
+
+export const guidelineValues = sqliteTable("guideline_values", {
+  id: text("id").primaryKey(),
+  placeId: text("place_id").notNull().references(() => places.id),
+  sourceId: text("source_id").notNull().references(() => sources.id),
+  captureRunId: text("capture_run_id").references(() => sourceCaptureRuns.id),
+  officialSroCode: text("official_sro_code").notNull(),
+  officialVillageCode: text("official_village_code").notNull(),
+  officialStreetCode: text("official_street_code"),
+  sourceStreetName: text("source_street_name").notNull(),
+  classification: text("classification"),
+  valueInrPerSqft: real("value_inr_per_sqft").notNull(),
+  effectiveFrom: text("effective_from").notNull(),
+  effectiveTo: text("effective_to"),
+  verificationStatus: text("verification_status", { enum: ["pending", "verified", "rejected", "superseded", "conflicted"] }).notNull(),
+  verifiedAt: text("verified_at"),
+  qualityFlags: text("quality_flags", { mode: "json" }).$type<string[]>(),
+}, (table) => [
+  index("guideline_place_effective_idx").on(table.placeId, table.effectiveFrom),
+  uniqueIndex("guideline_source_record_idx").on(table.sourceId, table.officialSroCode, table.officialVillageCode, table.officialStreetCode, table.effectiveFrom),
+]);

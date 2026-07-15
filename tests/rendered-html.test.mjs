@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
+async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${path}`, { headers: { accept: path.startsWith("/api/") ? "application/json" : "text/html" } }),
     {
       ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
       DB: {},
@@ -26,7 +26,8 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /<title>MITO — Tamil Nadu Land Intelligence<\/title>/i);
   assert.match(html, /Tamil Nadu land intelligence/i);
   assert.match(html, /Search street, locality, survey no\./i);
-  assert.match(html, /Coverage is partial/i);
+  assert.match(html, /OMR is collecting/i);
+  assert.match(html, /24<!-- -->\/<!-- -->24/i);
   assert.match(html, /Advertised asking price aggregate/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
@@ -44,10 +45,23 @@ test("pilot data preserves uncertainty and source provenance", async () => {
 
 test("database schema separates sources, places, geometry and price evidence", async () => {
   const schema = await readFile(new URL("../db/schema.ts", import.meta.url), "utf8");
-  for (const entity of ["sources", "places", "geometries", "price_evidence", "verification_events"]) {
+  for (const entity of ["sources", "places", "geometries", "price_evidence", "verification_events", "coverage_scopes", "coverage_units", "source_capture_runs", "guideline_values"]) {
     assert.match(schema, new RegExp(`sqliteTable\\(\\\"${entity}\\\"`));
   }
   assert.match(schema, /evidence_type/);
   assert.match(schema, /registered_transaction/);
   assert.match(schema, /positional_uncertainty_metres/);
+});
+
+test("coverage API publishes the honest OMR release gate", async () => {
+  const response = await render("/api/coverage");
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.programme.id, "omr-corridor-2026");
+  assert.equal(payload.programme.releaseReady, false);
+  assert.equal(payload.summary.unitCount, 24);
+  assert.equal(payload.summary.jurisdictionVerifiedCount, 24);
+  assert.equal(payload.summary.streetRegisterVerifiedCount, 0);
+  assert.equal(payload.summary.officialGuidelineRecordCount, 0);
+  assert.equal(payload.offices.length, 6);
 });

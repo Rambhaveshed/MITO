@@ -1,0 +1,61 @@
+{
+  "id": "omr-corridor-2026",
+  "name": "OMR evidence programme",
+  "shortName": "OMR",
+  "definition": "Working corridor boundary from Adyar and Taramani to Mamallapuram. Inclusion is tracked by official registration-office and village identifiers; the boundary remains provisional until it is reconciled against verified road and revenue-village geometries.",
+  "coverageUnit": "registration_village",
+  "status": "collecting",
+  "publishedCoverageClaim": "Jurisdictions identified; guideline-value street registers not yet complete",
+  "source": {
+    "id": "tnreginet-guideline-search-2026-07-15",
+    "organization": "Tamil Nadu Registration Department",
+    "title": "TNREGINET Guideline Value Search",
+    "url": "https://tnreginet.gov.in/portal/",
+    "retrievedAt": "2026-07-15",
+    "lastUpdatedBySource": "2026-01-22",
+    "method": "Public search interface; district, sub-registrar office and village options were inspected without bypassing access controls.",
+    "redistributionNote": "MITO stores public identifiers and derived coverage status. Source documents or personal information are not republished."
+  },
+  "releaseGate": {
+    "minimumJurisdictionCoveragePercent": 100,
+    "minimumStreetRegisterCoveragePercent": 100,
+    "minimumOfficialGuidelineRecordsPerUnit": 1,
+    "allowUnknownStreetTotals": false,
+    "requireSourceDate": true,
+    "requireVerificationDate": true
+  },
+  "registrationOffices": [
+    { "districtCode": "2", "districtEn": "Chennai", "districtTa": "சென்னை", "officialSroCode": "20051", "nameEn": "Adyar", "nameTa": "அடையார்" },
+    { "districtCode": "2", "districtEn": "Chennai", "districtTa": "சென்னை", "officialSroCode": "20066", "nameEn": "Neelangarai", "nameTa": "நீலாங்கரை" },
+    { "districtCode": "35", "districtEn": "Chengalpattu", "districtTa": "செங்கல்பட்டு", "officialSroCode": "22604", "nameEn": "Navalur", "nameTa": "நாவலூர்" },
+    { "districtCode": "35", "districtEn": "Chengalpattu", "districtTa": "செங்கல்பட்டு", "officialSroCode": "22605", "nameEn": "Kelambakkam", "nameTa": "கேளம்பாக்கம்" },
+    { "districtCode": "35", "districtEn": "Chengalpattu", "districtTa": "செங்கல்பட்டு", "officialSroCode": "20096", "nameEn": "Tiruporur", "nameTa": "திருப்போரூர்" },
+    { "districtCode": "35", "districtEn": "Chengalpattu", "districtTa": "செங்கல்பட்டு", "officialSroCode": "20095", "nameEn": "Thirukazhukundram", "nameTa": "திருக்கழுக்குன்றம்" }
+  ],
+  "units": [
+    { "sequence": 1, "officialSroCode": "20051", "officialVillageCode": "1", "nameEn": "Adyar", "nameTa": "அடையார்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 2, "officialSroCode": "20051", "officialVillageCode": "2", "nameEn": "Kanagam", "nameTa": "கானகம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 3, "officialSroCode": "20051", "officialVillageCode": "7", "nameEn": "Taramani", "nameTa": "தரமணி", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 4, "officialSroCode": "20066", "officialVillageCode": "252", "nameEn": "Perungudi", "nameTa": "பெருங்குடி", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "approximate_anchor", "verifiedAt": "2026-07-15" },
+    { "sequence": 5, "officialSroCode": "20066", "officialVillageCode": "250", "nameEn": "Okkiyam Thoraipakkam", "nameTa": "ஒக்கியம் துரைபாக்கம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 6, "officialSroCode": "20066", "officialVillageCode": "248", "nameEn": "Karapakkam", "nameTa": "காரப்பாக்கம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 7, "officialSroCode": "20066", "officialVillageCode": "253", "nameEn": "Seevaram", "nameTa": "சீவரம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 8, "officialSroCode": "20066", "officialVillageCode": "254", "nameEn": "Sholinganallur 1", "nameTa": "சோழிங்கநல்லூர் - 1", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "approximate_anchor", "verifiedAt": "2026-07-15" },
+    { "sequence": 9, "officialSroCode": "20066", "officialVillageCode": "20514", "nameEn": "Sholinganallur 2", "nameTa": "சோழிங்கநல்லூர் - 2", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 10, "officialSroCode": "20066", "officialVillageCode": "246", "nameEn": "Semmancheri", "nameTa": "செம்மஞ்சேரி", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 11, "officialSroCode": "22604", "officialVillageCode": "800000277", "nameEn": "Navalur", "nameTa": "நாவலூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 12, "officialSroCode": "22604", "officialVillageCode": "800000278", "nameEn": "Egattur", "nameTa": "ஏகாட்டூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 13, "officialSroCode": "22604", "officialVillageCode": "800000279", "nameEn": "Kazhipattur", "nameTa": "கழிபட்டூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 14, "officialSroCode": "22604", "officialVillageCode": "800000275", "nameEn": "Siruseri", "nameTa": "சிறுசேரி", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 15, "officialSroCode": "22604", "officialVillageCode": "800000276", "nameEn": "Padur", "nameTa": "படூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 16, "officialSroCode": "22605", "officialVillageCode": "800000287", "nameEn": "Kelambakkam", "nameTa": "கேளம்பாக்கம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 17, "officialSroCode": "22605", "officialVillageCode": "800000289", "nameEn": "Thaiyur A", "nameTa": "தையூர் - A", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 18, "officialSroCode": "22605", "officialVillageCode": "800000290", "nameEn": "Thaiyur B", "nameTa": "தையூர் - B", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 19, "officialSroCode": "20096", "officialVillageCode": "1308", "nameEn": "Alathur", "nameTa": "ஆலத்தூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 20, "officialSroCode": "20096", "officialVillageCode": "1318", "nameEn": "Kalavakkam", "nameTa": "காலவாக்கம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 21, "officialSroCode": "20096", "officialVillageCode": "1365", "nameEn": "Tiruporur", "nameTa": "திருப்போரூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 22, "officialSroCode": "20096", "officialVillageCode": "1353", "nameEn": "Paiyanur", "nameTa": "பையனூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 23, "officialSroCode": "20095", "officialVillageCode": "1261", "nameEn": "Poonjeri", "nameTa": "பூஞ்சேரி", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
+    { "sequence": 24, "officialSroCode": "20095", "officialVillageCode": "1220", "nameEn": "Mamallapuram", "nameTa": "மாமல்லபுரம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" }
+  ]
+}

@@ -386,6 +386,25 @@ button {
 .area-card-meta { gap: 13px; margin-top: 8px; color: #7b8582; font-size: 7px; font-weight: 700; }
 .area-card-meta span { position: relative; }
 .area-card-meta span + span::before { content: ""; position: absolute; left: -7px; top: 50%; width: 2px; height: 2px; border-radius: 50%; background: #a4aca9; }
+.coverage-unit-card {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 6px;
+  padding: 10px;
+  border: 1px solid #e3e7e4;
+  border-radius: 11px;
+  background: rgba(255,255,255,.94);
+}
+.coverage-unit-index { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: #eaf3ef; color: var(--green); font-size: 8px; font-weight: 850; }
+.coverage-unit-card > div:nth-child(2) { min-width: 0; }
+.coverage-unit-card strong { display: block; font-size: 10px; }
+.coverage-unit-card span { display: block; margin-top: 2px; color: var(--muted); font-family: var(--font-tamil), sans-serif; font-size: 7px; }
+.coverage-unit-card small { display: block; margin-top: 4px; color: #8a9490; font-size: 6px; font-weight: 700; }
+.coverage-unit-state { color: #477164; font-size: 6px; font-weight: 750; line-height: 1.7; text-align: right; white-space: nowrap; }
+.coverage-unit-state i { display: inline-block; width: 5px; height: 5px; margin-right: 3px; border-radius: 50%; background: #49a66e; }
+.coverage-unit-state b { color: #9a7221; font-size: 6px; font-weight: 750; }
 .empty-list { min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; color: var(--muted); text-align: center; }
 .empty-list strong { color: var(--ink); font-size: 11px; }
 .empty-list span { max-width: 220px; font-size: 9px; line-height: 1.6; }
@@ -497,6 +516,9 @@ button {
 .confidence-card strong { display: block; font-size: 10px; }
 .confidence-card span { display: block; margin-top: 3px; color: #7d7158; font-size: 7px; line-height: 1.35; }
 .confidence-card > svg { color: #a47b20; }
+.coverage-confidence { border-color: #cfe1da; background: #f1f8f5; }
+.coverage-confidence .confidence-badge { background: var(--green); color: white; }
+.coverage-confidence > svg { color: var(--green-2); }
 
 .inspector-section { margin-top: 13px; padding: 13px; border: 1px solid #e3e7e4; border-radius: 12px; background: #fff; }
 .section-heading { justify-content: space-between; }
@@ -520,6 +542,25 @@ button {
 .recalculated-range { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding: 8px 9px; border-radius: 7px; background: #edf6f2; }
 .recalculated-range span { color: #648078; font-size: 7px; font-weight: 700; }
 .recalculated-range strong { color: var(--green); font-size: 9px; }
+
+.coverage-progress-row { margin-top: 13px; }
+.coverage-progress-row > div:first-child { display: flex; align-items: center; justify-content: space-between; color: #65726e; font-size: 8px; font-weight: 750; }
+.coverage-progress-row > div:first-child strong { color: var(--ink); font-size: 9px; }
+.coverage-progress { height: 6px; margin-top: 6px; overflow: hidden; border-radius: 6px; background: #e4e9e6; }
+.coverage-progress i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #74aa9b, var(--green)); }
+.coverage-progress-row small { display: block; margin-top: 5px; color: #87918d; font-size: 6px; line-height: 1.45; }
+.gate-row { display: flex; align-items: center; gap: 8px; min-height: 32px; border-top: 1px solid #edf0ed; color: #7a6745; font-size: 7px; font-weight: 700; }
+.gate-row:first-of-type { margin-top: 8px; }
+.gate-row svg { flex: 0 0 auto; color: #c38b2c; }
+.gate-row.passed { color: #3c665a; }
+.gate-row.passed svg { color: #2e8069; }
+.coverage-method, .coverage-definition { margin: 11px 0 0; color: #69746f; font-size: 7px; line-height: 1.6; }
+.office-ledger { margin-top: 10px; }
+.office-ledger > div { display: grid; grid-template-columns: 1fr auto; gap: 3px 8px; padding: 9px 2px; border-top: 1px solid #edf0ed; }
+.office-ledger span { font-size: 8px; font-weight: 750; }
+.office-ledger span small { display: block; margin-top: 2px; color: var(--muted); font-family: var(--font-tamil), sans-serif; font-size: 6px; font-weight: 500; }
+.office-ledger strong { font-size: 7px; text-align: right; }
+.office-ledger b { grid-column: 2; color: #8a9490; font-size: 6px; font-weight: 700; text-align: right; }
 
 .detail-grid { margin: 10px 0 0; }
 .detail-grid > div { display: grid; grid-template-columns: 110px 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid #eef0ed; }

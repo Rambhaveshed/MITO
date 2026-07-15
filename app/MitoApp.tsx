@@ -14,9 +14,11 @@ import {
   Info,
   Layers3,
   LocateFixed,
+  LockKeyhole,
   MapPin,
   Menu,
   Minus,
+  Route,
   Search,
   ShieldCheck,
   SlidersHorizontal,
@@ -24,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { omrCoverage, omrCoverageByOffice, omrCoveragePercent, omrCoverageSummary, omrReleaseReady } from "../data/omr";
 import { marketAreas, sourceById, type MarketArea } from "../data/pilot";
 
 const views = ["Market", "Guideline", "Transactions", "Planning", "Risk", "Coverage"] as const;
@@ -72,6 +75,18 @@ export default function MitoApp() {
         .toLocaleLowerCase()
         .includes(normalized),
     );
+  }, [query]);
+
+  const filteredCoverageUnits = useMemo(() => {
+    const normalized = query.trim().toLocaleLowerCase();
+    if (!normalized) return omrCoverage.units;
+    return omrCoverage.units.filter((unit) => {
+      const office = omrCoverage.registrationOffices.find((candidate) => candidate.officialSroCode === unit.officialSroCode);
+      return [unit.nameEn, unit.nameTa, unit.officialVillageCode, office?.nameEn, office?.nameTa]
+        .join(" ")
+        .toLocaleLowerCase()
+        .includes(normalized);
+    });
   }, [query]);
 
   const activeComparableRates = selected.comparables
@@ -152,7 +167,7 @@ export default function MitoApp() {
           <button className="geography-button" type="button">
             <MapPin size={15} /> Tamil Nadu <ChevronDown size={14} />
           </button>
-          <div className="release-pill"><span /> Pilot coverage · verified 15 Jul 2026</div>
+          <div className="release-pill"><span /> OMR collection · audited 15 Jul 2026</div>
         </div>
         <div className="topbar-actions">
           <button className="text-button" type="button">தமிழ்</button>
@@ -194,7 +209,7 @@ export default function MitoApp() {
           <button className="filter-chip active" type="button"><Building2 size={14} /> Residential plot <X size={13} /></button>
           <button className="filter-chip" type="button" onClick={() => setFiltersOpen((open) => !open)}><SlidersHorizontal size={14} /> More filters <span className="filter-count">2</span></button>
           <span className="filter-separator" />
-          <span className="result-count">{filteredAreas.length} areas</span>
+          <span className="result-count">{activeView === "Coverage" ? `${filteredCoverageUnits.length} target villages` : `${filteredAreas.length} areas`}</span>
         </div>
         {filtersOpen && (
           <div className="filter-popover">
@@ -206,31 +221,53 @@ export default function MitoApp() {
       </section>
 
       <section className="coverage-strip" aria-label="Coverage summary">
-        <div><strong>1</strong><span>priced area</span></div>
-        <div><strong>3</strong><span>price observations</span></div>
-        <div><strong>0</strong><span>verified parcels</span></div>
-        <button type="button" onClick={() => setActiveView("Coverage")}><Database size={14} /> Coverage is partial <ArrowUpRight size={13} /></button>
+        <div><strong>{omrCoverageSummary.jurisdictionVerifiedCount}/{omrCoverageSummary.unitCount}</strong><span>jurisdictions</span></div>
+        <div><strong>{omrCoverageSummary.streetRegisterVerifiedCount}</strong><span>street registers</span></div>
+        <div><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong><span>official values</span></div>
+        <button type="button" onClick={() => setActiveView("Coverage")}><Database size={14} /> OMR is collecting <ArrowUpRight size={13} /></button>
       </section>
 
       <section className="area-list" aria-label="Matching areas">
         <div className="area-list-heading">
-          <span>{query ? "Search results" : "Pilot markets"}</span>
+          <span>{activeView === "Coverage" ? (query ? "Coverage matches" : "OMR target villages") : (query ? "Search results" : "Pilot markets")}</span>
           <button type="button" aria-label="Sort areas"><Filter size={14} /></button>
         </div>
         <div className="area-list-scroll">
-          {filteredAreas.map((area) => (
-            <button key={area.id} className={`area-card ${selected.id === area.id ? "selected" : ""}`} type="button" onClick={() => selectArea(area)}>
-              <div className="area-card-top">
-                <div><strong>{area.name}</strong><span>{area.tamilName}</span></div>
-                <span className={`grade grade-${area.grade.toLowerCase()}`}>Grade {area.grade}</span>
-              </div>
-              <div className="area-card-price">
-                {area.price ? <><strong>{formatRate(area.price.low)}–{formatRate(area.price.high)}</strong><span>/ sq ft · asking</span></> : <><strong>Not enough evidence</strong><span>Price withheld</span></>}
-              </div>
-              <div className="area-card-meta"><span>{area.district}</span><span>{area.evidenceCount} evidence</span><span>{area.plottedEvidenceCount} exact</span></div>
-            </button>
-          ))}
-          {!filteredAreas.length && <div className="empty-list"><Search size={19} /><strong>No exact match</strong><span>Try a locality, district, SRO or Tamil place name.</span></div>}
+          {activeView === "Coverage" ? (
+            <>
+              {filteredCoverageUnits.map((unit) => {
+                const office = omrCoverage.registrationOffices.find((candidate) => candidate.officialSroCode === unit.officialSroCode);
+                return (
+                  <article key={`${unit.officialSroCode}-${unit.officialVillageCode}`} className="coverage-unit-card">
+                    <div className="coverage-unit-index">{unit.sequence}</div>
+                    <div>
+                      <strong>{unit.nameEn}</strong>
+                      <span>{unit.nameTa}</span>
+                      <small>{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
+                    </div>
+                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>street data pending</b></div>
+                  </article>
+                );
+              })}
+              {!filteredCoverageUnits.length && <div className="empty-list"><Search size={19} /><strong>No coverage match</strong><span>Try a village, SRO, official ID or Tamil name.</span></div>}
+            </>
+          ) : (
+            <>
+              {filteredAreas.map((area) => (
+                <button key={area.id} className={`area-card ${selected.id === area.id ? "selected" : ""}`} type="button" onClick={() => selectArea(area)}>
+                  <div className="area-card-top">
+                    <div><strong>{area.name}</strong><span>{area.tamilName}</span></div>
+                    <span className={`grade grade-${area.grade.toLowerCase()}`}>Grade {area.grade}</span>
+                  </div>
+                  <div className="area-card-price">
+                    {area.price ? <><strong>{formatRate(area.price.low)}–{formatRate(area.price.high)}</strong><span>/ sq ft · asking</span></> : <><strong>Not enough evidence</strong><span>Price withheld</span></>}
+                  </div>
+                  <div className="area-card-meta"><span>{area.district}</span><span>{area.evidenceCount} evidence</span><span>{area.plottedEvidenceCount} exact</span></div>
+                </button>
+              ))}
+              {!filteredAreas.length && <div className="empty-list"><Search size={19} /><strong>No exact match</strong><span>Try a locality, district, SRO or Tamil place name.</span></div>}
+            </>
+          )}
         </div>
       </section>
 
@@ -242,21 +279,23 @@ export default function MitoApp() {
 
       <button className="locate-button" type="button" aria-label="Return to selected area" onClick={() => selectArea(selected)}><LocateFixed size={18} /></button>
 
-      <aside className="inspector" aria-label={`${selected.name} evidence inspector`}>
+      <aside className="inspector" aria-label={activeView === "Coverage" ? "OMR coverage inspector" : `${selected.name} evidence inspector`}>
         <div className="inspector-handle" />
         <div className="inspector-head">
-          <div className="eyebrow"><span className="live-dot" /> {selected.propertyType}</div>
+          <div className="eyebrow"><span className="live-dot" /> {activeView === "Coverage" ? "Auditable coverage programme" : selected.propertyType}</div>
           <button type="button" className="inspector-close" aria-label="Close inspector"><Minus size={18} /></button>
-          <h1>{selected.name}</h1>
-          <p>{selected.tamilName} · {selected.district}</p>
+          <h1>{activeView === "Coverage" ? "OMR evidence programme" : selected.name}</h1>
+          <p>{activeView === "Coverage" ? "Adyar → Mamallapuram · official jurisdiction ledger" : `${selected.tamilName} · ${selected.district}`}</p>
           <div className="inspector-price">
-            {selected.price ? (
+            {activeView === "Coverage" ? (
+              <><strong>{omrCoveragePercent.streetRegister}%</strong><span>verified street registers</span></>
+            ) : selected.price ? (
               <><strong>{formatRate(selected.price.low)}–{formatRate(selected.price.high)}</strong><span>per sq ft</span></>
             ) : (
               <><strong>Insufficient evidence</strong><span>No value published</span></>
             )}
           </div>
-          <div className="price-type"><Info size={14} /> {selected.price?.type ?? "MITO will not manufacture a price"}</div>
+          <div className="price-type"><Info size={14} /> {activeView === "Coverage" ? "Jurisdictions are mapped; price evidence is not complete" : selected.price?.type ?? "MITO will not manufacture a price"}</div>
         </div>
 
         <div className="inspector-tabs" role="tablist">
@@ -266,7 +305,60 @@ export default function MitoApp() {
         </div>
 
         <div className="inspector-scroll">
-          {inspectorTab === "Overview" && (
+          {activeView === "Coverage" && inspectorTab === "Overview" && (
+            <>
+              <section className="confidence-card coverage-confidence">
+                <div className="confidence-badge"><Route size={17} /></div>
+                <div><strong>{omrCoverageSummary.jurisdictionVerifiedCount} corridor jurisdictions identified</strong><span>Across {omrCoverageSummary.officeCount} official sub-registrar offices</span></div>
+                <ShieldCheck size={20} />
+              </section>
+
+              <section className="inspector-section">
+                <div className="section-heading"><div><span>Collection progress</span><h2>What is actually complete</h2></div><Database size={17} /></div>
+                <div className="coverage-progress-row"><div><span>Jurisdiction IDs</span><strong>{omrCoveragePercent.jurisdiction}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.jurisdiction}%` }} /></div><small>{omrCoverageSummary.jurisdictionVerifiedCount} of {omrCoverageSummary.unitCount} verified against TNREGINET</small></div>
+                <div className="coverage-progress-row"><div><span>Street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>Street totals are unknown, so completeness cannot be claimed</small></div>
+                <div className="coverage-progress-row"><div><span>Official values</span><strong>0</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>No guideline rate is published in MITO until captured and verified</small></div>
+              </section>
+
+              <section className="inspector-section">
+                <div className="section-heading"><div><span>Release gate</span><h2>OMR cannot pass yet</h2></div><LockKeyhole size={17} /></div>
+                <div className="gate-row passed"><Check size={14} /><span>24 corridor jurisdictions carry official IDs</span></div>
+                <div className="gate-row"><X size={14} /><span>Every jurisdiction must have a known street total</span></div>
+                <div className="gate-row"><X size={14} /><span>100% of official street records must be captured</span></div>
+                <div className="gate-row"><X size={14} /><span>Each record needs source and verification dates</span></div>
+              </section>
+
+              <section className="gap-card"><AlertTriangle size={18} /><div><strong>Coverage is not a price claim</strong><p>{omrCoverage.publishedCoverageClaim}. The next checkpoint is the first complete official street register, not another model estimate.</p></div></section>
+            </>
+          )}
+
+          {activeView === "Coverage" && inspectorTab === "Evidence" && (
+            <section className="inspector-section evidence-section">
+              <div className="section-heading"><div><span>Source ledger</span><h2>Official programme evidence</h2></div><Database size={17} /></div>
+              <a href={omrCoverage.source.url} target="_blank" rel="noreferrer" className="source-card">
+                <span className="source-kind official">official</span>
+                <div><strong>{omrCoverage.source.title}</strong><p>{omrCoverage.source.organization}</p><small>Retrieved {omrCoverage.source.retrievedAt} · source updated {omrCoverage.source.lastUpdatedBySource}</small></div>
+                <ExternalLink size={15} />
+              </a>
+              <p className="coverage-method">{omrCoverage.source.method}</p>
+              <div className="office-ledger">
+                {omrCoverageByOffice.map((office) => (
+                  <div key={office.officialSroCode}><span>{office.nameEn}<small>{office.nameTa}</small></span><strong>{office.units.length} villages</strong><b>ID {office.officialSroCode}</b></div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {activeView === "Coverage" && inspectorTab === "Context" && (
+            <section className="inspector-section context-section">
+              <div className="section-heading"><div><span>Boundary method</span><h2>Transparent by design</h2></div><ShieldCheck size={17} /></div>
+              <p className="coverage-definition">{omrCoverage.definition}</p>
+              {["Resolve the official street inventory for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
+              <p className="legal-note">Release ready: <strong>{omrReleaseReady ? "yes" : "no"}</strong>. A missing street total is treated as missing evidence, not zero coverage.</p>
+            </section>
+          )}
+
+          {activeView !== "Coverage" && inspectorTab === "Overview" && (
             <>
               <section className="confidence-card">
                 <div className="confidence-badge">{selected.grade}</div>
@@ -320,7 +412,7 @@ export default function MitoApp() {
             </>
           )}
 
-          {inspectorTab === "Evidence" && (
+          {activeView !== "Coverage" && inspectorTab === "Evidence" && (
             <section className="inspector-section evidence-section">
               <div className="section-heading"><div><span>Source timeline</span><h2>{selected.sourceIds.length} traceable sources</h2></div><Database size={17} /></div>
               {selected.sourceIds.map((sourceId) => {
@@ -337,7 +429,7 @@ export default function MitoApp() {
             </section>
           )}
 
-          {inspectorTab === "Context" && (
+          {activeView !== "Coverage" && inspectorTab === "Context" && (
             <section className="inspector-section context-section">
               <div className="section-heading"><div><span>Due-diligence context</span><h2>Verify before relying</h2></div><ShieldCheck size={17} /></div>
               {["Title, EC and ownership chain", "Patta / TSLR and survey match", "Current land use and planning rules", "Approved access and road width", "Flood, waterbody and acquisition risk"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
