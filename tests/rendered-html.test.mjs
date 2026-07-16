@@ -30,6 +30,7 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
   assert.match(html, /27(?:<!-- -->)? official planning records captured/i);
   assert.match(html, /1(?:<!-- -->)? archived TNREGINET street row recovered/i);
+  assert.match(html, /Archived row independently corroborated/i);
   assert.match(html, /Live price collection remains blocked/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
@@ -88,6 +89,11 @@ test("evidence API publishes planning provenance, archived price evidence and th
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].sourceStreetName, "CHIDAMBARAM NAGAR 1ST STREET");
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].valueInrPerSqft, 4400);
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].verificationStatus, "pending");
+  assert.equal(payload.guidelineValueCollection.secondaryCorroboration.summary.matchedRowCount, 1);
+  assert.equal(payload.guidelineValueCollection.secondaryCorroboration.summary.exactFieldMatchCount, 1);
+  assert.equal(payload.guidelineValueCollection.secondaryCorroboration.summary.currentOfficialPromotionCount, 0);
+  assert.equal(payload.guidelineValueCollection.secondaryCorroboration.scopeClaims.claimedStreetCount, 758);
+  assert.equal(payload.guidelineValueCollection.secondaryCorroboration.conflicts[0].status, "unresolved");
   assert.equal(payload.guidelineValueCollection.importContract.schemaVersion, "1.1.0");
   assert.ok(payload.guidelineValueCollection.importContract.requiredRowFields.includes("officialStreetCode"));
 });

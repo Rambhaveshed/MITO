@@ -1,6 +1,8 @@
 import {
   guidelineValueImportSchema,
   omrGuidelineCaptureRun,
+  omrGuidelineSecondaryCorroborationLedger,
+  omrGuidelineSecondaryCorroborationSummary,
   omrGuidelineSnapshotLedger,
   omrGuidelineSnapshotSummary,
   omrPlanningLedger,
@@ -27,6 +29,14 @@ export async function GET() {
         source: omrGuidelineSnapshotLedger.source,
         records: omrGuidelineSnapshotLedger.rows,
         publicationRule: "Archived snapshot rows remain pending and unplotted until the live official source is rechecked. They are excluded from current verified totals.",
+      },
+      secondaryCorroboration: {
+        summary: omrGuidelineSecondaryCorroborationSummary,
+        audit: omrGuidelineSecondaryCorroborationLedger.audit,
+        scopeClaims: omrGuidelineSecondaryCorroborationLedger.scopeClaims,
+        matchedRows: omrGuidelineSecondaryCorroborationLedger.matchedRows,
+        conflicts: omrGuidelineSecondaryCorroborationLedger.conflicts,
+        publicationRule: "A third-party field match is a discovery and transcription-check signal only. It cannot increase current official coverage or pass a release gate.",
       },
       importContract: {
         id: guidelineValueImportSchema.$id,

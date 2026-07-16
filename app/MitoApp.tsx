@@ -29,6 +29,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   archivedGuidelineRecordsForVillage,
   omrGuidelineCaptureRun,
+  omrGuidelineSecondaryCorroborationLedger,
+  omrGuidelineSecondaryCorroborationSummary,
   omrGuidelineSnapshotLedger,
   omrGuidelineSnapshotSummary,
   omrPlanningLedger,
@@ -332,6 +334,12 @@ export default function MitoApp() {
                 <em>Not current</em>
               </section>
 
+              <section className="secondary-audit-card">
+                <div><ShieldCheck size={17} /></div>
+                <p><strong>Archived row independently corroborated</strong><span>Street, classification and ₹4,400 rate match a secondary mirror exactly</span></p>
+                <em>Not official</em>
+              </section>
+
               <section className="inspector-section">
                 <div className="section-heading"><div><span>Collection progress</span><h2>What is actually complete</h2></div><Database size={17} /></div>
                 <div className="coverage-progress-row"><div><span>Jurisdiction IDs</span><strong>{omrCoveragePercent.jurisdiction}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.jurisdiction}%` }} /></div><small>{omrCoverageSummary.jurisdictionVerifiedCount} of {omrCoverageSummary.unitCount} verified against TNREGINET</small></div>
@@ -366,6 +374,11 @@ export default function MitoApp() {
                   <div><strong>TNREGINET result embedded in a public project file</strong><p>Official portal screen archived by {omrGuidelineSnapshotLedger.source.archivedBy}</p><small>Screen dated 16 Apr 2025 · recovered 16 Jul 2026 · live recheck pending</small></div>
                   <ExternalLink size={15} />
                 </a>
+                <a href={omrGuidelineSecondaryCorroborationLedger.audit.url} target="_blank" rel="noreferrer" className="source-card secondary-source">
+                  <span className="source-kind discovery">secondary</span>
+                  <div><strong>Proquiro targeted source audit</strong><p>{omrGuidelineSecondaryCorroborationLedger.audit.organization}</p><small>One known row checked 16 Jul 2026 · no bulk ingestion · live official recheck still required</small></div>
+                  <ExternalLink size={15} />
+                </a>
                 <div className="guideline-snapshot-list">
                   {omrGuidelineSnapshotLedger.rows.map((record) => (
                     <article key={record.sourceRecordId} className="guideline-snapshot-card">
@@ -378,6 +391,14 @@ export default function MitoApp() {
                   ))}
                 </div>
                 <p className="coverage-method">Only row 11 is visible. Rows 12–17 are redacted and rows 1–10 are absent from the filing. MITO does not infer or reconstruct them.</p>
+                <div className="secondary-match-card">
+                  <span>{omrGuidelineSecondaryCorroborationSummary.exactFieldMatchCount} exact match</span>
+                  <div><strong>Transcription confidence increased; coverage did not</strong><p>The secondary page matches the archived street name after whitespace normalization, classification and ₹4,400/sq ft value.</p><small>Current official values added: {omrGuidelineSecondaryCorroborationSummary.currentOfficialPromotionCount}</small></div>
+                </div>
+                <div className="inventory-conflict-card">
+                  <AlertTriangle size={16} />
+                  <div><strong>Street inventory conflict remains unresolved</strong><p>Archived official screen: 17 items. Secondary mirror claim: {omrGuidelineSecondaryCorroborationSummary.claimedStreetCount} streets. MITO preserves both and uses neither as a current complete register.</p></div>
+                </div>
                 <div className="capture-blocker">
                   <span>{omrGuidelineCaptureRun.status}</span>
                   <div><strong>{omrGuidelineCaptureRun.publicMessage}</strong><p>{omrGuidelineCaptureRun.notes}</p><small>Accepted records: {omrGuidelineCaptureRun.recordsAccepted} · {omrGuidelineCaptureRun.blockerCode}</small></div>
@@ -427,7 +448,7 @@ export default function MitoApp() {
               <div className="evidence-contract">
                 <span>Import contract · v1.1.0</span>
                 <strong>Every official value must arrive with provenance</strong>
-                <p>Source record ID, SRO and village codes, street name, classification, raw unit, normalized ₹/sq ft, effective date, snapshot hash, location evidence and verification status are mandatory. An absent official street code is allowed only for a pending archived row and blocks verification.</p>
+                <p>Source record ID, SRO and village codes, street name, classification, raw unit, normalized ₹/sq ft, effective date, snapshot hash, location evidence and verification status are mandatory. An absent official street code is allowed only for a pending archived row and blocks verification. Secondary corroboration never promotes a record to current official evidence.</p>
                 <a href="/api/evidence" target="_blank" rel="noreferrer">Inspect the machine-readable evidence ledger <ArrowUpRight size={13} /></a>
               </div>
               {["Resolve the official street inventory for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}

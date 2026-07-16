@@ -1,6 +1,7 @@
 import captureRun from "./capture-runs/omr-guideline-2026-07-15.json";
 import guidelineImportSchema from "./evidence/guideline-value-import.schema.json";
 import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-07-16.json";
+import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-corroboration-2026-07-16.json";
 import planningLedger from "./evidence/omr-planning-records.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
@@ -16,6 +17,7 @@ const planningVillageKeys = new Set(
 export const omrPlanningLedger = planningLedger;
 export const omrGuidelineCaptureRun = captureRun;
 export const omrGuidelineSnapshotLedger = guidelineSnapshot;
+export const omrGuidelineSecondaryCorroborationLedger = guidelineSecondaryCorroboration;
 export const guidelineValueImportSchema = guidelineImportSchema;
 
 const snapshotVillageKeys = new Set(
@@ -29,6 +31,18 @@ export const omrGuidelineSnapshotSummary = {
   villageCount: snapshotVillageKeys.size,
   unplottedCount: guidelineSnapshot.rows.filter((record) => record.geometryStatus === "unplotted").length,
   streetInventoryCountAtSnapshot: guidelineSnapshot.source.streetInventoryCountAtSnapshot,
+};
+
+export const omrGuidelineSecondaryCorroborationSummary = {
+  matchedRowCount: guidelineSecondaryCorroboration.matchedRows.length,
+  exactFieldMatchCount: guidelineSecondaryCorroboration.matchedRows.filter(
+    (record) => record.corroborationStatus === "exact_field_match",
+  ).length,
+  conflictCount: guidelineSecondaryCorroboration.conflicts.length,
+  claimedStreetCount: guidelineSecondaryCorroboration.scopeClaims.claimedStreetCount,
+  currentOfficialPromotionCount: guidelineSecondaryCorroboration.matchedRows.filter(
+    (record) => record.currentOfficialValue,
+  ).length,
 };
 
 export const omrPlanningSummary = {

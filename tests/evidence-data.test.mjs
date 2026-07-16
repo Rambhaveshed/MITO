@@ -8,6 +8,7 @@ const planningUrl = new URL("../data/evidence/omr-planning-records.json", import
 const captureUrl = new URL("../data/capture-runs/omr-guideline-2026-07-15.json", import.meta.url);
 const schemaUrl = new URL("../data/evidence/guideline-value-import.schema.json", import.meta.url);
 const archivedSnapshotUrl = new URL("../data/evidence/omr-guideline-archived-snapshot-2026-07-16.json", import.meta.url);
+const secondaryCorroborationUrl = new URL("../data/evidence/omr-guideline-secondary-corroboration-2026-07-16.json", import.meta.url);
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
@@ -216,4 +217,42 @@ test("a pending archived row cannot silently become verified without an official
   const result = validateGuidelineImport(batch, { allowedVillageKeys: ["20066:254"] });
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.includes("officialStreetCode is required before a record can be verified")));
+});
+
+test("secondary corroboration checks one known row without becoming official evidence", async () => {
+  const ledger = await readJson(secondaryCorroborationUrl);
+
+  assert.equal(ledger.audit.sourceType, "third_party_mirror");
+  assert.equal(ledger.audit.captureMethod, "single_page_targeted_audit");
+  assert.equal(ledger.audit.reuseDecision, "do_not_bulk_ingest");
+  assert.match(ledger.audit.reuseReason, /no bulk street data was copied/i);
+  assert.equal(ledger.audit.pageSnapshotHash, "sha256:1921581bb2f2347047e10be86137b11995f9d63a92a96d46ba2927bb36e7f868");
+  assert.equal(ledger.audit.statedRatesEffectiveFrom, "2024-07-01");
+  assert.equal(ledger.audit.statedLastVerifiedAt, "2026-07-14");
+  assert.equal(ledger.matchedRows.length, 1);
+
+  const [row] = ledger.matchedRows;
+  assert.equal(row.relatedOfficialSnapshotRecordId, "tnreginet-sholinganallur-1-2025-04-16-row-11");
+  assert.equal(row.normalizedStreetName, "CHIDAMBARAM NAGAR 1ST STREET");
+  assert.equal(row.classification, "Residential Special Type - V");
+  assert.equal(row.valueInrPerSqft, 4400);
+  assert.equal(row.corroborationStatus, "exact_field_match");
+  assert.equal(row.publicationStatus, "secondary_corroboration_only");
+  assert.equal(row.currentOfficialValue, false);
+  assert.equal(row.geometryStatus, "unplotted");
+});
+
+test("secondary street-count conflict is preserved and cannot change the release target", async () => {
+  const [coverage, ledger] = await Promise.all([readJson(coverageUrl), readJson(secondaryCorroborationUrl)]);
+  const sholinganallur = coverage.units.find((unit) => unit.officialSroCode === "20066" && unit.officialVillageCode === "254");
+  const [conflict] = ledger.conflicts;
+
+  assert.equal(ledger.scopeClaims.claimedStreetCount, 758);
+  assert.equal(ledger.scopeClaims.claimStatus, "unverified_secondary_claim");
+  assert.equal(conflict.archivedOfficialSnapshotValue, 17);
+  assert.equal(conflict.secondarySourceValue, 758);
+  assert.equal(conflict.status, "unresolved");
+  assert.equal(sholinganallur.streetTargetCount, 17);
+  assert.equal(sholinganallur.streetTargetEvidenceStatus, "archived_snapshot");
+  assert.equal(sholinganallur.officialGuidelineRecords, 0);
 });
