@@ -26,7 +26,7 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /<title>MITO — Tamil Nadu Land Intelligence<\/title>/i);
   assert.match(html, /Tamil Nadu land intelligence/i);
   assert.match(html, /Search village, Tamil name, SRO or ID/i);
-  assert.match(html, /OMR is collecting/i);
+  assert.match(html, /Expand to Chennai/i);
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
   assert.match(html, /27(?:<!-- -->)? official planning records captured/i);
   assert.match(html, /1(?:<!-- -->)? archived TNREGINET street row recovered/i);
@@ -151,4 +151,31 @@ test("resolver API preserves ambiguity, Tamil aliases and unresolved conflicts",
   assert.equal(unresolved.result.status, "unresolved");
   assert.equal(unresolved.result.matches.length, 0);
   assert.match(unresolved.result.explanation, /does not merge/i);
+});
+
+test("Chennai coverage API publishes the source inventory and unresolved official conflict", async () => {
+  const response = await render("/api/chennai-coverage");
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.scopeId, "chennai-district-revenue-2026");
+  assert.equal(payload.summary.talukGroupCount, 17);
+  assert.equal(payload.summary.sourceVillageCount, 144);
+  assert.equal(payload.summary.firkaCount, 49);
+  assert.equal(payload.summary.registrationCrosswalkCount, 0);
+  assert.equal(payload.summary.officialGuidelineValueCount, 0);
+  assert.equal(payload.summary.registeredTransactionCount, 0);
+  assert.equal(payload.summary.plottedGeometryCount, 0);
+  assert.equal(payload.summary.conflictCount, 1);
+  assert.equal(payload.taluks.length, 17);
+  assert.equal(payload.conflicts[0].status, "unresolved");
+});
+
+test("Chennai resolver keeps duplicate village names separate by taluk", async () => {
+  const response = await render("/api/chennai-coverage?query=Alandur");
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.resolution.status, "ambiguous");
+  assert.equal(payload.resolution.matches.length, 2);
+  assert.deepEqual(payload.resolution.matches.map((match) => match.talukName), ["Guindy", "Alandur"]);
+  assert.ok(payload.resolution.matches.every((match) => match.registrationCrosswalkStatus === "not_started"));
 });

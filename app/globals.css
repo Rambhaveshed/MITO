@@ -420,6 +420,11 @@ button {
 .coverage-unit-card.has-guideline-snapshot .coverage-unit-state b { color: #875f12; }
 .coverage-unit-card.has-planning-evidence.selected,
 .coverage-unit-card.has-guideline-snapshot.selected { border-color: #6fa797; background: #edf7f3; }
+.chennai-source-card { border-style: dashed; background: #fbfaf6; }
+.chennai-source-card .coverage-unit-index { color: #765d28; background: #f4ead0; font-size: 6px; }
+.chennai-source-card .coverage-unit-state i { background: #d09b36; }
+.coverage-unit-state.source-only { color: #7d6b49; }
+.coverage-unit-state.source-only b { color: #9a7221; }
 .resolver-notice { margin: 0 3px 8px; padding: 8px 9px; border: 1px solid #d9e1dd; border-radius: 9px; background: #f8faf8; }
 .resolver-notice strong, .resolver-notice span { display: block; }
 .resolver-notice strong { color: var(--green); font-size: 8px; }
@@ -541,6 +546,9 @@ button {
 .coverage-confidence { border-color: #cfe1da; background: #f1f8f5; }
 .coverage-confidence .confidence-badge { background: var(--green); color: white; }
 .coverage-confidence > svg { color: var(--green-2); }
+.source-inventory-confidence { border-color: #d9d2be; background: #faf7ee; }
+.source-inventory-confidence .confidence-badge { background: #8d7540; }
+.source-inventory-confidence > svg { color: #8d7540; }
 
 .inspector-section { margin-top: 13px; padding: 13px; border: 1px solid #e3e7e4; border-radius: 12px; background: #fff; }
 .section-heading { justify-content: space-between; }
@@ -829,6 +837,7 @@ button {
   .mobile-nav button.active { color: var(--green); }
   .mobile-menu { position: absolute; z-index: 30; top: 63px; right: 8px; width: 190px; display: flex; flex-direction: column; padding: 7px; border: 1px solid var(--line); border-radius: 11px; background: white; box-shadow: var(--shadow); }
   .mobile-menu button { padding: 10px; border: 0; border-bottom: 1px solid #eef0ed; background: none; font-size: 9px; font-weight: 700; text-align: left; }
+  .mobile-menu button[aria-pressed="true"] { border-radius: 7px; background: #edf6f2; color: var(--green); }
   .maplibregl-ctrl-bottom-right { right: 2px !important; bottom: 312px !important; }
   .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group { display: none; }
   .maplibregl-ctrl-attrib { max-width: 160px !important; font-size: 6px !important; }
