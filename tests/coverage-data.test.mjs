@@ -15,7 +15,7 @@ test("OMR programme has a bounded, source-backed target", async () => {
   assert.equal(manifest.registrationOffices.length, 6);
   assert.equal(manifest.units.length, 24);
   assert.equal(manifest.status, "collecting");
-  assert.match(manifest.publishedCoverageClaim, /not yet complete/i);
+  assert.match(manifest.publishedCoverageClaim, /remain incomplete/i);
 });
 
 test("official OMR jurisdiction identifiers are complete and unique", async () => {
@@ -33,7 +33,14 @@ test("release gate prevents incomplete evidence from being called complete", asy
   const manifest = await readManifest();
   assert.equal(manifest.releaseGate.minimumStreetRegisterCoveragePercent, 100);
   assert.equal(manifest.releaseGate.allowUnknownStreetTotals, false);
-  assert.ok(manifest.units.every((unit) => unit.streetTargetCount === null));
+  assert.equal(manifest.units.filter((unit) => unit.streetTargetCount === null).length, 23);
+  const archivedInventory = manifest.units.find((unit) => unit.streetTargetCount !== null);
+  assert.equal(archivedInventory.officialSroCode, "20066");
+  assert.equal(archivedInventory.officialVillageCode, "254");
+  assert.equal(archivedInventory.streetTargetCount, 17);
+  assert.equal(archivedInventory.streetTargetEvidenceStatus, "archived_snapshot");
+  assert.equal(archivedInventory.streetRegisterStatus, "collecting");
+  assert.ok(manifest.units.every((unit) => unit.streetRegisterStatus !== "verified"));
   assert.ok(manifest.units.every((unit) => unit.officialGuidelineRecords === 0));
   assert.ok(manifest.units.every((unit) => unit.registeredTransactionRecords === 0));
   assert.ok(manifest.units.every((unit) => !Object.hasOwn(unit, "pricePerSqft")));

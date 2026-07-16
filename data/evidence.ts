@@ -1,5 +1,6 @@
 import captureRun from "./capture-runs/omr-guideline-2026-07-15.json";
 import guidelineImportSchema from "./evidence/guideline-value-import.schema.json";
+import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-07-16.json";
 import planningLedger from "./evidence/omr-planning-records.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
@@ -14,7 +15,21 @@ const planningVillageKeys = new Set(
 
 export const omrPlanningLedger = planningLedger;
 export const omrGuidelineCaptureRun = captureRun;
+export const omrGuidelineSnapshotLedger = guidelineSnapshot;
 export const guidelineValueImportSchema = guidelineImportSchema;
+
+const snapshotVillageKeys = new Set(
+  guidelineSnapshot.rows.map((record) => `${record.officialSroCode}:${record.officialVillageCode}`),
+);
+
+export const omrGuidelineSnapshotSummary = {
+  recordCount: guidelineSnapshot.rows.length,
+  pendingLiveRecheckCount: guidelineSnapshot.rows.filter((record) => record.verificationStatus === "pending").length,
+  verifiedCurrentCount: guidelineSnapshot.rows.filter((record) => record.verificationStatus === "verified").length,
+  villageCount: snapshotVillageKeys.size,
+  unplottedCount: guidelineSnapshot.rows.filter((record) => record.geometryStatus === "unplotted").length,
+  streetInventoryCountAtSnapshot: guidelineSnapshot.source.streetInventoryCountAtSnapshot,
+};
 
 export const omrPlanningSummary = {
   recordCount: planningLedger.records.length,
@@ -27,6 +42,12 @@ export const omrPlanningSummary = {
 
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
+    (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
+  );
+}
+
+export function archivedGuidelineRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
+  return guidelineSnapshot.rows.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
   );
 }

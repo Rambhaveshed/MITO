@@ -1,5 +1,5 @@
 import coverage from "./coverage/omr-corridor.json";
-import { omrPlanningSummary } from "./evidence";
+import { omrGuidelineSnapshotSummary, omrPlanningSummary } from "./evidence";
 
 export type OmrCoverageStatus = "not_started" | "collecting" | "captured" | "verified" | "blocked";
 
@@ -16,6 +16,8 @@ export const omrCoverageSummary = {
   jurisdictionVerifiedCount: units.filter((unit) => unit.jurisdictionStatus === "verified").length,
   streetRegisterVerifiedCount: units.filter((unit) => unit.streetRegisterStatus === "verified").length,
   officialGuidelineRecordCount: units.reduce((sum, unit) => sum + unit.officialGuidelineRecords, 0),
+  archivedGuidelineRecordCount: omrGuidelineSnapshotSummary.recordCount,
+  pendingGuidelineRecheckCount: omrGuidelineSnapshotSummary.pendingLiveRecheckCount,
   registeredTransactionRecordCount: units.reduce((sum, unit) => sum + unit.registeredTransactionRecords, 0),
   officialPlanningRecordCount: omrPlanningSummary.recordCount,
   planningVillageCount: omrPlanningSummary.villageCount,

@@ -7,6 +7,7 @@ const coverageUrl = new URL("../data/coverage/omr-corridor.json", import.meta.ur
 const planningUrl = new URL("../data/evidence/omr-planning-records.json", import.meta.url);
 const captureUrl = new URL("../data/capture-runs/omr-guideline-2026-07-15.json", import.meta.url);
 const schemaUrl = new URL("../data/evidence/guideline-value-import.schema.json", import.meta.url);
+const archivedSnapshotUrl = new URL("../data/evidence/omr-guideline-archived-snapshot-2026-07-16.json", import.meta.url);
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
@@ -95,7 +96,7 @@ test("blocked guideline capture is represented as missing evidence, not zero pri
 
 test("guideline import schema requires provenance, normalized values and location evidence", async () => {
   const schema = await readJson(schemaUrl);
-  assert.equal(schema.properties.schemaVersion.const, "1.0.0");
+  assert.equal(schema.properties.schemaVersion.const, "1.1.0");
   assert.ok(schema.properties.source.required.includes("snapshotHash"));
   const required = schema.properties.rows.items.required;
   for (const field of ["officialStreetCode", "sourceStreetName", "classification", "rawValueInr", "rawValueUnit", "valueInrPerSqft", "effectiveFrom", "locationEvidence"]) {
@@ -105,7 +106,7 @@ test("guideline import schema requires provenance, normalized values and locatio
 
 test("guideline import validator accepts a fully traceable in-scope row", () => {
   const batch = {
-    schemaVersion: "1.0.0",
+    schemaVersion: "1.1.0",
     scopeId: "omr-corridor-2026",
     source: {
       id: "official-export-1",
@@ -154,7 +155,7 @@ test("guideline import validator rejects off-scope, inconsistent and duplicate r
     locationEvidence: "Unverified location claim",
   };
   const batch = {
-    schemaVersion: "1.0.0",
+    schemaVersion: "1.1.0",
     scopeId: "omr-corridor-2026",
     source: {
       id: "official-export-1",
@@ -174,4 +175,45 @@ test("guideline import validator rejects off-scope, inconsistent and duplicate r
   assert.ok(result.errors.some((error) => error.includes("geometryEvidence")));
   assert.ok(result.errors.some((error) => error.includes("verifiedAt")));
   assert.ok(result.errors.some((error) => error.includes("duplicates another source record")));
+});
+
+test("archived Sholinganallur screen preserves one visible row without promoting it to current evidence", async () => {
+  const [coverage, batch] = await Promise.all([readJson(coverageUrl), readJson(archivedSnapshotUrl)]);
+  const unit = coverage.units.find((candidate) => candidate.officialSroCode === "20066" && candidate.officialVillageCode === "254");
+  const result = validateGuidelineImport(batch, { allowedVillageKeys: ["20066:254"] });
+
+  assert.deepEqual(result, { valid: true, errors: [] });
+  assert.equal(batch.source.captureMethod, "archived_official_snapshot");
+  assert.equal(batch.source.snapshotHash, "sha256:dc8f1c50227f90bc83264e1ca0077635504fa9b6caf0e609aaa41f2d3718cf98");
+  assert.equal(batch.source.streetInventoryCountAtSnapshot, 17);
+  assert.equal(batch.source.visibleUnredactedRowCount, 1);
+  assert.equal(batch.source.redactedRowsOnCapturedPage, 6);
+  assert.equal(batch.rows.length, 1);
+
+  const [row] = batch.rows;
+  assert.equal(row.sourceStreetName, "CHIDAMBARAM NAGAR 1ST STREET");
+  assert.equal(row.valueInrPerSqft, 4400);
+  assert.equal(row.sourceMetricValueInrPerSqm, 47365);
+  assert.equal(row.classification, "Residential Special Type - V");
+  assert.equal(row.effectiveFrom, "2024-07-01");
+  assert.equal(row.verificationStatus, "pending");
+  assert.equal(row.officialStreetCode, null);
+  assert.equal(row.geometryStatus, "unplotted");
+  assert.ok(row.qualityFlags.includes("live_official_recheck_pending"));
+  assert.ok(row.qualityFlags.includes("official_street_code_not_visible"));
+
+  assert.equal(unit.streetRegisterStatus, "collecting");
+  assert.equal(unit.streetTargetCount, 17);
+  assert.equal(unit.streetTargetEvidenceStatus, "archived_snapshot");
+  assert.equal(unit.officialGuidelineRecords, 0);
+});
+
+test("a pending archived row cannot silently become verified without an official street code", async () => {
+  const batch = await readJson(archivedSnapshotUrl);
+  batch.rows[0].verificationStatus = "verified";
+  batch.rows[0].verifiedAt = "2026-07-16";
+
+  const result = validateGuidelineImport(batch, { allowedVillageKeys: ["20066:254"] });
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.includes("officialStreetCode is required before a record can be verified")));
 });

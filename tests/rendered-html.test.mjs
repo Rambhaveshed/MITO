@@ -29,7 +29,8 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /OMR is collecting/i);
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
   assert.match(html, /27(?:<!-- -->)? official planning records captured/i);
-  assert.match(html, /Price collection is blocked, not complete/i);
+  assert.match(html, /1(?:<!-- -->)? archived TNREGINET street row recovered/i);
+  assert.match(html, /Live price collection remains blocked/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -64,10 +65,12 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.jurisdictionVerifiedCount, 24);
   assert.equal(payload.summary.streetRegisterVerifiedCount, 0);
   assert.equal(payload.summary.officialGuidelineRecordCount, 0);
+  assert.equal(payload.summary.archivedGuidelineRecordCount, 1);
+  assert.equal(payload.summary.pendingGuidelineRecheckCount, 1);
   assert.equal(payload.offices.length, 6);
 });
 
-test("evidence API publishes planning provenance and the blocked price-import contract", async () => {
+test("evidence API publishes planning provenance, archived price evidence and the blocked live capture", async () => {
   const response = await render("/api/evidence");
   assert.equal(response.status, 200);
   const payload = await response.json();
@@ -80,6 +83,11 @@ test("evidence API publishes planning provenance and the blocked price-import co
   assert.equal(payload.planning.records.length, 27);
   assert.equal(payload.guidelineValueCollection.captureRun.status, "blocked");
   assert.equal(payload.guidelineValueCollection.captureRun.recordsAccepted, 0);
-  assert.equal(payload.guidelineValueCollection.importContract.schemaVersion, "1.0.0");
+  assert.equal(payload.guidelineValueCollection.archivedSnapshot.summary.recordCount, 1);
+  assert.equal(payload.guidelineValueCollection.archivedSnapshot.summary.verifiedCurrentCount, 0);
+  assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].sourceStreetName, "CHIDAMBARAM NAGAR 1ST STREET");
+  assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].valueInrPerSqft, 4400);
+  assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].verificationStatus, "pending");
+  assert.equal(payload.guidelineValueCollection.importContract.schemaVersion, "1.1.0");
   assert.ok(payload.guidelineValueCollection.importContract.requiredRowFields.includes("officialStreetCode"));
 });

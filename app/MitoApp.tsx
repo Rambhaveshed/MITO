@@ -27,7 +27,10 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  archivedGuidelineRecordsForVillage,
   omrGuidelineCaptureRun,
+  omrGuidelineSnapshotLedger,
+  omrGuidelineSnapshotSummary,
   omrPlanningLedger,
   omrPlanningSummary,
   planningRecordsForVillage,
@@ -174,7 +177,7 @@ export default function MitoApp() {
           <button className="geography-button" type="button">
             <MapPin size={15} /> Tamil Nadu <ChevronDown size={14} />
           </button>
-          <div className="release-pill"><span /> OMR collection · audited 15 Jul 2026</div>
+          <div className="release-pill"><span /> OMR collection · audited 16 Jul 2026</div>
         </div>
         <div className="topbar-actions">
           <button className="text-button" type="button">தமிழ்</button>
@@ -230,7 +233,7 @@ export default function MitoApp() {
       <section className="coverage-strip" aria-label="Coverage summary">
         <div><strong>{omrCoverageSummary.jurisdictionVerifiedCount}/{omrCoverageSummary.unitCount}</strong><span>jurisdictions</span></div>
         <div><strong>{omrCoverageSummary.streetRegisterVerifiedCount}</strong><span>street registers</span></div>
-        <div><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong><span>official values</span></div>
+        <div><strong>{omrCoverageSummary.archivedGuidelineRecordCount}</strong><span>archived rate</span></div>
         <div><strong>{omrCoverageSummary.officialPlanningRecordCount}</strong><span>planning records</span></div>
         <button type="button" onClick={() => setActiveView("Coverage")}><Database size={14} /> OMR is collecting <ArrowUpRight size={13} /></button>
       </section>
@@ -246,15 +249,16 @@ export default function MitoApp() {
               {filteredCoverageUnits.map((unit) => {
                 const office = omrCoverage.registrationOffices.find((candidate) => candidate.officialSroCode === unit.officialSroCode);
                 const planningRecordCount = planningRecordsForVillage(unit.officialSroCode, unit.officialVillageCode).length;
+                const archivedRateCount = archivedGuidelineRecordsForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 return (
-                  <article key={`${unit.officialSroCode}-${unit.officialVillageCode}`} className={`coverage-unit-card ${planningRecordCount ? "has-planning-evidence" : ""}`}>
+                  <article key={`${unit.officialSroCode}-${unit.officialVillageCode}`} className={`coverage-unit-card ${planningRecordCount ? "has-planning-evidence" : ""} ${archivedRateCount ? "has-guideline-snapshot" : ""}`}>
                     <div className="coverage-unit-index">{unit.sequence}</div>
                     <div>
                       <strong>{unit.nameEn}</strong>
                       <span>{unit.nameTa}</span>
                       <small>{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
                     </div>
-                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
+                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
                   </article>
                 );
               })}
@@ -322,11 +326,17 @@ export default function MitoApp() {
                 <ShieldCheck size={20} />
               </section>
 
+              <section className="snapshot-evidence-card">
+                <div><Database size={17} /></div>
+                <p><strong>{omrGuidelineSnapshotSummary.recordCount} archived TNREGINET street row recovered</strong><span>Sholinganallur 1 · ₹4,400/sq ft · live official recheck pending</span></p>
+                <em>Not current</em>
+              </section>
+
               <section className="inspector-section">
                 <div className="section-heading"><div><span>Collection progress</span><h2>What is actually complete</h2></div><Database size={17} /></div>
                 <div className="coverage-progress-row"><div><span>Jurisdiction IDs</span><strong>{omrCoveragePercent.jurisdiction}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.jurisdiction}%` }} /></div><small>{omrCoverageSummary.jurisdictionVerifiedCount} of {omrCoverageSummary.unitCount} verified against TNREGINET</small></div>
-                <div className="coverage-progress-row"><div><span>Street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>Street totals are unknown, so completeness cannot be claimed</small></div>
-                <div className="coverage-progress-row"><div><span>Official values</span><strong>0</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>No guideline rate is published in MITO until captured and verified</small></div>
+                <div className="coverage-progress-row"><div><span>Street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>One dated 17-street inventory is visible in an archive; no current register is verified</small></div>
+                <div className="coverage-progress-row"><div><span>Current verified values</span><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>{omrGuidelineSnapshotSummary.recordCount} archived row is shown separately and excluded from this total</small></div>
                 <div className="coverage-progress-row"><div><span>Planning evidence</span><strong>{omrCoveragePercent.planning}%</strong></div><div className="coverage-progress planning"><i style={{ width: `${omrCoveragePercent.planning}%` }} /></div><small>{omrPlanningSummary.villageCount} of {omrCoverageSummary.unitCount} villages have directly linked CMDA records</small></div>
               </section>
 
@@ -338,7 +348,7 @@ export default function MitoApp() {
                 <div className="gate-row"><X size={14} /><span>Each record needs source and verification dates</span></div>
               </section>
 
-              <section className="gap-card"><AlertTriangle size={18} /><div><strong>Price collection is blocked, not complete</strong><p>{omrGuidelineCaptureRun.publicMessage} {omrGuidelineCaptureRun.nextAction}</p></div></section>
+              <section className="gap-card"><AlertTriangle size={18} /><div><strong>Live price collection remains blocked</strong><p>{omrGuidelineCaptureRun.publicMessage} The archived row is a recovery lead, not proof of the current rate. {omrGuidelineCaptureRun.nextAction}</p></div></section>
             </>
           )}
 
@@ -351,6 +361,23 @@ export default function MitoApp() {
                   <div><strong>{omrCoverage.source.title}</strong><p>{omrCoverage.source.organization}</p><small>Retrieved {omrCoverage.source.retrievedAt} · source updated {omrCoverage.source.lastUpdatedBySource}</small></div>
                   <ExternalLink size={15} />
                 </a>
+                <a href={omrGuidelineSnapshotLedger.source.url} target="_blank" rel="noreferrer" className="source-card archived-source">
+                  <span className="source-kind snapshot">archive</span>
+                  <div><strong>TNREGINET result embedded in a public project file</strong><p>Official portal screen archived by {omrGuidelineSnapshotLedger.source.archivedBy}</p><small>Screen dated 16 Apr 2025 · recovered 16 Jul 2026 · live recheck pending</small></div>
+                  <ExternalLink size={15} />
+                </a>
+                <div className="guideline-snapshot-list">
+                  {omrGuidelineSnapshotLedger.rows.map((record) => (
+                    <article key={record.sourceRecordId} className="guideline-snapshot-card">
+                      <div><span>Archived official screen</span><em>{record.verificationStatus} recheck</em></div>
+                      <h3>{record.sourceStreetName}</h3>
+                      <strong>{formatRate(record.valueInrPerSqft)}<small>/sq ft</small></strong>
+                      <p>{record.classification} · effective 1 Jul 2024</p>
+                      <footer><span>Sholinganallur 1 · Neelangarai SRO</span><b>Unplotted</b></footer>
+                    </article>
+                  ))}
+                </div>
+                <p className="coverage-method">Only row 11 is visible. Rows 12–17 are redacted and rows 1–10 are absent from the filing. MITO does not infer or reconstruct them.</p>
                 <div className="capture-blocker">
                   <span>{omrGuidelineCaptureRun.status}</span>
                   <div><strong>{omrGuidelineCaptureRun.publicMessage}</strong><p>{omrGuidelineCaptureRun.notes}</p><small>Accepted records: {omrGuidelineCaptureRun.recordsAccepted} · {omrGuidelineCaptureRun.blockerCode}</small></div>
@@ -398,9 +425,9 @@ export default function MitoApp() {
               <div className="section-heading"><div><span>Boundary method</span><h2>Transparent by design</h2></div><ShieldCheck size={17} /></div>
               <p className="coverage-definition">{omrCoverage.definition}</p>
               <div className="evidence-contract">
-                <span>Import contract · v1.0.0</span>
+                <span>Import contract · v1.1.0</span>
                 <strong>Every official value must arrive with provenance</strong>
-                <p>Source record ID, SRO and village codes, street code and name, classification, raw unit, normalized ₹/sq ft, effective date, source snapshot hash, location evidence and verification status are mandatory.</p>
+                <p>Source record ID, SRO and village codes, street name, classification, raw unit, normalized ₹/sq ft, effective date, snapshot hash, location evidence and verification status are mandatory. An absent official street code is allowed only for a pending archived row and blocks verification.</p>
                 <a href="/api/evidence" target="_blank" rel="noreferrer">Inspect the machine-readable evidence ledger <ArrowUpRight size={13} /></a>
               </div>
               {["Resolve the official street inventory for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
