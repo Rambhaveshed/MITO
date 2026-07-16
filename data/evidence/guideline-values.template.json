@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0.0",
+  "scopeId": "omr-corridor-2026",
+  "source": {
+    "id": "replace-with-source-id",
+    "organization": "Tamil Nadu Registration Department",
+    "url": "replace-with-exact-source-url",
+    "retrievedAt": "YYYY-MM-DD",
+    "sourceUpdatedAt": null,
+    "captureMethod": "official_export",
+    "snapshotHash": "sha256:replace-with-64-lowercase-hex-characters"
+  },
+  "rows": []
+}

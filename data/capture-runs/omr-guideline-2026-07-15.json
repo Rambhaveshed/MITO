@@ -1,0 +1,17 @@
+{
+  "id": "capture-omr-guideline-2026-07-15-01",
+  "scopeId": "omr-corridor-2026",
+  "sourceId": "tnreginet-guideline-search-2026-07-15",
+  "method": "public_search_interface",
+  "status": "blocked",
+  "recordsSeen": 0,
+  "recordsAccepted": 0,
+  "recordsRejected": 0,
+  "startedAt": "2026-07-15",
+  "finishedAt": "2026-07-15",
+  "blockerCode": "OFFICIAL_EXPORT_REQUIRED",
+  "publicMessage": "Official guideline-value data has not been imported.",
+  "notes": "The current collection environment cannot use the public search service. This is a collection constraint, not evidence that the official source has no records.",
+  "nextAction": "Obtain an authorized official export or a manual official snapshot that preserves street code, street name, classification, value, unit and effective date.",
+  "requiredImportSchema": "data/evidence/guideline-value-import.schema.json"
+}

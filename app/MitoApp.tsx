@@ -26,6 +26,12 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  omrGuidelineCaptureRun,
+  omrPlanningLedger,
+  omrPlanningSummary,
+  planningRecordsForVillage,
+} from "../data/evidence";
 import { omrCoverage, omrCoverageByOffice, omrCoveragePercent, omrCoverageSummary, omrReleaseReady } from "../data/omr";
 import { marketAreas, sourceById, type MarketArea } from "../data/pilot";
 
@@ -33,6 +39,7 @@ const views = ["Market", "Guideline", "Transactions", "Planning", "Risk", "Cover
 type View = (typeof views)[number];
 
 const inr = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
+const planningSourceById = Object.fromEntries(omrPlanningLedger.sources.map((source) => [source.id, source]));
 
 function formatRate(value: number) {
   return `₹${inr.format(value)}`;
@@ -53,7 +60,7 @@ export default function MitoApp() {
   const mapRef = useRef<MapLibreMap | null>(null);
   const markersRef = useRef<MapLibreMarker[]>([]);
   const [selectedId, setSelectedId] = useState("sholinganallur");
-  const [activeView, setActiveView] = useState<View>("Market");
+  const [activeView, setActiveView] = useState<View>("Coverage");
   const [query, setQuery] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -224,6 +231,7 @@ export default function MitoApp() {
         <div><strong>{omrCoverageSummary.jurisdictionVerifiedCount}/{omrCoverageSummary.unitCount}</strong><span>jurisdictions</span></div>
         <div><strong>{omrCoverageSummary.streetRegisterVerifiedCount}</strong><span>street registers</span></div>
         <div><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong><span>official values</span></div>
+        <div><strong>{omrCoverageSummary.officialPlanningRecordCount}</strong><span>planning records</span></div>
         <button type="button" onClick={() => setActiveView("Coverage")}><Database size={14} /> OMR is collecting <ArrowUpRight size={13} /></button>
       </section>
 
@@ -237,15 +245,16 @@ export default function MitoApp() {
             <>
               {filteredCoverageUnits.map((unit) => {
                 const office = omrCoverage.registrationOffices.find((candidate) => candidate.officialSroCode === unit.officialSroCode);
+                const planningRecordCount = planningRecordsForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 return (
-                  <article key={`${unit.officialSroCode}-${unit.officialVillageCode}`} className="coverage-unit-card">
+                  <article key={`${unit.officialSroCode}-${unit.officialVillageCode}`} className={`coverage-unit-card ${planningRecordCount ? "has-planning-evidence" : ""}`}>
                     <div className="coverage-unit-index">{unit.sequence}</div>
                     <div>
                       <strong>{unit.nameEn}</strong>
                       <span>{unit.nameTa}</span>
                       <small>{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
                     </div>
-                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>street data pending</b></div>
+                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
                   </article>
                 );
               })}
@@ -309,7 +318,7 @@ export default function MitoApp() {
             <>
               <section className="confidence-card coverage-confidence">
                 <div className="confidence-badge"><Route size={17} /></div>
-                <div><strong>{omrCoverageSummary.jurisdictionVerifiedCount} corridor jurisdictions identified</strong><span>Across {omrCoverageSummary.officeCount} official sub-registrar offices</span></div>
+                <div><strong>{omrPlanningSummary.recordCount} official planning records captured</strong><span>{omrPlanningSummary.villageCount} villages linked · {omrPlanningSummary.unresolvedRecordCount} records awaiting crosswalk</span></div>
                 <ShieldCheck size={20} />
               </section>
 
@@ -318,6 +327,7 @@ export default function MitoApp() {
                 <div className="coverage-progress-row"><div><span>Jurisdiction IDs</span><strong>{omrCoveragePercent.jurisdiction}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.jurisdiction}%` }} /></div><small>{omrCoverageSummary.jurisdictionVerifiedCount} of {omrCoverageSummary.unitCount} verified against TNREGINET</small></div>
                 <div className="coverage-progress-row"><div><span>Street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>Street totals are unknown, so completeness cannot be claimed</small></div>
                 <div className="coverage-progress-row"><div><span>Official values</span><strong>0</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>No guideline rate is published in MITO until captured and verified</small></div>
+                <div className="coverage-progress-row"><div><span>Planning evidence</span><strong>{omrCoveragePercent.planning}%</strong></div><div className="coverage-progress planning"><i style={{ width: `${omrCoveragePercent.planning}%` }} /></div><small>{omrPlanningSummary.villageCount} of {omrCoverageSummary.unitCount} villages have directly linked CMDA records</small></div>
               </section>
 
               <section className="inspector-section">
@@ -328,33 +338,73 @@ export default function MitoApp() {
                 <div className="gate-row"><X size={14} /><span>Each record needs source and verification dates</span></div>
               </section>
 
-              <section className="gap-card"><AlertTriangle size={18} /><div><strong>Coverage is not a price claim</strong><p>{omrCoverage.publishedCoverageClaim}. The next checkpoint is the first complete official street register, not another model estimate.</p></div></section>
+              <section className="gap-card"><AlertTriangle size={18} /><div><strong>Price collection is blocked, not complete</strong><p>{omrGuidelineCaptureRun.publicMessage} {omrGuidelineCaptureRun.nextAction}</p></div></section>
             </>
           )}
 
           {activeView === "Coverage" && inspectorTab === "Evidence" && (
-            <section className="inspector-section evidence-section">
-              <div className="section-heading"><div><span>Source ledger</span><h2>Official programme evidence</h2></div><Database size={17} /></div>
-              <a href={omrCoverage.source.url} target="_blank" rel="noreferrer" className="source-card">
-                <span className="source-kind official">official</span>
-                <div><strong>{omrCoverage.source.title}</strong><p>{omrCoverage.source.organization}</p><small>Retrieved {omrCoverage.source.retrievedAt} · source updated {omrCoverage.source.lastUpdatedBySource}</small></div>
-                <ExternalLink size={15} />
-              </a>
-              <p className="coverage-method">{omrCoverage.source.method}</p>
-              <div className="office-ledger">
-                {omrCoverageByOffice.map((office) => (
-                  <div key={office.officialSroCode}><span>{office.nameEn}<small>{office.nameTa}</small></span><strong>{office.units.length} villages</strong><b>ID {office.officialSroCode}</b></div>
-                ))}
-              </div>
-            </section>
+            <>
+              <section className="inspector-section evidence-section">
+                <div className="section-heading"><div><span>Price source ledger</span><h2>Official collection status</h2></div><Database size={17} /></div>
+                <a href={omrCoverage.source.url} target="_blank" rel="noreferrer" className="source-card">
+                  <span className="source-kind official">official</span>
+                  <div><strong>{omrCoverage.source.title}</strong><p>{omrCoverage.source.organization}</p><small>Retrieved {omrCoverage.source.retrievedAt} · source updated {omrCoverage.source.lastUpdatedBySource}</small></div>
+                  <ExternalLink size={15} />
+                </a>
+                <div className="capture-blocker">
+                  <span>{omrGuidelineCaptureRun.status}</span>
+                  <div><strong>{omrGuidelineCaptureRun.publicMessage}</strong><p>{omrGuidelineCaptureRun.notes}</p><small>Accepted records: {omrGuidelineCaptureRun.recordsAccepted} · {omrGuidelineCaptureRun.blockerCode}</small></div>
+                </div>
+                <p className="coverage-method">{omrGuidelineCaptureRun.nextAction}</p>
+              </section>
+
+              <section className="inspector-section evidence-section">
+                <div className="section-heading"><div><span>Planning source ledger</span><h2>{omrPlanningSummary.recordCount} official CMDA records</h2></div><ShieldCheck size={17} /></div>
+                <div className="planning-evidence-summary">
+                  <div><strong>{omrPlanningSummary.linkedRecordCount}</strong><span>linked records</span></div>
+                  <div><strong>{omrPlanningSummary.villageCount}</strong><span>villages</span></div>
+                  <div><strong>{omrPlanningSummary.unresolvedRecordCount}</strong><span>crosswalk gaps</span></div>
+                </div>
+                <p className="coverage-method">{omrPlanningLedger.coverageCaveat}</p>
+                <div className="planning-record-list">
+                  {omrPlanningLedger.records.map((record) => {
+                    const source = planningSourceById[record.sourceId];
+                    const recordUrl = "documentUrl" in record && record.documentUrl ? record.documentUrl : source?.url;
+                    return (
+                      <a key={record.id} href={recordUrl} target="_blank" rel="noreferrer" className="planning-record-card">
+                        <div className="planning-record-head"><strong>{record.sourceVillageName}</strong><span>{record.sourceRecordId}</span></div>
+                        <p>{record.summary}</p>
+                        <small>{record.decisionStatus.replaceAll("_", " ")} · {record.mappingStatus === "verified" ? "village linked" : "crosswalk unresolved"}</small>
+                        <em>{record.scopeCaveat}</em>
+                      </a>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <section className="inspector-section">
+                <div className="section-heading"><div><span>Jurisdiction ledger</span><h2>Six official offices</h2></div><MapPin size={17} /></div>
+                <div className="office-ledger">
+                  {omrCoverageByOffice.map((office) => (
+                    <div key={office.officialSroCode}><span>{office.nameEn}<small>{office.nameTa}</small></span><strong>{office.units.length} villages</strong><b>ID {office.officialSroCode}</b></div>
+                  ))}
+                </div>
+              </section>
+            </>
           )}
 
           {activeView === "Coverage" && inspectorTab === "Context" && (
             <section className="inspector-section context-section">
               <div className="section-heading"><div><span>Boundary method</span><h2>Transparent by design</h2></div><ShieldCheck size={17} /></div>
               <p className="coverage-definition">{omrCoverage.definition}</p>
+              <div className="evidence-contract">
+                <span>Import contract · v1.0.0</span>
+                <strong>Every official value must arrive with provenance</strong>
+                <p>Source record ID, SRO and village codes, street code and name, classification, raw unit, normalized ₹/sq ft, effective date, source snapshot hash, location evidence and verification status are mandatory.</p>
+                <a href="/api/evidence" target="_blank" rel="noreferrer">Inspect the machine-readable evidence ledger <ArrowUpRight size={13} /></a>
+              </div>
               {["Resolve the official street inventory for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
-              <p className="legal-note">Release ready: <strong>{omrReleaseReady ? "yes" : "no"}</strong>. A missing street total is treated as missing evidence, not zero coverage.</p>
+              <p className="legal-note">Release ready: <strong>{omrReleaseReady ? "yes" : "no"}</strong>. A missing street total is treated as missing evidence, not zero coverage. Planning records remain separate from price evidence.</p>
             </section>
           )}
 

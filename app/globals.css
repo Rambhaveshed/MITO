@@ -405,6 +405,8 @@ button {
 .coverage-unit-state { color: #477164; font-size: 6px; font-weight: 750; line-height: 1.7; text-align: right; white-space: nowrap; }
 .coverage-unit-state i { display: inline-block; width: 5px; height: 5px; margin-right: 3px; border-radius: 50%; background: #49a66e; }
 .coverage-unit-state b { color: #9a7221; font-size: 6px; font-weight: 750; }
+.coverage-unit-card.has-planning-evidence { border-color: #bfd5ce; background: #f4faf7; }
+.coverage-unit-card.has-planning-evidence .coverage-unit-state b { color: var(--green); }
 .empty-list { min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; color: var(--muted); text-align: center; }
 .empty-list strong { color: var(--ink); font-size: 11px; }
 .empty-list span { max-width: 220px; font-size: 9px; line-height: 1.6; }
@@ -548,6 +550,7 @@ button {
 .coverage-progress-row > div:first-child strong { color: var(--ink); font-size: 9px; }
 .coverage-progress { height: 6px; margin-top: 6px; overflow: hidden; border-radius: 6px; background: #e4e9e6; }
 .coverage-progress i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #74aa9b, var(--green)); }
+.coverage-progress.planning i { background: linear-gradient(90deg, #90a7d5, #536fa7); }
 .coverage-progress-row small { display: block; margin-top: 5px; color: #87918d; font-size: 6px; line-height: 1.45; }
 .gate-row { display: flex; align-items: center; gap: 8px; min-height: 32px; border-top: 1px solid #edf0ed; color: #7a6745; font-size: 7px; font-weight: 700; }
 .gate-row:first-of-type { margin-top: 8px; }
@@ -581,11 +584,34 @@ button {
 .source-card p { margin: 2px 0 0; color: var(--muted); font-size: 7px; }
 .source-card small { display: block; margin-top: 3px; color: #98a09d; font-size: 6px; }
 .source-card > svg { color: #84908b; }
+.capture-blocker { display: flex; align-items: flex-start; gap: 9px; margin-top: 10px; padding: 10px; border: 1px solid #ead9bc; border-radius: 9px; background: #fff9ec; }
+.capture-blocker > span { flex: 0 0 auto; padding: 4px 6px; border-radius: 5px; background: #f1dcae; color: #765310; font-size: 6px; font-weight: 850; text-transform: uppercase; }
+.capture-blocker > div { min-width: 0; }
+.capture-blocker strong { display: block; font-size: 8px; }
+.capture-blocker p { margin: 3px 0 0; color: #786c54; font-size: 7px; line-height: 1.5; }
+.capture-blocker small { display: block; margin-top: 5px; color: #99845d; font-size: 6px; }
+.planning-evidence-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 11px; }
+.planning-evidence-summary > div { padding: 9px 7px; border-radius: 8px; background: #eef3f9; }
+.planning-evidence-summary strong { display: block; color: #435e91; font-size: 12px; }
+.planning-evidence-summary span { display: block; margin-top: 3px; color: #71809b; font-size: 6px; font-weight: 750; }
+.planning-record-list { margin-top: 10px; }
+.planning-record-card { display: block; padding: 10px 2px; border-top: 1px solid #e8ecea; color: inherit; text-decoration: none; }
+.planning-record-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.planning-record-head strong { font-size: 8px; }
+.planning-record-head span { flex: 0 0 auto; padding: 3px 5px; border-radius: 5px; background: #e9eef8; color: #51688e; font-size: 6px; font-weight: 800; }
+.planning-record-card p { margin: 5px 0 0; color: #596560; font-size: 7px; line-height: 1.5; }
+.planning-record-card small { display: block; margin-top: 5px; color: #536f67; font-size: 6px; font-weight: 750; text-transform: capitalize; }
+.planning-record-card em { display: block; margin-top: 5px; color: #8a928f; font-size: 6px; font-style: normal; line-height: 1.45; }
 .geometry-note { align-items: flex-start; gap: 8px; margin-top: 12px; padding: 10px; border-radius: 9px; background: #f2f4f1; }
 .geometry-note strong { display: block; font-size: 8px; }
 .geometry-note p { margin: 4px 0 0; color: var(--muted); font-size: 7px; line-height: 1.5; }
 
 .context-section { margin-top: 0; }
+.evidence-contract { margin-top: 11px; padding: 11px; border: 1px solid #cbd9e8; border-radius: 9px; background: #f3f6fb; }
+.evidence-contract > span { display: block; color: #60749a; font-size: 6px; font-weight: 850; text-transform: uppercase; letter-spacing: .07em; }
+.evidence-contract strong { display: block; margin-top: 5px; font-size: 9px; }
+.evidence-contract p { margin: 5px 0 0; color: #667186; font-size: 7px; line-height: 1.55; }
+.evidence-contract a { display: flex; align-items: center; gap: 4px; margin-top: 8px; color: #405d91; font-size: 7px; font-weight: 750; text-decoration: none; }
 .check-row { gap: 9px; padding: 11px 3px; border-top: 1px solid #edf0ed; }
 .check-row:first-of-type { margin-top: 9px; }
 .check-row > span { width: 14px; height: 14px; border: 1px solid #b8c2be; border-radius: 4px; }

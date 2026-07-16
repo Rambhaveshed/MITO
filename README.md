@@ -20,7 +20,14 @@ The first complete-coverage target is the OMR corridor from Adyar and Taramani t
 
 This is a collection boundary, not a completeness claim. Jurisdictions have been identified, but street-register totals, official guideline values and registered transactions remain incomplete. `data/coverage/omr-corridor.json` is the auditable release ledger. The app cannot call OMR complete until every target unit has a known street total, 100% street-register capture and at least one verified official guideline record.
 
-The machine-readable status is available from `/api/coverage`.
+MITO also maintains a separate official planning ledger. The first ledger contains eight CMDA records covering site-specific planning resolutions, regularisation layout frameworks and the Grid of Roads programme. Planning evidence never becomes price evidence, and historical decisions are flagged for current-status reverification.
+
+Official guideline-value imports must follow `data/evidence/guideline-value-import.schema.json`. The contract requires source snapshots, official jurisdiction and street identifiers, original units, normalized ₹/sq ft values, effective dates, location evidence and verification status. A blocked capture run is published as missing evidence rather than as a zero-price result.
+
+Machine-readable endpoints:
+
+- `/api/coverage` — OMR coverage, release gate and jurisdiction ledger
+- `/api/evidence` — official planning records, source provenance, crosswalk gaps and the guideline-value import contract
 
 The map markers in this pilot are approximate locality anchors. They are not parcel, property or transaction coordinates. Individual listing evidence stays unplotted until the location can be independently verified.
 

@@ -1,4 +1,5 @@
 import coverage from "./coverage/omr-corridor.json";
+import { omrPlanningSummary } from "./evidence";
 
 export type OmrCoverageStatus = "not_started" | "collecting" | "captured" | "verified" | "blocked";
 
@@ -16,12 +17,16 @@ export const omrCoverageSummary = {
   streetRegisterVerifiedCount: units.filter((unit) => unit.streetRegisterStatus === "verified").length,
   officialGuidelineRecordCount: units.reduce((sum, unit) => sum + unit.officialGuidelineRecords, 0),
   registeredTransactionRecordCount: units.reduce((sum, unit) => sum + unit.registeredTransactionRecords, 0),
+  officialPlanningRecordCount: omrPlanningSummary.recordCount,
+  planningVillageCount: omrPlanningSummary.villageCount,
+  unresolvedPlanningRecordCount: omrPlanningSummary.unresolvedRecordCount,
   unplottedCount: units.filter((unit) => unit.geometryStatus === "unplotted").length,
 };
 
 export const omrCoveragePercent = {
   jurisdiction: Math.round((omrCoverageSummary.jurisdictionVerifiedCount / omrCoverageSummary.unitCount) * 100),
   streetRegister: Math.round((omrCoverageSummary.streetRegisterVerifiedCount / omrCoverageSummary.unitCount) * 100),
+  planning: Math.round((omrCoverageSummary.planningVillageCount / omrCoverageSummary.unitCount) * 100),
 };
 
 export const omrCoverageByOffice = coverage.registrationOffices.map((office) => ({

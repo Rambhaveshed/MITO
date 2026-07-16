@@ -28,7 +28,8 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /Search street, locality, survey no\./i);
   assert.match(html, /OMR is collecting/i);
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
-  assert.match(html, /Advertised asking price aggregate/i);
+  assert.match(html, /8(?:<!-- -->)? official planning records captured/i);
+  assert.match(html, /Price collection is blocked, not complete/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -43,9 +44,9 @@ test("pilot data preserves uncertainty and source provenance", async () => {
   assert.doesNotMatch(data, /evidenceType:\s*["']registered_transaction["']/);
 });
 
-test("database schema separates sources, places, geometry and price evidence", async () => {
+test("database schema separates sources, places, geometry, price and planning evidence", async () => {
   const schema = await readFile(new URL("../db/schema.ts", import.meta.url), "utf8");
-  for (const entity of ["sources", "places", "geometries", "price_evidence", "verification_events", "coverage_scopes", "coverage_units", "source_capture_runs", "guideline_values"]) {
+  for (const entity of ["sources", "places", "geometries", "price_evidence", "verification_events", "coverage_scopes", "coverage_units", "source_capture_runs", "guideline_values", "planning_evidence"]) {
     assert.match(schema, new RegExp(`sqliteTable\\(\\\"${entity}\\\"`));
   }
   assert.match(schema, /evidence_type/);
@@ -64,4 +65,19 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.streetRegisterVerifiedCount, 0);
   assert.equal(payload.summary.officialGuidelineRecordCount, 0);
   assert.equal(payload.offices.length, 6);
+});
+
+test("evidence API publishes planning provenance and the blocked price-import contract", async () => {
+  const response = await render("/api/evidence");
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.scopeId, "omr-corridor-2026");
+  assert.equal(payload.planning.summary.recordCount, 8);
+  assert.equal(payload.planning.summary.villageCount, 3);
+  assert.equal(payload.planning.summary.unresolvedRecordCount, 2);
+  assert.equal(payload.planning.records.length, 8);
+  assert.equal(payload.guidelineValueCollection.captureRun.status, "blocked");
+  assert.equal(payload.guidelineValueCollection.captureRun.recordsAccepted, 0);
+  assert.equal(payload.guidelineValueCollection.importContract.schemaVersion, "1.0.0");
+  assert.ok(payload.guidelineValueCollection.importContract.requiredRowFields.includes("officialStreetCode"));
 });
