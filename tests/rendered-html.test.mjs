@@ -28,7 +28,7 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /Search street, locality, survey no\./i);
   assert.match(html, /OMR is collecting/i);
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
-  assert.match(html, /8(?:<!-- -->)? official planning records captured/i);
+  assert.match(html, /27(?:<!-- -->)? official planning records captured/i);
   assert.match(html, /Price collection is blocked, not complete/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
@@ -72,10 +72,12 @@ test("evidence API publishes planning provenance and the blocked price-import co
   assert.equal(response.status, 200);
   const payload = await response.json();
   assert.equal(payload.scopeId, "omr-corridor-2026");
-  assert.equal(payload.planning.summary.recordCount, 8);
-  assert.equal(payload.planning.summary.villageCount, 3);
-  assert.equal(payload.planning.summary.unresolvedRecordCount, 2);
-  assert.equal(payload.planning.records.length, 8);
+  assert.equal(payload.planning.summary.recordCount, 27);
+  assert.equal(payload.planning.summary.linkedRecordCount, 24);
+  assert.equal(payload.planning.summary.villageCount, 21);
+  assert.equal(payload.planning.summary.unresolvedRecordCount, 3);
+  assert.equal(payload.planning.summary.sourceCount, 9);
+  assert.equal(payload.planning.records.length, 27);
   assert.equal(payload.guidelineValueCollection.captureRun.status, "blocked");
   assert.equal(payload.guidelineValueCollection.captureRun.recordsAccepted, 0);
   assert.equal(payload.guidelineValueCollection.importContract.schemaVersion, "1.0.0");

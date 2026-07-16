@@ -12,18 +12,19 @@ async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
 }
 
-test("official planning records stay parcel-specific and source-backed", async () => {
+test("official planning records stay scoped, unplotted and source-backed", async () => {
   const ledger = await readJson(planningUrl);
   const sourceIds = new Set(ledger.sources.map((source) => source.id));
   const recordIds = ledger.records.map((record) => record.id);
 
-  assert.equal(ledger.records.length, 8);
+  assert.equal(ledger.sources.length, 9);
+  assert.equal(ledger.records.length, 27);
   assert.equal(new Set(recordIds).size, recordIds.length);
   assert.ok(ledger.records.every((record) => sourceIds.has(record.sourceId)));
   assert.ok(ledger.records.every((record) => record.scopeCaveat.length > 40));
   assert.ok(ledger.records.every((record) => record.geometryStatus === "unplotted"));
   assert.ok(ledger.records.every((record) => !Object.hasOwn(record, "pricePerSqft")));
-  assert.match(ledger.coverageCaveat, /do not prove that every parcel/i);
+  assert.match(ledger.coverageCaveat, /does not prove parcel zoning/i);
 });
 
 test("planning crosswalks never force ambiguous Sholinganallur evidence", async () => {
@@ -36,10 +37,49 @@ test("planning crosswalks never force ambiguous Sholinganallur evidence", async 
       assert.deepEqual(record.candidateVillageKeys, []);
     } else {
       assert.equal(record.officialVillageCode, null);
-      assert.ok(record.candidateVillageKeys.length > 1);
+      if (record.mappingStatus === "unresolved_registration_subdivision") {
+        assert.ok(record.candidateVillageKeys.length > 1);
+      } else if (record.mappingStatus === "unresolved_name_variant") {
+        assert.equal(record.candidateVillageKeys.length, 1);
+      } else {
+        assert.fail(`unexpected mapping status: ${record.mappingStatus}`);
+      }
       assert.ok(record.candidateVillageKeys.every((key) => unitKeys.has(key)));
     }
   }
+});
+
+test("final CMA order is captured without converting jurisdiction into parcel claims", async () => {
+  const ledger = await readJson(planningUrl);
+  const orderRecords = ledger.records.filter((record) => record.sourceId === "tn-hud-go-184-2022");
+  const linked = orderRecords.filter((record) => record.mappingStatus === "verified");
+  const expectedKeys = new Set([
+    "22605:800000289", "22605:800000290", "22604:800000276", "22604:800000278",
+    "22604:800000277", "22605:800000287", "20096:1318", "20096:1365", "20096:1308",
+    "20096:1353", "20095:1261", "20095:1220", "22604:800000275",
+  ]);
+
+  assert.equal(orderRecords.length, 14);
+  assert.equal(linked.length, 13);
+  assert.deepEqual(new Set(linked.map((record) => `${record.officialSroCode}:${record.officialVillageCode}`)), expectedKeys);
+  assert.ok(orderRecords.every((record) => record.decisionDate === "2022-10-21"));
+  assert.ok(orderRecords.every((record) => [23, 24, 26, 27].includes(record.sourcePage)));
+  assert.ok(orderRecords.every((record) => /not parcel zoning/i.test(record.scopeCaveat)));
+
+  const unresolved = orderRecords.find((record) => record.mappingStatus === "unresolved_name_variant");
+  assert.equal(unresolved.sourceVillageName, "Kalipattur");
+  assert.deepEqual(unresolved.candidateVillageKeys, ["22604:800000279"]);
+});
+
+test("Seevaram approval remains site-specific and does not imply title or building permit", async () => {
+  const ledger = await readJson(planningUrl);
+  const record = ledger.records.find((candidate) => candidate.id === "cmda-pp-nhrb-s-0616-2023-seevaram");
+
+  assert.equal(record.officialVillageCode, "253");
+  assert.equal(record.surveyReference, "S.No.23/24 of Seevaram Village; proposal also spans listed Neelankarai surveys");
+  assert.match(record.planningConstraint, /local-body building permit is still required/i);
+  assert.match(record.planningConstraint, /does not confirm ownership or title/i);
+  assert.match(record.scopeCaveat, /site-specific/i);
 });
 
 test("blocked guideline capture is represented as missing evidence, not zero prices", async () => {
