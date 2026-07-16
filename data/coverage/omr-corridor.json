@@ -5,17 +5,17 @@
   "definition": "Working corridor boundary from Adyar and Taramani to Mamallapuram. Inclusion is tracked by official registration-office and village identifiers; the boundary remains provisional until it is reconciled against verified road and revenue-village geometries.",
   "coverageUnit": "registration_village",
   "status": "collecting",
-  "publishedCoverageClaim": "Jurisdictions identified; one archived guideline row recovered; current street registers remain incomplete",
+  "publishedCoverageClaim": "Jurisdictions identified; the current 758-street Sholinganallur-1 inventory is verified, but row-level values require reuse permission and 23 village inventories remain incomplete",
   "lastAuditedAt": "2026-07-16",
   "source": {
     "id": "tnreginet-guideline-search-2026-07-15",
     "organization": "Tamil Nadu Registration Department",
     "title": "TNREGINET Guideline Value Search",
     "url": "https://tnreginet.gov.in/portal/",
-    "retrievedAt": "2026-07-15",
+    "retrievedAt": "2026-07-16",
     "lastUpdatedBySource": "2026-01-22",
-    "method": "Public search interface; district, sub-registrar office and village options were inspected without bypassing access controls.",
-    "redistributionNote": "MITO stores public identifiers and derived coverage status. Source documents or personal information are not republished."
+    "method": "Public search interfaces; district, sub-registrar office and village options plus one current village-wise inventory were inspected without bypassing access controls.",
+    "redistributionNote": "MITO stores public identifiers, retrieval instructions and derived coverage status. Row-level register content is not republished without Registration Department permission."
   },
   "releaseGate": {
     "minimumJurisdictionCoveragePercent": 100,
@@ -41,7 +41,7 @@
     { "sequence": 5, "officialSroCode": "20066", "officialVillageCode": "250", "nameEn": "Okkiyam Thoraipakkam", "nameTa": "ஒக்கியம் துரைபாக்கம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
     { "sequence": 6, "officialSroCode": "20066", "officialVillageCode": "248", "nameEn": "Karapakkam", "nameTa": "காரப்பாக்கம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
     { "sequence": 7, "officialSroCode": "20066", "officialVillageCode": "253", "nameEn": "Seevaram", "nameTa": "சீவரம்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
-    { "sequence": 8, "officialSroCode": "20066", "officialVillageCode": "254", "nameEn": "Sholinganallur 1", "nameTa": "சோழிங்கநல்லூர் - 1", "jurisdictionStatus": "verified", "streetRegisterStatus": "collecting", "streetTargetCount": 17, "streetTargetCountAsOf": "2025-04-16", "streetTargetEvidenceStatus": "archived_snapshot", "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "approximate_anchor", "verifiedAt": "2026-07-15" },
+    { "sequence": 8, "officialSroCode": "20066", "officialVillageCode": "254", "nameEn": "Sholinganallur 1", "nameTa": "சோழிங்கநல்லூர் - 1", "jurisdictionStatus": "verified", "streetRegisterStatus": "collecting", "streetTargetCount": 758, "streetTargetCountAsOf": "2026-07-16", "streetTargetEvidenceStatus": "live_official_metadata", "streetTargetSourceId": "tnreginet-current-village-register-2026-07-16", "officialGuidelineRecords": 0, "officialGuidelineRowsWithheld": 10, "officialGuidelinePublicationBlocker": "REDISTRIBUTION_PERMISSION_REQUIRED", "registeredTransactionRecords": 0, "geometryStatus": "approximate_anchor", "verifiedAt": "2026-07-16" },
     { "sequence": 9, "officialSroCode": "20066", "officialVillageCode": "20514", "nameEn": "Sholinganallur 2", "nameTa": "சோழிங்கநல்லூர் - 2", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
     { "sequence": 10, "officialSroCode": "20066", "officialVillageCode": "246", "nameEn": "Semmancheri", "nameTa": "செம்மஞ்சேரி", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },
     { "sequence": 11, "officialSroCode": "22604", "officialVillageCode": "800000277", "nameEn": "Navalur", "nameTa": "நாவலூர்", "jurisdictionStatus": "verified", "streetRegisterStatus": "not_started", "streetTargetCount": null, "officialGuidelineRecords": 0, "registeredTransactionRecords": 0, "geometryStatus": "unplotted", "verifiedAt": "2026-07-15" },

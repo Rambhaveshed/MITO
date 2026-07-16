@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0.0",
+  "scopeId": "omr-corridor-2026",
+  "source": {
+    "id": "tnreginet-current-village-register-2026-07-16",
+    "sourceType": "official_public_register",
+    "organization": "Tamil Nadu Registration Department",
+    "title": "TNREGINET current guideline-value village register",
+    "url": "https://tnreginet.gov.in/portal/",
+    "termsUrl": "https://tnreginet.gov.in/portal/",
+    "copyrightPolicyUrl": "https://tnreginet.gov.in/portal/",
+    "sourceLastUpdatedAt": "2026-01-22",
+    "ratesEffectiveFrom": "2024-07-01",
+    "auditedAt": "2026-07-16",
+    "captureMethod": "manual_public_interface_audit",
+    "hashInput": "tnreginet|current-village-register|2024-07-01|2026-07-16T21:52:00+05:30|20066|254|758|10|copyright-permission-required",
+    "metadataDigest": "sha256:366ed4813bbe91e06900904ca47fd1128b41cfc87b8069fc2e771b80e8290ada",
+    "reproductionPolicy": "permission_required",
+    "attributionRequired": true,
+    "policyFinding": "The official copyright policy says site contents may not be reproduced partially or fully without Registration Department permission. MITO therefore stores and publishes only audit metadata, derived coverage status and retrieval instructions from this live query."
+  },
+  "retrievalPath": [
+    "Open the TNREGINET public portal and select English if needed.",
+    "Open Guideline value search from 2002.",
+    "Choose the current register: From 1-7-2024.",
+    "Keep Street and Village Wise selected.",
+    "Choose Zone Chennai, Sub Registrar Office Neelankarai and Registration Village SHOLINGANALLUR - 1.",
+    "Run Search and record the displayed result timestamp, item count and visible field structure."
+  ],
+  "query": {
+    "zoneName": "Chennai",
+    "officialZoneCode": "1",
+    "sroName": "Neelankarai",
+    "officialSroCode": "20066",
+    "guidelineVillageName": "SHOLINGANALLUR - 1",
+    "officialVillageCode": "254",
+    "revenueDistrict": "CHENNAI",
+    "revenueVillage": "SHOLINGANALLUR- 1",
+    "revenueTaluk": "SHOLINGANALLUR",
+    "displayedResultTimestamp": "2026-07-16T21:52:00+05:30",
+    "displayedItemCount": 758,
+    "displayedPageSize": 10,
+    "impliedPageCount": 76,
+    "visibleRowsInspected": 10,
+    "fieldsPresented": [
+      "street name",
+      "guideline value in British unit",
+      "guideline value in metric unit",
+      "land classification",
+      "effective start date",
+      "government-order download"
+    ],
+    "officialStreetCodePublished": false,
+    "rowDataStored": false,
+    "rowDataRepublished": false
+  },
+  "reconciliation": {
+    "archivedOfficialSnapshotCount": 17,
+    "archivedOfficialSnapshotAsOf": "2025-04-16T20:09:00+05:30",
+    "secondaryMirrorClaimCount": 758,
+    "currentOfficialRegisterCount": 758,
+    "status": "resolved_for_current_inventory",
+    "resolution": "The live current official village-wise query returned 758 items. MITO now uses 758 as the current Sholinganallur-1 inventory target and preserves the archived 17-item result as historical evidence from a different or older query state. The reason for the earlier 17-item result remains unknown."
+  },
+  "publication": {
+    "status": "official_metadata_only",
+    "currentOfficialInventoryPublished": true,
+    "currentOfficialGuidelineValuesPublished": 0,
+    "currentOfficialRowsStored": 0,
+    "streetRegisterStatus": "collecting",
+    "blockerCode": "REDISTRIBUTION_PERMISSION_REQUIRED",
+    "nextAction": "Obtain written Registration Department permission or an authorized export/API licence before storing or republishing the row-level register."
+  },
+  "limitations": [
+    "The item count proves the current official village inventory size, not that MITO has captured or may republish every row.",
+    "The public result table does not expose an official street code in its visible fields.",
+    "No street geometry is supplied, so no row can be plotted from this audit.",
+    "The live portal may change after the displayed result timestamp; every later release needs a fresh audit."
+  ]
+}

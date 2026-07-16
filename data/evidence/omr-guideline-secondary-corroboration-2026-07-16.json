@@ -25,7 +25,9 @@
     "claimedStreetCount": 758,
     "claimedMinimumValueInrPerSqft": 1000,
     "claimedMaximumValueInrPerSqft": 8800,
-    "claimStatus": "unverified_secondary_claim"
+    "claimStatus": "corroborated_by_live_official_query",
+    "corroboratedBy": "tnreginet-current-village-register-2026-07-16",
+    "corroboratedAt": "2026-07-16"
   },
   "matchedRows": [
     {
@@ -61,8 +63,10 @@
       "archivedOfficialSnapshotAsOf": "2025-04-16T20:09:00+05:30",
       "secondarySourceValue": 758,
       "secondarySourceClaimedEffectiveFrom": "2024-07-01",
-      "status": "unresolved",
-      "interpretation": "The two counts may represent different portal query modes, revisions, aggregation rules or source defects. MITO preserves both counts and does not use 758 as the OMR release-gate target until an official current register resolves the discrepancy."
+      "currentOfficialRegisterValue": 758,
+      "currentOfficialRegisterAsOf": "2026-07-16T21:52:00+05:30",
+      "status": "resolved_for_current_inventory",
+      "interpretation": "The live current official village-wise query returned 758 items, so MITO now uses 758 as the current release-gate target. The archived 17-item result is preserved as historical evidence from a different or older query state; the exact reason for that earlier count remains unknown."
     }
   ]
 }

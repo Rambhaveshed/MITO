@@ -18,9 +18,13 @@ The first release establishes the production interface and provenance model with
 
 The first complete-coverage target is the OMR corridor from Adyar and Taramani to Mamallapuram. MITO now tracks 24 candidate corridor registration villages across six official sub-registrar offices using public TNREGINET identifiers.
 
-This is a collection boundary, not a completeness claim. Jurisdictions have been identified, but street-register totals, current official guideline values and registered transactions remain incomplete. `data/coverage/omr-corridor.json` is the auditable release ledger. The app cannot call OMR complete until every target unit has a known street total, 100% street-register capture and at least one verified official guideline record.
+This is a collection boundary, not a completeness claim. Jurisdictions have been identified, but most street-register totals, current official guideline values and registered transactions remain incomplete. `data/coverage/omr-corridor.json` is the auditable release ledger. The app cannot call OMR complete until every target unit has a known street total, 100% street-register capture and at least one verified official guideline record.
 
-MITO has recovered one unredacted TNREGINET row from a dated public project-file archive: Chidambaram Nagar 1st Street in Sholinganallur 1, shown at ₹4,400/sq ft, Residential Special Type V, effective 1 July 2024. The source screen is dated 16 April 2025. The row is preserved as pending, unplotted archived evidence because the live TNREGINET service could not be rechecked and the official street code is not visible. It remains excluded from current verified totals. The archive reports 17 streets for that dated village result, but only row 11 is visible; rows 12–17 are redacted and rows 1–10 are absent.
+On 16 July 2026, MITO used the normal public TNREGINET village-wise current-register screen to verify that Sholinganallur 1 has 758 items effective from 1 July 2024. The live official count resolves the earlier 17-versus-758 inventory conflict for the current release target. The older 17-item result remains preserved as historical evidence because the reason for the different query state is unknown.
+
+The official copyright policy requires Registration Department permission before website contents are reproduced. MITO therefore publishes the 758-item inventory count, source date, query path and coverage status, but stores and republishes zero live row-level values. The audit is in `data/evidence/tnreginet-live-register-audit-2026-07-16.json`; a draft written-permission and authorized-export request is in `docs/data-licensing/tnreginet-guideline-reuse-request.md`.
+
+MITO has recovered one unredacted TNREGINET row from a dated public project-file archive: Chidambaram Nagar 1st Street in Sholinganallur 1, shown at ₹4,400/sq ft, Residential Special Type V, effective 1 July 2024. The source screen is dated 16 April 2025. The row remains pending and unplotted because the live current-register audit verified only inventory metadata and the official street code is not visible. It remains excluded from current verified totals. The archive reports 17 items for that dated result, but only row 11 is visible; rows 12–17 are redacted and rows 1–10 are absent.
 
 MITO also maintains a separate official planning ledger. The ledger now contains 27 source-backed records from nine official sources: the final 2022 Chennai Metropolitan Planning Area expansion order, CMDA rules, planning resolutions, a current Seevaram planning-permission letter, regularisation indexes and the Grid of Roads programme. Twenty-one of the 24 target villages have at least one directly linked planning record; three records remain unresolved across the Sholinganallur registration split or the Kalipattur/Kazhipattur name variant. Planning-area membership and site-specific approvals never become price, title or village-wide zoning evidence.
 
@@ -29,7 +33,7 @@ Official guideline-value imports must follow `data/evidence/guideline-value-impo
 Machine-readable endpoints:
 
 - `/api/coverage` — OMR coverage, release gate and jurisdiction ledger
-- `/api/evidence` — official planning records, the archived Sholinganallur row, source provenance, crosswalk gaps and the guideline-value import contract
+- `/api/evidence` — official planning records, current-register metadata, the archived Sholinganallur row, rights status, source provenance, crosswalk gaps and the guideline-value import contract
 
 The map markers in this pilot are approximate locality anchors. They are not parcel, property or transaction coordinates. Individual listing evidence stays unplotted until the location can be independently verified.
 

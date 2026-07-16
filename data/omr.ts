@@ -14,6 +14,9 @@ export const omrCoverageSummary = {
   unitCount: units.length,
   officeCount: coverage.registrationOffices.length,
   jurisdictionVerifiedCount: units.filter((unit) => unit.jurisdictionStatus === "verified").length,
+  currentStreetInventoryVerifiedCount: units.filter(
+    (unit) => "streetTargetEvidenceStatus" in unit && unit.streetTargetEvidenceStatus === "live_official_metadata",
+  ).length,
   streetRegisterVerifiedCount: units.filter((unit) => unit.streetRegisterStatus === "verified").length,
   officialGuidelineRecordCount: units.reduce((sum, unit) => sum + unit.officialGuidelineRecords, 0),
   archivedGuidelineRecordCount: omrGuidelineSnapshotSummary.recordCount,
@@ -27,6 +30,7 @@ export const omrCoverageSummary = {
 
 export const omrCoveragePercent = {
   jurisdiction: Math.round((omrCoverageSummary.jurisdictionVerifiedCount / omrCoverageSummary.unitCount) * 100),
+  currentInventory: Math.round((omrCoverageSummary.currentStreetInventoryVerifiedCount / omrCoverageSummary.unitCount) * 100),
   streetRegister: Math.round((omrCoverageSummary.streetRegisterVerifiedCount / omrCoverageSummary.unitCount) * 100),
   planning: Math.round((omrCoverageSummary.planningVillageCount / omrCoverageSummary.unitCount) * 100),
 };

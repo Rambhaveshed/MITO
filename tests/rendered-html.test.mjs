@@ -30,8 +30,9 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
   assert.match(html, /27(?:<!-- -->)? official planning records captured/i);
   assert.match(html, /1(?:<!-- -->)? archived TNREGINET street row recovered/i);
-  assert.match(html, /Archived row independently corroborated/i);
-  assert.match(html, /Live price collection remains blocked/i);
+  assert.match(html, /Current official inventory verified/i);
+  assert.match(html, /758(?:<!-- -->)? Sholinganallur-1 streets/i);
+  assert.match(html, /Row-level publication needs permission/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
@@ -64,6 +65,7 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.programme.releaseReady, false);
   assert.equal(payload.summary.unitCount, 24);
   assert.equal(payload.summary.jurisdictionVerifiedCount, 24);
+  assert.equal(payload.summary.currentStreetInventoryVerifiedCount, 1);
   assert.equal(payload.summary.streetRegisterVerifiedCount, 0);
   assert.equal(payload.summary.officialGuidelineRecordCount, 0);
   assert.equal(payload.summary.archivedGuidelineRecordCount, 1);
@@ -71,7 +73,7 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.offices.length, 6);
 });
 
-test("evidence API publishes planning provenance, archived price evidence and the blocked live capture", async () => {
+test("evidence API publishes planning provenance, current register metadata and the rights gate", async () => {
   const response = await render("/api/evidence");
   assert.equal(response.status, 200);
   const payload = await response.json();
@@ -83,17 +85,27 @@ test("evidence API publishes planning provenance, archived price evidence and th
   assert.equal(payload.planning.summary.sourceCount, 9);
   assert.equal(payload.planning.records.length, 27);
   assert.equal(payload.guidelineValueCollection.captureRun.status, "blocked");
+  assert.equal(payload.guidelineValueCollection.captureRun.recordsSeen, 10);
   assert.equal(payload.guidelineValueCollection.captureRun.recordsAccepted, 0);
+  assert.equal(payload.guidelineValueCollection.captureRun.recordsWithheld, 10);
+  assert.equal(payload.guidelineValueCollection.captureRun.blockerCode, "REDISTRIBUTION_PERMISSION_REQUIRED");
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.summary.recordCount, 1);
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.summary.verifiedCurrentCount, 0);
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].sourceStreetName, "CHIDAMBARAM NAGAR 1ST STREET");
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].valueInrPerSqft, 4400);
   assert.equal(payload.guidelineValueCollection.archivedSnapshot.records[0].verificationStatus, "pending");
+  assert.equal(payload.guidelineValueCollection.currentOfficialRegister.summary.auditedVillageCount, 1);
+  assert.equal(payload.guidelineValueCollection.currentOfficialRegister.summary.currentInventoryCount, 758);
+  assert.equal(payload.guidelineValueCollection.currentOfficialRegister.summary.currentOfficialRowsStored, 0);
+  assert.equal(payload.guidelineValueCollection.currentOfficialRegister.summary.currentOfficialValuesPublished, 0);
+  assert.equal(payload.guidelineValueCollection.currentOfficialRegister.summary.permissionRequired, true);
+  assert.equal(payload.guidelineValueCollection.currentOfficialRegister.query.rowDataRepublished, false);
+  assert.equal(payload.guidelineValueCollection.currentOfficialRegister.reconciliation.status, "resolved_for_current_inventory");
   assert.equal(payload.guidelineValueCollection.secondaryCorroboration.summary.matchedRowCount, 1);
   assert.equal(payload.guidelineValueCollection.secondaryCorroboration.summary.exactFieldMatchCount, 1);
   assert.equal(payload.guidelineValueCollection.secondaryCorroboration.summary.currentOfficialPromotionCount, 0);
   assert.equal(payload.guidelineValueCollection.secondaryCorroboration.scopeClaims.claimedStreetCount, 758);
-  assert.equal(payload.guidelineValueCollection.secondaryCorroboration.conflicts[0].status, "unresolved");
+  assert.equal(payload.guidelineValueCollection.secondaryCorroboration.conflicts[0].status, "resolved_for_current_inventory");
   assert.equal(payload.guidelineValueCollection.importContract.schemaVersion, "1.1.0");
   assert.ok(payload.guidelineValueCollection.importContract.requiredRowFields.includes("officialStreetCode"));
 });

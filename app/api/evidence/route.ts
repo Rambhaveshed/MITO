@@ -1,6 +1,8 @@
 import {
   guidelineValueImportSchema,
   omrGuidelineCaptureRun,
+  omrGuidelineLiveRegisterAudit,
+  omrGuidelineLiveRegisterSummary,
   omrGuidelineSecondaryCorroborationLedger,
   omrGuidelineSecondaryCorroborationSummary,
   omrGuidelineSnapshotLedger,
@@ -29,6 +31,16 @@ export async function GET() {
         source: omrGuidelineSnapshotLedger.source,
         records: omrGuidelineSnapshotLedger.rows,
         publicationRule: "Archived snapshot rows remain pending and unplotted until the live official source is rechecked. They are excluded from current verified totals.",
+      },
+      currentOfficialRegister: {
+        summary: omrGuidelineLiveRegisterSummary,
+        source: omrGuidelineLiveRegisterAudit.source,
+        retrievalPath: omrGuidelineLiveRegisterAudit.retrievalPath,
+        query: omrGuidelineLiveRegisterAudit.query,
+        reconciliation: omrGuidelineLiveRegisterAudit.reconciliation,
+        publication: omrGuidelineLiveRegisterAudit.publication,
+        limitations: omrGuidelineLiveRegisterAudit.limitations,
+        publicationRule: "MITO publishes the current official inventory count and retrieval metadata, but no row-level register content until Registration Department reuse permission or an authorized licence is confirmed.",
       },
       secondaryCorroboration: {
         summary: omrGuidelineSecondaryCorroborationSummary,

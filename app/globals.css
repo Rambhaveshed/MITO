@@ -595,12 +595,12 @@ button {
 .snapshot-evidence-card strong { display: block; font-size: 8px; }
 .snapshot-evidence-card span { display: block; margin-top: 3px; color: #786c54; font-size: 6px; line-height: 1.45; }
 .snapshot-evidence-card em { padding: 4px 6px; border-radius: 5px; background: #f1dcae; color: #765310; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
-.secondary-audit-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; margin-top: 8px; padding: 11px; border: 1px solid #ced9e8; border-radius: 10px; background: #f6f9fd; }
-.secondary-audit-card > div { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #e5edf7; color: #4e6789; }
-.secondary-audit-card p { min-width: 0; margin: 0; }
-.secondary-audit-card strong { display: block; font-size: 8px; }
-.secondary-audit-card span { display: block; margin-top: 3px; color: #65758b; font-size: 6px; line-height: 1.45; }
-.secondary-audit-card em { padding: 4px 6px; border-radius: 5px; background: #e4ebf5; color: #526a8a; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
+.live-register-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; margin-top: 8px; padding: 11px; border: 1px solid #bcd9cc; border-radius: 10px; background: #f3faf6; }
+.live-register-card > div { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #dff0e7; color: #276350; }
+.live-register-card p { min-width: 0; margin: 0; }
+.live-register-card strong { display: block; font-size: 8px; }
+.live-register-card span { display: block; margin-top: 3px; color: #557267; font-size: 6px; line-height: 1.45; }
+.live-register-card em { padding: 4px 6px; border-radius: 5px; background: #e1eee8; color: #376956; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
 .guideline-snapshot-list { margin-top: 9px; }
 .guideline-snapshot-card { padding: 11px; border: 1px solid #e0c897; border-radius: 10px; background: #fffaf0; }
 .guideline-snapshot-card > div, .guideline-snapshot-card footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -627,6 +627,10 @@ button {
 .inventory-conflict-card > svg { flex: 0 0 auto; margin-top: 1px; }
 .inventory-conflict-card strong { display: block; color: #58471f; font-size: 8px; }
 .inventory-conflict-card p { margin: 3px 0 0; color: #786c54; font-size: 7px; line-height: 1.5; }
+.inventory-conflict-card.resolved { border-color: #bfd9cd; background: #f3faf6; color: #2f6652; }
+.inventory-conflict-card.resolved strong { color: #244f40; }
+.inventory-conflict-card.resolved p { color: #557267; }
+.coverage-progress.current-inventory i { background: #4f8c73; }
 .planning-evidence-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 11px; }
 .planning-evidence-summary > div { padding: 9px 7px; border-radius: 8px; background: #eef3f9; }
 .planning-evidence-summary strong { display: block; color: #435e91; font-size: 12px; }

@@ -5,10 +5,12 @@ import { validateGuidelineImport } from "../lib/guideline-import.mjs";
 
 const coverageUrl = new URL("../data/coverage/omr-corridor.json", import.meta.url);
 const planningUrl = new URL("../data/evidence/omr-planning-records.json", import.meta.url);
-const captureUrl = new URL("../data/capture-runs/omr-guideline-2026-07-15.json", import.meta.url);
+const captureUrl = new URL("../data/capture-runs/omr-guideline-2026-07-16.json", import.meta.url);
 const schemaUrl = new URL("../data/evidence/guideline-value-import.schema.json", import.meta.url);
 const archivedSnapshotUrl = new URL("../data/evidence/omr-guideline-archived-snapshot-2026-07-16.json", import.meta.url);
 const secondaryCorroborationUrl = new URL("../data/evidence/omr-guideline-secondary-corroboration-2026-07-16.json", import.meta.url);
+const liveRegisterAuditUrl = new URL("../data/evidence/tnreginet-live-register-audit-2026-07-16.json", import.meta.url);
+const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
@@ -84,15 +86,49 @@ test("Seevaram approval remains site-specific and does not imply title or buildi
   assert.match(record.scopeCaveat, /site-specific/i);
 });
 
-test("blocked guideline capture is represented as missing evidence, not zero prices", async () => {
+test("live guideline capture publishes inventory metadata but withholds rows requiring permission", async () => {
   const capture = await readJson(captureUrl);
   assert.equal(capture.status, "blocked");
-  assert.equal(capture.recordsSeen, 0);
+  assert.equal(capture.recordsSeen, 10);
   assert.equal(capture.recordsAccepted, 0);
   assert.equal(capture.recordsRejected, 0);
-  assert.equal(capture.blockerCode, "OFFICIAL_EXPORT_REQUIRED");
-  assert.match(capture.notes, /not evidence that the official source has no records/i);
-  assert.match(capture.nextAction, /official export|official snapshot/i);
+  assert.equal(capture.recordsWithheld, 10);
+  assert.equal(capture.metadataRecordsAccepted, 1);
+  assert.equal(capture.blockerCode, "REDISTRIBUTION_PERMISSION_REQUIRED");
+  assert.match(capture.notes, /758 current items/i);
+  assert.match(capture.nextAction, /written reuse permission|authorized export/i);
+});
+
+test("live official register audit resolves the current inventory without copying row data", async () => {
+  const audit = await readJson(liveRegisterAuditUrl);
+
+  assert.equal(audit.source.sourceType, "official_public_register");
+  assert.equal(audit.source.organization, "Tamil Nadu Registration Department");
+  assert.equal(audit.source.ratesEffectiveFrom, "2024-07-01");
+  assert.equal(audit.source.reproductionPolicy, "permission_required");
+  assert.equal(audit.source.metadataDigest, "sha256:366ed4813bbe91e06900904ca47fd1128b41cfc87b8069fc2e771b80e8290ada");
+  assert.equal(audit.query.officialSroCode, "20066");
+  assert.equal(audit.query.officialVillageCode, "254");
+  assert.equal(audit.query.displayedItemCount, 758);
+  assert.equal(audit.query.displayedPageSize, 10);
+  assert.equal(audit.query.impliedPageCount, 76);
+  assert.equal(audit.query.visibleRowsInspected, 10);
+  assert.equal(audit.query.officialStreetCodePublished, false);
+  assert.equal(audit.query.rowDataStored, false);
+  assert.equal(audit.query.rowDataRepublished, false);
+  assert.equal(audit.publication.currentOfficialRowsStored, 0);
+  assert.equal(audit.publication.currentOfficialGuidelineValuesPublished, 0);
+  assert.equal(audit.publication.blockerCode, "REDISTRIBUTION_PERMISSION_REQUIRED");
+  assert.equal(audit.reconciliation.status, "resolved_for_current_inventory");
+  assert.equal(audit.reconciliation.currentOfficialRegisterCount, 758);
+});
+
+test("reuse request asks for authorized access before row-level publication", async () => {
+  const request = await readFile(reuseRequestUrl, "utf8");
+  assert.match(request, /written permission/i);
+  assert.match(request, /authorized bulk export or documented API/i);
+  assert.match(request, /No TNREGINET row-level register will be republished/i);
+  assert.match(request, /never label guideline value as confirmed market price/i);
 });
 
 test("guideline import schema requires provenance, normalized values and location evidence", async () => {
@@ -204,8 +240,8 @@ test("archived Sholinganallur screen preserves one visible row without promoting
   assert.ok(row.qualityFlags.includes("official_street_code_not_visible"));
 
   assert.equal(unit.streetRegisterStatus, "collecting");
-  assert.equal(unit.streetTargetCount, 17);
-  assert.equal(unit.streetTargetEvidenceStatus, "archived_snapshot");
+  assert.equal(unit.streetTargetCount, 758);
+  assert.equal(unit.streetTargetEvidenceStatus, "live_official_metadata");
   assert.equal(unit.officialGuidelineRecords, 0);
 });
 
@@ -242,17 +278,18 @@ test("secondary corroboration checks one known row without becoming official evi
   assert.equal(row.geometryStatus, "unplotted");
 });
 
-test("secondary street-count conflict is preserved and cannot change the release target", async () => {
+test("live official query resolves the secondary street-count claim for the current target", async () => {
   const [coverage, ledger] = await Promise.all([readJson(coverageUrl), readJson(secondaryCorroborationUrl)]);
   const sholinganallur = coverage.units.find((unit) => unit.officialSroCode === "20066" && unit.officialVillageCode === "254");
   const [conflict] = ledger.conflicts;
 
   assert.equal(ledger.scopeClaims.claimedStreetCount, 758);
-  assert.equal(ledger.scopeClaims.claimStatus, "unverified_secondary_claim");
+  assert.equal(ledger.scopeClaims.claimStatus, "corroborated_by_live_official_query");
   assert.equal(conflict.archivedOfficialSnapshotValue, 17);
   assert.equal(conflict.secondarySourceValue, 758);
-  assert.equal(conflict.status, "unresolved");
-  assert.equal(sholinganallur.streetTargetCount, 17);
-  assert.equal(sholinganallur.streetTargetEvidenceStatus, "archived_snapshot");
+  assert.equal(conflict.currentOfficialRegisterValue, 758);
+  assert.equal(conflict.status, "resolved_for_current_inventory");
+  assert.equal(sholinganallur.streetTargetCount, 758);
+  assert.equal(sholinganallur.streetTargetEvidenceStatus, "live_official_metadata");
   assert.equal(sholinganallur.officialGuidelineRecords, 0);
 });

@@ -1,7 +1,8 @@
-import captureRun from "./capture-runs/omr-guideline-2026-07-15.json";
+import captureRun from "./capture-runs/omr-guideline-2026-07-16.json";
 import guidelineImportSchema from "./evidence/guideline-value-import.schema.json";
 import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-07-16.json";
 import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-corroboration-2026-07-16.json";
+import guidelineLiveRegisterAudit from "./evidence/tnreginet-live-register-audit-2026-07-16.json";
 import planningLedger from "./evidence/omr-planning-records.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
@@ -18,6 +19,7 @@ export const omrPlanningLedger = planningLedger;
 export const omrGuidelineCaptureRun = captureRun;
 export const omrGuidelineSnapshotLedger = guidelineSnapshot;
 export const omrGuidelineSecondaryCorroborationLedger = guidelineSecondaryCorroboration;
+export const omrGuidelineLiveRegisterAudit = guidelineLiveRegisterAudit;
 export const guidelineValueImportSchema = guidelineImportSchema;
 
 const snapshotVillageKeys = new Set(
@@ -43,6 +45,17 @@ export const omrGuidelineSecondaryCorroborationSummary = {
   currentOfficialPromotionCount: guidelineSecondaryCorroboration.matchedRows.filter(
     (record) => record.currentOfficialValue,
   ).length,
+};
+
+export const omrGuidelineLiveRegisterSummary = {
+  auditedVillageCount: 1,
+  currentInventoryCount: guidelineLiveRegisterAudit.query.displayedItemCount,
+  visibleRowsInspected: guidelineLiveRegisterAudit.query.visibleRowsInspected,
+  currentOfficialRowsStored: guidelineLiveRegisterAudit.publication.currentOfficialRowsStored,
+  currentOfficialValuesPublished: guidelineLiveRegisterAudit.publication.currentOfficialGuidelineValuesPublished,
+  officialStreetCodePublished: guidelineLiveRegisterAudit.query.officialStreetCodePublished,
+  permissionRequired: guidelineLiveRegisterAudit.source.reproductionPolicy === "permission_required",
+  reconciliationStatus: guidelineLiveRegisterAudit.reconciliation.status,
 };
 
 export const omrPlanningSummary = {
