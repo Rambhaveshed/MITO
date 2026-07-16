@@ -4,6 +4,8 @@ import test from "node:test";
 
 const coverageUrl = new URL("../data/coverage/chennai-district-revenue-2026-07-16.json", import.meta.url);
 const crosswalkUrl = new URL("../data/evidence/chennai-registration-crosswalk-2026-07-17.json", import.meta.url);
+const geometryAuditUrl = new URL("../data/evidence/chennai-geometry-source-audit-2026-07-17.json", import.meta.url);
+const geometryReuseRequestUrl = new URL("../docs/data-licensing/gcc-gis-reuse-request.md", import.meta.url);
 const omrCoverageUrl = new URL("../data/coverage/omr-corridor.json", import.meta.url);
 const omrInventoryUrl = new URL("../data/evidence/tnreginet-omr-inventory-audit-2026-07-16.json", import.meta.url);
 
@@ -104,4 +106,36 @@ test("Adyar revenue subdivisions remain unresolved rather than sharing one regis
   assert.ok(crosswalk.ambiguities.every((record) => record.candidateOfficialSroCode === "20051"));
   assert.ok(crosswalk.ambiguities.every((record) => record.candidateOfficialVillageCode === "1"));
   assert.ok(crosswalk.ambiguities.every((record) => !verifiedKeys.has(record.chennaiSourceKey)));
+});
+
+test("authoritative Chennai geometry remains unplotted until reuse permission and crosswalks exist", async () => {
+  const audit = JSON.parse(await readFile(geometryAuditUrl, "utf8"));
+  const gcc = audit.sources.find((source) => source.id === "gcc-edp-mobile-2025-feature-service");
+
+  assert.equal(audit.decision.status, "permission_required");
+  assert.equal(audit.decision.publishableGeometryCount, 0);
+  assert.equal(audit.summary.sourcesAudited, 3);
+  assert.equal(audit.summary.officialRoadFeaturesDiscovered, 37225);
+  assert.equal(audit.summary.officialZonePolygonsDiscovered, 15);
+  assert.equal(audit.summary.officialWardPolygonsDiscovered, 200);
+  assert.equal(audit.summary.officialGeometryFeaturesStored, 0);
+  assert.equal(audit.summary.officialGeometryFeaturesPublished, 0);
+  assert.ok(gcc);
+  assert.equal(gcc.technicalEvidence.nativeCrs, "EPSG:32644");
+  assert.deepEqual(gcc.technicalEvidence.supportedQueryFormats, ["JSON", "GeoJSON", "PBF"]);
+  assert.deepEqual(gcc.technicalEvidence.layers.map((layer) => layer.liveFeatureCount), [37225, 15, 200]);
+  assert.ok(audit.sources.every((source) => source.rightsStatus === "permission_required"));
+  assert.ok(audit.sources.every((source) => source.publication.geometryStored === false));
+  assert.ok(audit.sources.every((source) => source.publication.geometryPublished === false));
+});
+
+test("GCC geometry request asks for explicit commercial, storage and redistribution rights", async () => {
+  const request = await readFile(geometryReuseRequestUrl, "utf8");
+
+  assert.match(request, /public, commercial web application/i);
+  assert.match(request, /versioned snapshots/i);
+  assert.match(request, /raw geometry redistribution/i);
+  assert.match(request, /derived geometry or simplified vector tiles/i);
+  assert.match(request, /stable feature IDs/i);
+  assert.match(request, /has not copied, stored, embedded or republished any source geometry/i);
 });

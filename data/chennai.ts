@@ -1,4 +1,5 @@
 import chennaiRevenue from "./coverage/chennai-district-revenue-2026-07-16.json";
+import geometrySourceAudit from "./evidence/chennai-geometry-source-audit-2026-07-17.json";
 import registrationCrosswalk from "./evidence/chennai-registration-crosswalk-2026-07-17.json";
 
 export type ChennaiRevenueTaluk = (typeof chennaiRevenue.taluks)[number];
@@ -176,6 +177,7 @@ export function resolveChennaiRevenuePlace(input: string) {
 }
 
 export const chennaiRevenueCoverage = chennaiRevenue;
+export const chennaiGeometrySourceAudit = geometrySourceAudit;
 export const chennaiRegistrationCrosswalk = registrationCrosswalk;
 
 export const chennaiTalukCrosswalkProgress = chennaiRevenue.taluks.map((taluk) => {
@@ -209,5 +211,10 @@ export const chennaiRevenueSummary = {
   officialGuidelineValueCount: 0,
   registeredTransactionCount: 0,
   plottedGeometryCount: 0,
+  authoritativeRoadFeaturesDiscovered: geometrySourceAudit.summary.officialRoadFeaturesDiscovered,
+  authoritativeWardPolygonsDiscovered: geometrySourceAudit.summary.officialWardPolygonsDiscovered,
+  authoritativeZonePolygonsDiscovered: geometrySourceAudit.summary.officialZonePolygonsDiscovered,
+  publishableAuthoritativeGeometryCount: geometrySourceAudit.summary.officialGeometryFeaturesPublished,
+  geometryPermissionGatedSourceCount: geometrySourceAudit.summary.permissionGatedSources,
   conflictCount: chennaiRevenue.conflicts.filter((conflict) => conflict.status === "unresolved").length,
 };

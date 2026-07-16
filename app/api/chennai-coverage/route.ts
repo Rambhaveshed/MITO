@@ -1,4 +1,5 @@
 import {
+  chennaiGeometrySourceAudit,
   chennaiRevenueCoverage,
   chennaiRevenueSummary,
   chennaiRegistrationCrosswalk,
@@ -25,6 +26,7 @@ export async function GET(request: Request) {
       publication: chennaiRegistrationCrosswalk.publication,
       limitations: chennaiRegistrationCrosswalk.limitations,
     },
+    geometrySourceAudit: chennaiGeometrySourceAudit,
     sources: chennaiRevenueCoverage.sources,
     talukCrosswalkProgress: query === null ? chennaiTalukCrosswalkProgress : undefined,
     taluks: query === null ? chennaiRevenueCoverage.taluks : undefined,

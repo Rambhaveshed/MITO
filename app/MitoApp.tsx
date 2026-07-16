@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  chennaiGeometrySourceAudit,
   chennaiRevenueCoverage,
   chennaiRevenueSummary,
   chennaiRevenueUnits,
@@ -391,7 +392,7 @@ export default function MitoApp() {
             <div><strong>{chennaiRevenueSummary.sourceVillageCount}</strong><span>source village rows</span></div>
             <div><strong>{chennaiRevenueSummary.talukGroupCount}</strong><span>listed taluk groups</span></div>
             <div><strong>{chennaiRevenueSummary.registrationCrosswalkCount}</strong><span>registration links</span></div>
-            <div><strong>{chennaiRevenueSummary.conflictCount}</strong><span>official conflict</span></div>
+            <div><strong>{chennaiRevenueSummary.publishableAuthoritativeGeometryCount}</strong><span>licensed geometries</span></div>
             <button type="button" onClick={() => selectCoverageScope("omr")}><Route size={14} /> Return to OMR pilot <ArrowUpRight size={13} /></button>
           </>
         )}
@@ -921,6 +922,20 @@ export default function MitoApp() {
                   <div className="coverage-progress-row"><div><span>Current verified price rows</span><strong>0</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>No guideline value or transaction is published from this expansion inventory.</small></div>
                 </section>
 
+                <section className="inspector-section geometry-readiness-section">
+                  <div className="section-heading"><div><span>Geometry readiness</span><h2>Official GCC layers found; reuse gated</h2></div><Layers3 size={17} /></div>
+                  <div className="planning-evidence-summary geometry-audit-summary">
+                    <div><strong>{inr.format(chennaiRevenueSummary.authoritativeRoadFeaturesDiscovered)}</strong><span>road features</span></div>
+                    <div><strong>{chennaiRevenueSummary.authoritativeWardPolygonsDiscovered}</strong><span>ward polygons</span></div>
+                    <div><strong>{chennaiRevenueSummary.authoritativeZonePolygonsDiscovered}</strong><span>zone polygons</span></div>
+                  </div>
+                  <p className="coverage-method">The 2025 GCC service is queryable, declares EPSG:32644 and exposes GeoJSON. GCC&apos;s copyright policy still requires department permission, so MITO stores and plots zero source geometries.</p>
+                  <div className="capture-blocker">
+                    <span>rights gate</span>
+                    <div><strong>Discovery is not publication permission</strong><p>No geometry was downloaded into the product, embedded as a live layer or used to infer a revenue-village boundary.</p><small>{chennaiGeometrySourceAudit.decision.status.replaceAll("_", " ")}</small></div>
+                  </div>
+                </section>
+
                 <section className="inventory-conflict-card">
                   <AlertTriangle size={16} />
                   <div><strong>Official count conflict remains unresolved</strong><p>The Chennai District homepage says 16 taluks and 122 villages. Its detailed Revenue Administration page lists 17 taluk groups and totals 144 villages; the separate Village page lists only 10 taluk groups and 68 rows.</p></div>
@@ -947,6 +962,19 @@ export default function MitoApp() {
                   </dl>
                 )}
                 <p className="coverage-method">MITO selected the detailed 17-group, 144-row table as the working source inventory because it contains the most granular current official list. That preference does not resolve the source conflict.</p>
+              </section>
+
+              <section className="inspector-section evidence-section">
+                <div className="section-heading"><div><span>Geometry source audit</span><h2>{chennaiGeometrySourceAudit.summary.sourcesAudited} official sources checked</h2></div><Layers3 size={17} /></div>
+                {chennaiGeometrySourceAudit.sources.map((source) => (
+                  <a key={source.id} href={source.sourceUrl} target="_blank" rel="noreferrer" className="source-card geometry-source-card">
+                    <span className="source-kind snapshot">permission</span>
+                    <div><strong>{source.title}</strong><p>{source.authority}</p><small>{source.sourceKind.replaceAll("_", " ")} · {source.rightsStatus.replaceAll("_", " ")}</small></div>
+                    <ExternalLink size={15} />
+                  </a>
+                ))}
+                <p className="coverage-method">{chennaiGeometrySourceAudit.decision.summary}</p>
+                <a className="resolver-api-link" href="/api/chennai-coverage" target="_blank" rel="noreferrer">Inspect layer IDs, counts, CRS, extents and rights evidence <ArrowUpRight size={13} /></a>
               </section>
 
               {selectedChennaiUnit?.registrationCrosswalk && (
@@ -1035,7 +1063,8 @@ export default function MitoApp() {
                   <li>Extend the verified registration crosswalk beyond the {chennaiRevenueSummary.registrationCrosswalkCount} exact OMR overlaps.</li>
                   <li>Capture Tamil and portal spellings with explicit ambiguity rules.</li>
                   <li>Verify the current official inventory before requesting or importing authorized row-level values.</li>
-                  <li>Add ward, street and geometry links only when an authoritative crosswalk supports them.</li>
+                  <li>Obtain written reuse permission for the audited GCC and TNGIS geometry sources.</li>
+                  <li>Add ward, street and geometry links only when a deterministic crosswalk supports them.</li>
                 </ol>
                 <a className="resolver-api-link" href={`/api/chennai-coverage${selectedChennaiUnit ? `?query=${encodeURIComponent(selectedChennaiUnit.name)}` : ""}`} target="_blank" rel="noreferrer">Open the machine-readable Chennai ledger <ArrowUpRight size={13} /></a>
               </section>
@@ -1044,10 +1073,11 @@ export default function MitoApp() {
                 <div className="section-heading"><div><span>Release gate</span><h2>Chennai cannot pass yet</h2></div><LockKeyhole size={17} /></div>
                 <div className="gate-row passed"><Check size={14} /><span>Preferred official 144-row source table captured</span></div>
                 <div className="gate-row passed"><Check size={14} /><span>{chennaiRevenueSummary.registrationCrosswalkCount} registration links independently verified</span></div>
+                <div className="gate-row passed"><Check size={14} /><span>Authoritative geometry sources, layer counts and coordinate systems audited</span></div>
                 <div className="gate-row"><X size={14} /><span>Official 122-versus-144 village conflict must be reconciled</span></div>
                 <div className="gate-row"><X size={14} /><span>Every row needs a verified registration crosswalk</span></div>
                 <div className="gate-row"><X size={14} /><span>Authorized current price evidence must be captured</span></div>
-                <div className="gate-row"><X size={14} /><span>Geometry and street coverage must be audited</span></div>
+                <div className="gate-row"><X size={14} /><span>Geometry reuse permission and revenue-to-ward crosswalk are required</span></div>
                 <p className="legal-note">A verified crosswalk identifies a registration jurisdiction and inventory size only. All Chennai rows remain unplotted and unpriced; missing evidence is never treated as a zero price or a safe property.</p>
               </section>
             </>

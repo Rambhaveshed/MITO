@@ -618,6 +618,12 @@ button {
 .source-kind.discovery { background: #e8eef7; color: #496285; }
 .source-kind.listing { background: #fff0d2; color: #805b13; }
 .source-kind.planning { background: #e9eef8; color: #475f8e; }
+.geometry-source-card { border-color: #d9d2be; background: #fcfaf4; }
+.geometry-source-card + .geometry-source-card { margin-top: 7px; }
+.geometry-readiness-section { border-color: #d9d2be; background: #fffdf8; }
+.geometry-audit-summary > div { background: #f4f0e5; }
+.geometry-audit-summary strong { color: #786128; }
+.geometry-audit-summary span { color: #887a58; }
 .source-card > div { min-width: 0; flex: 1; }
 .source-card strong { display: block; font-size: 8px; }
 .source-card p { margin: 2px 0 0; color: var(--muted); font-size: 7px; }

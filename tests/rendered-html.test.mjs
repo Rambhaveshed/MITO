@@ -168,11 +168,19 @@ test("Chennai coverage API publishes the source inventory and unresolved officia
   assert.equal(payload.summary.officialGuidelineValueCount, 0);
   assert.equal(payload.summary.registeredTransactionCount, 0);
   assert.equal(payload.summary.plottedGeometryCount, 0);
+  assert.equal(payload.summary.authoritativeRoadFeaturesDiscovered, 37225);
+  assert.equal(payload.summary.authoritativeWardPolygonsDiscovered, 200);
+  assert.equal(payload.summary.authoritativeZonePolygonsDiscovered, 15);
+  assert.equal(payload.summary.publishableAuthoritativeGeometryCount, 0);
+  assert.equal(payload.summary.geometryPermissionGatedSourceCount, 3);
   assert.equal(payload.summary.conflictCount, 1);
   assert.equal(payload.taluks.length, 17);
   assert.equal(payload.talukCrosswalkProgress.find((taluk) => taluk.talukName === "Velachery").verifiedCrosswalkCount, 2);
   assert.equal(payload.talukCrosswalkProgress.find((taluk) => taluk.talukName === "Sholinganallur").verifiedCrosswalkCount, 7);
   assert.equal(payload.registrationCrosswalk.summary.currentOfficialValuesPublished, 0);
+  assert.equal(payload.geometrySourceAudit.decision.status, "permission_required");
+  assert.equal(payload.geometrySourceAudit.summary.officialGeometryFeaturesPublished, 0);
+  assert.equal(payload.geometrySourceAudit.sources[0].technicalEvidence.nativeCrs, "EPSG:32644");
   assert.equal(payload.conflicts[0].status, "unresolved");
 });
 
