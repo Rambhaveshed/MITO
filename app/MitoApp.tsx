@@ -38,17 +38,50 @@ import {
   omrPlanningSummary,
   planningRecordsForVillage,
 } from "../data/evidence";
-import { omrCoverage, omrCoverageByOffice, omrCoveragePercent, omrCoverageSummary, omrReleaseReady } from "../data/omr";
+import {
+  aliasesForVillage,
+  omrCoverage,
+  omrCoverageByOffice,
+  omrCoveragePercent,
+  omrCoverageSummary,
+  omrReleaseReady,
+  resolveOmrPlace,
+} from "../data/omr";
 import { marketAreas, sourceById, type MarketArea } from "../data/pilot";
 
 const views = ["Market", "Guideline", "Transactions", "Planning", "Risk", "Coverage"] as const;
 type View = (typeof views)[number];
 
 const inr = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
+const auditDateTime = new Intl.DateTimeFormat("en-IN", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: "Asia/Kolkata",
+});
 const planningSourceById = Object.fromEntries(omrPlanningLedger.sources.map((source) => [source.id, source]));
 
 function formatRate(value: number) {
   return `₹${inr.format(value)}`;
+}
+
+function formatAuditTimestamp(value: string) {
+  return auditDateTime.format(new Date(value));
+}
+
+function resolverStatusLabel(status: ReturnType<typeof resolveOmrPlace>["status"]) {
+  return {
+    empty: "Enter a verified place name",
+    matched: "Exact jurisdiction match",
+    ambiguous: "Choose the registration village",
+    office: "Sub Registrar Office match",
+    partial: "Partial verified-name match",
+    scope: "OMR pilot scope",
+    unresolved: "Crosswalk unresolved",
+    none: "No verified match",
+  }[status];
 }
 
 function gradeCopy(grade: MarketArea["grade"]) {
@@ -66,6 +99,7 @@ export default function MitoApp() {
   const mapRef = useRef<MapLibreMap | null>(null);
   const markersRef = useRef<MapLibreMarker[]>([]);
   const [selectedId, setSelectedId] = useState("sholinganallur");
+  const [selectedCoverageKey, setSelectedCoverageKey] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<View>("Coverage");
   const [query, setQuery] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -90,17 +124,38 @@ export default function MitoApp() {
     );
   }, [query]);
 
+  const coverageResolution = useMemo(() => resolveOmrPlace(query), [query]);
+
   const filteredCoverageUnits = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase();
-    if (!normalized) return omrCoverage.units;
-    return omrCoverage.units.filter((unit) => {
-      const office = omrCoverage.registrationOffices.find((candidate) => candidate.officialSroCode === unit.officialSroCode);
-      return [unit.nameEn, unit.nameTa, unit.officialVillageCode, office?.nameEn, office?.nameTa]
-        .join(" ")
-        .toLocaleLowerCase()
-        .includes(normalized);
-    });
-  }, [query]);
+    if (!query.trim()) return omrCoverage.units;
+    return coverageResolution.matches.map((match) => match.unit);
+  }, [coverageResolution, query]);
+
+  const coverageMatchByKey = useMemo(
+    () => new Map(coverageResolution.matches.map((match) => [match.key, match])),
+    [coverageResolution],
+  );
+
+  const selectedCoverageUnit = selectedCoverageKey
+    ? omrCoverage.units.find((unit) => `${unit.officialSroCode}:${unit.officialVillageCode}` === selectedCoverageKey) ?? null
+    : null;
+  const selectedCoverageOffice = selectedCoverageUnit
+    ? omrCoverage.registrationOffices.find((office) => office.officialSroCode === selectedCoverageUnit.officialSroCode) ?? null
+    : null;
+  const selectedCoveragePlanningRecords = selectedCoverageUnit
+    ? planningRecordsForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
+  const selectedCoverageArchivedRecords = selectedCoverageUnit
+    ? archivedGuidelineRecordsForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
+  const selectedCoverageInventory = selectedCoverageUnit
+    ? omrGuidelineOmrInventoryAudit.queries.find(
+        (inventory) => inventory.officialSroCode === selectedCoverageUnit.officialSroCode && inventory.officialVillageCode === selectedCoverageUnit.officialVillageCode,
+      ) ?? null
+    : null;
+  const selectedCoverageAliases = selectedCoverageUnit
+    ? aliasesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
 
   const activeComparableRates = selected.comparables
     .filter((comparable) => selectedComparables.includes(comparable.id))
@@ -112,6 +167,13 @@ export default function MitoApp() {
     setInspectorTab("Overview");
     setSelectedComparables(area.comparables.map((item) => item.id));
     mapRef.current?.flyTo({ center: area.coordinate, zoom: area.id === "rs-puram" || area.id === "kk-nagar-madurai" ? 12.5 : 13.4, duration: 900 });
+  };
+
+  const selectCoverageUnit = (officialSroCode: string, officialVillageCode: string) => {
+    setSelectedCoverageKey(`${officialSroCode}:${officialVillageCode}`);
+    setActiveView("Coverage");
+    setInspectorTab("Overview");
+    setQuery("");
   };
 
   useEffect(() => {
@@ -140,6 +202,7 @@ export default function MitoApp() {
         button.className = area.price ? "map-price-marker" : "map-area-marker";
         button.setAttribute("aria-label", `Open ${area.name} evidence`);
         button.dataset.areaId = area.id;
+        button.hidden = true;
         button.innerHTML = area.price
           ? `<span>${formatRate(area.price.midpoint)}</span><small>/sq ft</small>`
           : `<span>${area.grade}</span>`;
@@ -162,6 +225,12 @@ export default function MitoApp() {
       element.classList.toggle("is-selected", element.dataset.areaId === selectedId);
     });
   }, [selectedId]);
+
+  useEffect(() => {
+    markersRef.current.forEach((marker) => {
+      marker.getElement().hidden = activeView === "Coverage";
+    });
+  }, [activeView]);
 
   return (
     <main className="mito-shell">
@@ -199,7 +268,7 @@ export default function MitoApp() {
             aria-label="Search locality, street, survey number or pincode"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search street, locality, survey no."
+            placeholder={activeView === "Coverage" ? "Search village, Tamil name, SRO or ID" : "Search street, locality, survey no."}
           />
           {query && <button type="button" aria-label="Clear search" onClick={() => setQuery("")}><X size={16} /></button>}
           <kbd>⌘ K</kbd>
@@ -222,7 +291,11 @@ export default function MitoApp() {
           <button className="filter-chip active" type="button"><Building2 size={14} /> Residential plot <X size={13} /></button>
           <button className="filter-chip" type="button" onClick={() => setFiltersOpen((open) => !open)}><SlidersHorizontal size={14} /> More filters <span className="filter-count">2</span></button>
           <span className="filter-separator" />
-          <span className="result-count">{activeView === "Coverage" ? `${filteredCoverageUnits.length} target villages` : `${filteredAreas.length} areas`}</span>
+          <span className="result-count">
+            {activeView === "Coverage"
+              ? coverageResolution.status === "unresolved" ? "crosswalk unresolved" : `${filteredCoverageUnits.length} ${filteredCoverageUnits.length === 1 ? "jurisdiction" : "jurisdictions"}`
+              : `${filteredAreas.length} areas`}
+          </span>
         </div>
         {filtersOpen && (
           <div className="filter-popover">
@@ -241,11 +314,17 @@ export default function MitoApp() {
         <button type="button" onClick={() => setActiveView("Coverage")}><Database size={14} /> OMR is collecting <ArrowUpRight size={13} /></button>
       </section>
 
-      <section className="area-list" aria-label="Matching areas">
+      <section className={`area-list ${activeView === "Coverage" && query.trim() ? "mobile-resolver-open" : ""}`} aria-label="Matching areas">
         <div className="area-list-heading">
           <span>{activeView === "Coverage" ? (query ? "Coverage matches" : "OMR target villages") : (query ? "Search results" : "Pilot markets")}</span>
           <button type="button" aria-label="Sort areas"><Filter size={14} /></button>
         </div>
+        {activeView === "Coverage" && query.trim() && (
+          <div className={`resolver-notice ${coverageResolution.status}`} role="status">
+            <strong>{resolverStatusLabel(coverageResolution.status)}</strong>
+            <span>{coverageResolution.explanation}</span>
+          </div>
+        )}
         <div className="area-list-scroll">
           {activeView === "Coverage" ? (
             <>
@@ -254,19 +333,27 @@ export default function MitoApp() {
                 const planningRecordCount = planningRecordsForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const archivedRateCount = archivedGuidelineRecordsForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const hasCurrentInventory = "streetTargetEvidenceStatus" in unit && unit.streetTargetEvidenceStatus === "live_official_metadata";
+                const unitKey = `${unit.officialSroCode}:${unit.officialVillageCode}`;
+                const match = coverageMatchByKey.get(unitKey);
                 return (
-                  <article key={`${unit.officialSroCode}-${unit.officialVillageCode}`} className={`coverage-unit-card ${planningRecordCount ? "has-planning-evidence" : ""} ${archivedRateCount ? "has-guideline-snapshot" : ""}`}>
+                  <button
+                    key={unitKey}
+                    type="button"
+                    aria-pressed={selectedCoverageKey === unitKey}
+                    className={`coverage-unit-card ${planningRecordCount ? "has-planning-evidence" : ""} ${archivedRateCount ? "has-guideline-snapshot" : ""} ${selectedCoverageKey === unitKey ? "selected" : ""}`}
+                    onClick={() => selectCoverageUnit(unit.officialSroCode, unit.officialVillageCode)}
+                  >
                     <div className="coverage-unit-index">{unit.sequence}</div>
                     <div>
                       <strong>{unit.nameEn}</strong>
                       <span>{unit.nameTa}</span>
-                      <small>{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
+                      <small>{query && match ? `Matched “${match.matchedAlias}” · ` : ""}{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
                     </div>
                     <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
-                  </article>
+                  </button>
                 );
               })}
-              {!filteredCoverageUnits.length && <div className="empty-list"><Search size={19} /><strong>No coverage match</strong><span>Try a village, SRO, official ID or Tamil name.</span></div>}
+              {!filteredCoverageUnits.length && <div className="empty-list"><Search size={19} /><strong>{coverageResolution.status === "unresolved" ? "Crosswalk unresolved" : "No verified match"}</strong><span>{coverageResolution.explanation}</span></div>}
             </>
           ) : (
             <>
@@ -289,30 +376,41 @@ export default function MitoApp() {
       </section>
 
       <div className="map-legend">
-        <span><i className="legend-price" /> Asking-price evidence</span>
-        <span><i className="legend-gap" /> Coverage gap</span>
+        {activeView === "Coverage" ? (
+          <>
+            <span><i className="legend-gap" /> Village geometry unplotted</span>
+            <span>Search the verified jurisdiction ledger</span>
+          </>
+        ) : (
+          <>
+            <span><i className="legend-price" /> Asking-price evidence</span>
+            <span><i className="legend-gap" /> Coverage gap</span>
+          </>
+        )}
         <button type="button"><Layers3 size={15} /> Layers</button>
       </div>
 
-      <button className="locate-button" type="button" aria-label="Return to selected area" onClick={() => selectArea(selected)}><LocateFixed size={18} /></button>
+      {activeView !== "Coverage" && <button className="locate-button" type="button" aria-label="Return to selected area" onClick={() => selectArea(selected)}><LocateFixed size={18} /></button>}
 
-      <aside className="inspector" aria-label={activeView === "Coverage" ? "OMR coverage inspector" : `${selected.name} evidence inspector`}>
+      <aside className="inspector" aria-label={activeView === "Coverage" ? `${selectedCoverageUnit?.nameEn ?? "OMR"} coverage inspector` : `${selected.name} evidence inspector`}>
         <div className="inspector-handle" />
         <div className="inspector-head">
-          <div className="eyebrow"><span className="live-dot" /> {activeView === "Coverage" ? "Auditable coverage programme" : selected.propertyType}</div>
-          <button type="button" className="inspector-close" aria-label="Close inspector"><Minus size={18} /></button>
-          <h1>{activeView === "Coverage" ? "OMR evidence programme" : selected.name}</h1>
-          <p>{activeView === "Coverage" ? "Adyar → Mamallapuram · official jurisdiction ledger" : `${selected.tamilName} · ${selected.district}`}</p>
+          <div className="eyebrow"><span className="live-dot" /> {activeView === "Coverage" ? selectedCoverageUnit ? "Verified registration village" : "Auditable coverage programme" : selected.propertyType}</div>
+          <button type="button" className="inspector-close" aria-label={selectedCoverageUnit ? "Back to OMR overview" : "Close inspector"} onClick={() => selectedCoverageUnit && setSelectedCoverageKey(null)}><Minus size={18} /></button>
+          <h1>{activeView === "Coverage" ? selectedCoverageUnit?.nameEn ?? "OMR evidence programme" : selected.name}</h1>
+          <p>{activeView === "Coverage" ? selectedCoverageUnit ? `${selectedCoverageUnit.nameTa} · ${selectedCoverageOffice?.nameEn} SRO` : "Adyar → Mamallapuram · official jurisdiction ledger" : `${selected.tamilName} · ${selected.district}`}</p>
           <div className="inspector-price">
             {activeView === "Coverage" ? (
-              <><strong>{omrCoveragePercent.streetRegister}%</strong><span>verified street registers</span></>
+              selectedCoverageUnit
+                ? <><strong>{inr.format(selectedCoverageUnit.streetTargetCount)}</strong><span>current official inventory items</span></>
+                : <><strong>{omrCoveragePercent.streetRegister}%</strong><span>verified street registers</span></>
             ) : selected.price ? (
               <><strong>{formatRate(selected.price.low)}–{formatRate(selected.price.high)}</strong><span>per sq ft</span></>
             ) : (
               <><strong>Insufficient evidence</strong><span>No value published</span></>
             )}
           </div>
-          <div className="price-type"><Info size={14} /> {activeView === "Coverage" ? "Jurisdictions are mapped; price evidence is not complete" : selected.price?.type ?? "MITO will not manufacture a price"}</div>
+          <div className="price-type"><Info size={14} /> {activeView === "Coverage" ? selectedCoverageUnit ? "0 current values published · row access pending" : "Jurisdictions are mapped; price evidence is not complete" : selected.price?.type ?? "MITO will not manufacture a price"}</div>
         </div>
 
         <div className="inspector-tabs" role="tablist">
@@ -323,6 +421,51 @@ export default function MitoApp() {
 
         <div className="inspector-scroll">
           {activeView === "Coverage" && inspectorTab === "Overview" && (
+            selectedCoverageUnit && selectedCoverageInventory ? (
+              <>
+                <section className="confidence-card coverage-confidence">
+                  <div className="confidence-badge"><MapPin size={17} /></div>
+                  <div><strong>Official registration jurisdiction resolved</strong><span>SRO {selectedCoverageUnit.officialSroCode} · village {selectedCoverageUnit.officialVillageCode} · exact source-backed crosswalk</span></div>
+                  <ShieldCheck size={20} />
+                </section>
+
+                <section className="live-register-card">
+                  <div><Database size={17} /></div>
+                  <p><strong>{inr.format(selectedCoverageInventory.displayedItemCount)} current official inventory items</strong><span>TNREGINET label: {selectedCoverageInventory.guidelineVillageName} · checked {formatAuditTimestamp(selectedCoverageInventory.displayedResultTimestamp)}</span></p>
+                  <em>Metadata</em>
+                </section>
+
+                <section className="inspector-section">
+                  <div className="section-heading"><div><span>Official identity</span><h2>Registration crosswalk</h2></div><Route size={17} /></div>
+                  <dl className="detail-grid">
+                    <div><dt>Sub Registrar Office</dt><dd>{selectedCoverageOffice?.nameEn}</dd></div>
+                    <div><dt>Official SRO ID</dt><dd>{selectedCoverageUnit.officialSroCode}</dd></div>
+                    <div><dt>Official village ID</dt><dd>{selectedCoverageUnit.officialVillageCode}</dd></div>
+                    <div><dt>Portal village label</dt><dd>{selectedCoverageInventory.guidelineVillageName}</dd></div>
+                  </dl>
+                </section>
+
+                <section className="inspector-section">
+                  <div className="section-heading"><div><span>Evidence status</span><h2>What MITO can prove here</h2></div><ShieldCheck size={17} /></div>
+                  <div className="planning-evidence-summary village-evidence-summary">
+                    <div><strong>{selectedCoveragePlanningRecords.length}</strong><span>planning records</span></div>
+                    <div><strong>{selectedCoverageArchivedRecords.length}</strong><span>archived values</span></div>
+                    <div><strong>0</strong><span>current values</span></div>
+                  </div>
+                  <p className="coverage-method">The official inventory size and jurisdiction are verified. Individual street values, transactions and parcel geometry are not published as current evidence.</p>
+                </section>
+
+                <section className="inspector-section">
+                  <div className="section-heading"><div><span>Village release gate</span><h2>Price evidence is not complete</h2></div><LockKeyhole size={17} /></div>
+                  <div className="gate-row passed"><Check size={14} /><span>Official SRO and village identifiers verified</span></div>
+                  <div className="gate-row passed"><Check size={14} /><span>Current official inventory total verified</span></div>
+                  <div className="gate-row"><X size={14} /><span>Authorized row-level guideline values not captured</span></div>
+                  <div className="gate-row"><X size={14} /><span>No verified registered transactions in MITO yet</span></div>
+                </section>
+
+                <section className="gap-card"><AlertTriangle size={18} /><div><strong>Do not treat the inventory count as a price</strong><p>{selectedCoverageInventory.displayedItemCount} is the number of official register items returned for this village. MITO publishes no current ₹/sq ft figure until authorized row data or independently verified transaction evidence is available.</p></div></section>
+              </>
+            ) : (
             <>
               <section className="confidence-card coverage-confidence">
                 <div className="confidence-badge"><Route size={17} /></div>
@@ -361,9 +504,74 @@ export default function MitoApp() {
 
               <section className="gap-card"><AlertTriangle size={18} /><div><strong>Row-level publication needs permission</strong><p>All 24 current village inventories are verified, but their item counts are coverage metadata—not permission to copy the register. {omrGuidelineOmrInventoryAudit.publication.nextAction}</p></div></section>
             </>
+            )
           )}
 
           {activeView === "Coverage" && inspectorTab === "Evidence" && (
+            selectedCoverageUnit && selectedCoverageInventory ? (
+              <>
+                <section className="inspector-section evidence-section">
+                  <div className="section-heading"><div><span>Current register</span><h2>Official inventory query</h2></div><Database size={17} /></div>
+                  <a href={omrGuidelineOmrInventoryAudit.source.url} target="_blank" rel="noreferrer" className="source-card live-source">
+                    <span className="source-kind official">official</span>
+                    <div><strong>{omrGuidelineOmrInventoryAudit.source.title}</strong><p>{omrGuidelineOmrInventoryAudit.source.organization}</p><small>Source updated {omrGuidelineOmrInventoryAudit.source.sourceLastUpdatedAt} · rates effective {omrGuidelineOmrInventoryAudit.source.ratesEffectiveFrom}</small></div>
+                    <ExternalLink size={15} />
+                  </a>
+                  <dl className="detail-grid">
+                    <div><dt>TNREGINET label</dt><dd>{selectedCoverageInventory.guidelineVillageName}</dd></div>
+                    <div><dt>Result timestamp</dt><dd>{formatAuditTimestamp(selectedCoverageInventory.displayedResultTimestamp)}</dd></div>
+                    <div><dt>Displayed inventory</dt><dd>{inr.format(selectedCoverageInventory.displayedItemCount)} items</dd></div>
+                    <div><dt>Implied result pages</dt><dd>{selectedCoverageInventory.impliedPageCount}</dd></div>
+                    <div><dt>Rows stored by MITO</dt><dd>0</dd></div>
+                    <div><dt>Current values published</dt><dd>0</dd></div>
+                  </dl>
+                  <div className="capture-blocker">
+                    <span>permission</span>
+                    <div><strong>Row-level reuse is not authorized</strong><p>The public count is preserved as coverage metadata. Street names and values from the live result are not stored or republished.</p><small>{omrGuidelineOmrInventoryAudit.publication.blockerCode}</small></div>
+                  </div>
+                </section>
+
+                {selectedCoverageArchivedRecords.length > 0 && (
+                  <section className="inspector-section evidence-section">
+                    <div className="section-heading"><div><span>Historical evidence</span><h2>Archived row awaiting current verification</h2></div><AlertTriangle size={17} /></div>
+                    <div className="guideline-snapshot-list">
+                      {selectedCoverageArchivedRecords.map((record) => (
+                        <article key={record.sourceRecordId} className="guideline-snapshot-card">
+                          <div><span>Archived official screen</span><em>{record.verificationStatus} recheck</em></div>
+                          <h3>{record.sourceStreetName}</h3>
+                          <strong>{formatRate(record.valueInrPerSqft)}<small>/sq ft</small></strong>
+                          <p>{record.classification} · effective 1 Jul 2024</p>
+                          <footer><span>{selectedCoverageUnit.nameEn}</span><b>Unplotted</b></footer>
+                        </article>
+                      ))}
+                    </div>
+                    <p className="coverage-method">Historical evidence is shown separately and remains excluded from current verified totals.</p>
+                  </section>
+                )}
+
+                <section className="inspector-section evidence-section">
+                  <div className="section-heading"><div><span>Planning ledger</span><h2>{selectedCoveragePlanningRecords.length} directly linked {selectedCoveragePlanningRecords.length === 1 ? "record" : "records"}</h2></div><ShieldCheck size={17} /></div>
+                  {selectedCoveragePlanningRecords.length ? (
+                    <div className="planning-record-list">
+                      {selectedCoveragePlanningRecords.map((record) => {
+                        const source = planningSourceById[record.sourceId];
+                        const recordUrl = "documentUrl" in record && record.documentUrl ? record.documentUrl : source?.url;
+                        return (
+                          <a key={record.id} href={recordUrl} target="_blank" rel="noreferrer" className="planning-record-card">
+                            <div className="planning-record-head"><strong>{record.sourceVillageName}</strong><span>{record.sourceRecordId}</span></div>
+                            <p>{record.summary}</p>
+                            <small>{record.decisionStatus.replaceAll("_", " ")} · village linked</small>
+                            <em>{record.scopeCaveat}</em>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="empty-evidence-state"><AlertTriangle size={16} /><strong>No directly linked planning record</strong><span>Absence in MITO is a coverage gap, not proof that no planning rule or approval applies.</span></div>
+                  )}
+                </section>
+              </>
+            ) : (
             <>
               <section className="inspector-section evidence-section">
                 <div className="section-heading"><div><span>Price source ledger</span><h2>Official collection and rights status</h2></div><Database size={17} /></div>
@@ -447,21 +655,51 @@ export default function MitoApp() {
                 </div>
               </section>
             </>
+            )
           )}
 
           {activeView === "Coverage" && inspectorTab === "Context" && (
-            <section className="inspector-section context-section">
-              <div className="section-heading"><div><span>Boundary method</span><h2>Transparent by design</h2></div><ShieldCheck size={17} /></div>
-              <p className="coverage-definition">{omrCoverage.definition}</p>
-              <div className="evidence-contract">
-                <span>Import contract · v1.1.0</span>
-                <strong>Every official value must arrive with provenance</strong>
-                <p>Source record ID, SRO and village codes, street name, classification, raw unit, normalized ₹/sq ft, effective date, snapshot hash, location evidence and verification status are mandatory. An absent official street code is allowed only for a pending archived row and blocks verification. A live inventory count is coverage metadata, not a row import; authorized reuse is required before current values are stored or published.</p>
-                <a href="/api/evidence" target="_blank" rel="noreferrer">Inspect the machine-readable evidence ledger <ArrowUpRight size={13} /></a>
-              </div>
-              {["Obtain authorized row-level access for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
-              <p className="legal-note">Release ready: <strong>{omrReleaseReady ? "yes" : "no"}</strong>. A missing street total is treated as missing evidence, not zero coverage. Planning records remain separate from price evidence.</p>
-            </section>
+            selectedCoverageUnit && selectedCoverageInventory ? (
+              <>
+                <section className="inspector-section context-section">
+                  <div className="section-heading"><div><span>Address resolver</span><h2>Verified names for this jurisdiction</h2></div><Route size={17} /></div>
+                  <div className="alias-list">
+                    {selectedCoverageAliases.map((alias) => <span key={`${alias.type}-${alias.value}`}>{alias.value}<small>{alias.type.replaceAll("_", " ")}</small></span>)}
+                  </div>
+                  <p className="coverage-method">MITO matches only these source-backed names and official IDs. A match identifies the registration jurisdiction, not a parcel, street or survey boundary.</p>
+                  <a className="resolver-api-link" href={`/api/resolve?query=${encodeURIComponent(selectedCoverageUnit.nameEn)}`} target="_blank" rel="noreferrer">Open the machine-readable resolver result <ArrowUpRight size={13} /></a>
+                </section>
+
+                <section className="inspector-section context-section">
+                  <div className="section-heading"><div><span>Official lookup path</span><h2>Reproduce this inventory check</h2></div><Database size={17} /></div>
+                  <ol className="lookup-steps">
+                    <li>Open TNREGINET and choose “Guideline value search from 2002”.</li>
+                    <li>Choose the current register from 1 July 2024 and keep Street + Village Wise selected.</li>
+                    <li>Select {selectedCoverageInventory.zoneName} → {selectedCoverageInventory.sroName} → {selectedCoverageInventory.guidelineVillageName}.</li>
+                    <li>Confirm the displayed timestamp and {inr.format(selectedCoverageInventory.displayedItemCount)}-item result before using it.</li>
+                  </ol>
+                </section>
+
+                <section className="inspector-section context-section">
+                  <div className="section-heading"><div><span>Due diligence</span><h2>Still verify before relying</h2></div><ShieldCheck size={17} /></div>
+                  {["Exact street and survey subdivision", "Current guideline value and land classification", "Title, EC and ownership chain", "Planning use, approval and access road", "Flood, waterbody and acquisition constraints"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
+                  <p className="legal-note">MITO resolves a registration jurisdiction; it does not certify a title, parcel boundary, legal status or market value.</p>
+                </section>
+              </>
+            ) : (
+              <section className="inspector-section context-section">
+                <div className="section-heading"><div><span>Boundary method</span><h2>Transparent by design</h2></div><ShieldCheck size={17} /></div>
+                <p className="coverage-definition">{omrCoverage.definition}</p>
+                <div className="evidence-contract">
+                  <span>Import contract · v1.1.0</span>
+                  <strong>Every official value must arrive with provenance</strong>
+                  <p>Source record ID, SRO and village codes, street name, classification, raw unit, normalized ₹/sq ft, effective date, snapshot hash, location evidence and verification status are mandatory. An absent official street code is allowed only for a pending archived row and blocks verification. A live inventory count is coverage metadata, not a row import; authorized reuse is required before current values are stored or published.</p>
+                  <a href="/api/evidence" target="_blank" rel="noreferrer">Inspect the machine-readable evidence ledger <ArrowUpRight size={13} /></a>
+                </div>
+                {["Obtain authorized row-level access for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
+                <p className="legal-note">Release ready: <strong>{omrReleaseReady ? "yes" : "no"}</strong>. A missing street total is treated as missing evidence, not zero coverage. Planning records remain separate from price evidence.</p>
+              </section>
+            )
           )}
 
           {activeView !== "Coverage" && inspectorTab === "Overview" && (

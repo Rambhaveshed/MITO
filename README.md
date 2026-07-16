@@ -33,7 +33,10 @@ Official guideline-value imports must follow `data/evidence/guideline-value-impo
 Machine-readable endpoints:
 
 - `/api/coverage` — OMR coverage, release gate and jurisdiction ledger
+- `/api/resolve?query=Tharamani` — deterministic OMR registration-jurisdiction resolver using verified English, Tamil, TNREGINET and official-ID aliases
 - `/api/evidence` — official planning records, current-register metadata, the archived Sholinganallur row, rights status, source provenance, crosswalk gaps and the guideline-value import contract
+
+The resolver never geocodes an address or assigns a parcel. It exposes ambiguity where the official register has multiple villages such as Sholinganallur 1/2 and Thaiyur A/B, and preserves unresolved source conflicts such as Kalipattur versus Kazhipattur instead of silently merging them. Selecting a resolved village in the Coverage view opens its current inventory metadata, official identifiers, directly linked evidence, reproduction steps and explicit price-release gate.
 
 The map markers in this pilot are approximate locality anchors. They are not parcel, property or transaction coordinates. Individual listing evidence stays unplotted until the location can be independently verified.
 

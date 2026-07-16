@@ -25,7 +25,7 @@ test("server-renders the MITO product shell", async () => {
   const html = await response.text();
   assert.match(html, /<title>MITO — Tamil Nadu Land Intelligence<\/title>/i);
   assert.match(html, /Tamil Nadu land intelligence/i);
-  assert.match(html, /Search street, locality, survey no\./i);
+  assert.match(html, /Search village, Tamil name, SRO or ID/i);
   assert.match(html, /OMR is collecting/i);
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
   assert.match(html, /27(?:<!-- -->)? official planning records captured/i);
@@ -112,4 +112,43 @@ test("evidence API publishes planning provenance, current register metadata and 
   assert.equal(payload.guidelineValueCollection.secondaryCorroboration.conflicts[0].status, "resolved_for_current_inventory");
   assert.equal(payload.guidelineValueCollection.importContract.schemaVersion, "1.1.0");
   assert.ok(payload.guidelineValueCollection.importContract.requiredRowFields.includes("officialStreetCode"));
+});
+
+test("resolver API matches verified portal variants and official identifiers", async () => {
+  const variantResponse = await render("/api/resolve?query=Tharamani");
+  assert.equal(variantResponse.status, 200);
+  const variant = await variantResponse.json();
+  assert.equal(variant.result.status, "matched");
+  assert.equal(variant.result.confidence, "variant");
+  assert.equal(variant.result.matches.length, 1);
+  assert.equal(variant.result.matches[0].unit.nameEn, "Taramani");
+  assert.equal(variant.result.matches[0].inventoryQuery.guidelineVillageName, "Tharamani");
+
+  const codeResponse = await render("/api/resolve?query=20066%3A253");
+  assert.equal(codeResponse.status, 200);
+  const code = await codeResponse.json();
+  assert.equal(code.result.status, "matched");
+  assert.equal(code.result.confidence, "exact");
+  assert.equal(code.result.matches[0].unit.nameEn, "Seevaram");
+});
+
+test("resolver API preserves ambiguity, Tamil aliases and unresolved conflicts", async () => {
+  const ambiguousResponse = await render("/api/resolve?query=Sholinganallur");
+  assert.equal(ambiguousResponse.status, 200);
+  const ambiguous = await ambiguousResponse.json();
+  assert.equal(ambiguous.result.status, "ambiguous");
+  assert.deepEqual(ambiguous.result.matches.map((match) => match.key), ["20066:254", "20066:20514"]);
+
+  const tamilResponse = await render("/api/resolve?query=%E0%AE%9A%E0%AF%86%E0%AE%AE%E0%AF%8D%E0%AE%AE%E0%AE%9E%E0%AF%8D%E0%AE%9A%E0%AF%87%E0%AE%B0%E0%AE%BF");
+  assert.equal(tamilResponse.status, 200);
+  const tamil = await tamilResponse.json();
+  assert.equal(tamil.result.status, "matched");
+  assert.equal(tamil.result.matches[0].unit.nameEn, "Semmancheri");
+
+  const unresolvedResponse = await render("/api/resolve?query=Kalipattur");
+  assert.equal(unresolvedResponse.status, 200);
+  const unresolved = await unresolvedResponse.json();
+  assert.equal(unresolved.result.status, "unresolved");
+  assert.equal(unresolved.result.matches.length, 0);
+  assert.match(unresolved.result.explanation, /does not merge/i);
 });
