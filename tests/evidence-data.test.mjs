@@ -10,6 +10,7 @@ const schemaUrl = new URL("../data/evidence/guideline-value-import.schema.json",
 const archivedSnapshotUrl = new URL("../data/evidence/omr-guideline-archived-snapshot-2026-07-16.json", import.meta.url);
 const secondaryCorroborationUrl = new URL("../data/evidence/omr-guideline-secondary-corroboration-2026-07-16.json", import.meta.url);
 const liveRegisterAuditUrl = new URL("../data/evidence/tnreginet-live-register-audit-2026-07-16.json", import.meta.url);
+const omrInventoryAuditUrl = new URL("../data/evidence/tnreginet-omr-inventory-audit-2026-07-16.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
@@ -121,6 +122,34 @@ test("live official register audit resolves the current inventory without copyin
   assert.equal(audit.publication.blockerCode, "REDISTRIBUTION_PERMISSION_REQUIRED");
   assert.equal(audit.reconciliation.status, "resolved_for_current_inventory");
   assert.equal(audit.reconciliation.currentOfficialRegisterCount, 758);
+});
+
+test("current official inventory audit covers all OMR villages without storing register rows", async () => {
+  const [audit, coverage] = await Promise.all([readJson(omrInventoryAuditUrl), readJson(coverageUrl)]);
+  const queryKeys = audit.queries.map((query) => `${query.officialSroCode}:${query.officialVillageCode}`);
+
+  assert.equal(audit.source.organization, "Tamil Nadu Registration Department");
+  assert.equal(audit.source.reproductionPolicy, "permission_required");
+  assert.equal(audit.source.metadataDigest, "sha256:5a14a095355f4b97e2986022f2bfbf3f93bf0f0f35f5b6b28038d7d0364c436b");
+  assert.equal(audit.summary.auditedVillageCount, 24);
+  assert.equal(audit.summary.targetVillageCount, 24);
+  assert.equal(audit.summary.displayedItemCountTotal, 2715);
+  assert.equal(audit.queries.length, 24);
+  assert.equal(new Set(queryKeys).size, 24);
+  assert.deepEqual(audit.queries.map((query) => query.sequence), Array.from({ length: 24 }, (_, index) => index + 1));
+  assert.equal(audit.queries.reduce((sum, query) => sum + query.displayedItemCount, 0), 2715);
+  assert.ok(audit.queries.every((query) => query.displayedPageSize === 10));
+  assert.ok(audit.queries.every((query) => query.impliedPageCount === Math.ceil(query.displayedItemCount / 10)));
+  assert.ok(audit.queries.every((query) => query.officialStreetCodePublished === false));
+  assert.ok(audit.queries.every((query) => query.rowDataStored === false && query.rowDataRepublished === false));
+  assert.equal(audit.publication.currentOfficialRowsStored, 0);
+  assert.equal(audit.publication.currentOfficialGuidelineValuesPublished, 0);
+  assert.equal(audit.publication.blockerCode, "REDISTRIBUTION_PERMISSION_REQUIRED");
+
+  const coverageByKey = new Map(coverage.units.map((unit) => [`${unit.officialSroCode}:${unit.officialVillageCode}`, unit]));
+  for (const query of audit.queries) {
+    assert.equal(coverageByKey.get(`${query.officialSroCode}:${query.officialVillageCode}`)?.streetTargetCount, query.displayedItemCount);
+  }
 });
 
 test("reuse request asks for authorized access before row-level publication", async () => {

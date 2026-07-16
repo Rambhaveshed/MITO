@@ -17,6 +17,7 @@ export const omrCoverageSummary = {
   currentStreetInventoryVerifiedCount: units.filter(
     (unit) => "streetTargetEvidenceStatus" in unit && unit.streetTargetEvidenceStatus === "live_official_metadata",
   ).length,
+  currentOfficialInventoryItemCount: units.reduce((sum, unit) => sum + (unit.streetTargetCount ?? 0), 0),
   streetRegisterVerifiedCount: units.filter((unit) => unit.streetRegisterStatus === "verified").length,
   officialGuidelineRecordCount: units.reduce((sum, unit) => sum + unit.officialGuidelineRecords, 0),
   archivedGuidelineRecordCount: omrGuidelineSnapshotSummary.recordCount,

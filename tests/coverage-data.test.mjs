@@ -15,7 +15,8 @@ test("OMR programme has a bounded, source-backed target", async () => {
   assert.equal(manifest.registrationOffices.length, 6);
   assert.equal(manifest.units.length, 24);
   assert.equal(manifest.status, "collecting");
-  assert.match(manifest.publishedCoverageClaim, /remain incomplete/i);
+  assert.match(manifest.publishedCoverageClaim, /2,715 official register items/i);
+  assert.match(manifest.publishedCoverageClaim, /zero current values are published/i);
 });
 
 test("official OMR jurisdiction identifiers are complete and unique", async () => {
@@ -33,16 +34,12 @@ test("release gate prevents incomplete evidence from being called complete", asy
   const manifest = await readManifest();
   assert.equal(manifest.releaseGate.minimumStreetRegisterCoveragePercent, 100);
   assert.equal(manifest.releaseGate.allowUnknownStreetTotals, false);
-  assert.equal(manifest.units.filter((unit) => unit.streetTargetCount === null).length, 23);
-  const currentInventory = manifest.units.find((unit) => unit.streetTargetCount !== null);
-  assert.equal(currentInventory.officialSroCode, "20066");
-  assert.equal(currentInventory.officialVillageCode, "254");
-  assert.equal(currentInventory.streetTargetCount, 758);
-  assert.equal(currentInventory.streetTargetCountAsOf, "2026-07-16");
-  assert.equal(currentInventory.streetTargetEvidenceStatus, "live_official_metadata");
-  assert.equal(currentInventory.streetRegisterStatus, "collecting");
-  assert.equal(currentInventory.officialGuidelineRowsWithheld, 10);
-  assert.equal(currentInventory.officialGuidelinePublicationBlocker, "REDISTRIBUTION_PERMISSION_REQUIRED");
+  assert.equal(manifest.units.filter((unit) => unit.streetTargetCount === null).length, 0);
+  assert.equal(manifest.units.reduce((sum, unit) => sum + unit.streetTargetCount, 0), 2715);
+  assert.ok(manifest.units.every((unit) => unit.streetTargetCountAsOf === "2026-07-16"));
+  assert.ok(manifest.units.every((unit) => unit.streetTargetEvidenceStatus === "live_official_metadata"));
+  assert.ok(manifest.units.every((unit) => unit.streetRegisterStatus === "collecting"));
+  assert.ok(manifest.units.every((unit) => unit.officialGuidelinePublicationBlocker === "REDISTRIBUTION_PERMISSION_REQUIRED"));
   assert.ok(manifest.units.every((unit) => unit.streetRegisterStatus !== "verified"));
   assert.ok(manifest.units.every((unit) => unit.officialGuidelineRecords === 0));
   assert.ok(manifest.units.every((unit) => unit.registeredTransactionRecords === 0));

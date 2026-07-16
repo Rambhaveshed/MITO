@@ -29,8 +29,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   archivedGuidelineRecordsForVillage,
   omrGuidelineCaptureRun,
-  omrGuidelineLiveRegisterAudit,
   omrGuidelineLiveRegisterSummary,
+  omrGuidelineOmrInventoryAudit,
   omrGuidelineSecondaryCorroborationLedger,
   omrGuidelineSnapshotLedger,
   omrGuidelineSnapshotSummary,
@@ -262,7 +262,7 @@ export default function MitoApp() {
                       <span>{unit.nameTa}</span>
                       <small>{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
                     </div>
-                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{hasCurrentInventory ? `${unit.streetTargetCount} current official streets · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
+                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
                   </article>
                 );
               })}
@@ -338,7 +338,7 @@ export default function MitoApp() {
 
               <section className="live-register-card">
                 <div><ShieldCheck size={17} /></div>
-                <p><strong>Current official inventory verified</strong><span>{omrGuidelineLiveRegisterSummary.currentInventoryCount} Sholinganallur-1 streets · official query checked 16 Jul 2026</span></p>
+                <p><strong>All current village inventories verified</strong><span>{inr.format(omrGuidelineLiveRegisterSummary.currentInventoryCount)} items across {omrGuidelineLiveRegisterSummary.auditedVillageCount} OMR villages · checked 16 Jul 2026</span></p>
                 <em>Rows withheld</em>
               </section>
 
@@ -346,7 +346,7 @@ export default function MitoApp() {
                 <div className="section-heading"><div><span>Collection progress</span><h2>What is actually complete</h2></div><Database size={17} /></div>
                 <div className="coverage-progress-row"><div><span>Jurisdiction IDs</span><strong>{omrCoveragePercent.jurisdiction}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.jurisdiction}%` }} /></div><small>{omrCoverageSummary.jurisdictionVerifiedCount} of {omrCoverageSummary.unitCount} verified against TNREGINET</small></div>
                 <div className="coverage-progress-row"><div><span>Current inventories</span><strong>{omrCoveragePercent.currentInventory}%</strong></div><div className="coverage-progress current-inventory"><i style={{ width: `${omrCoveragePercent.currentInventory}%` }} /></div><small>{omrCoverageSummary.currentStreetInventoryVerifiedCount} of {omrCoverageSummary.unitCount} village totals verified from the current official register</small></div>
-                <div className="coverage-progress-row"><div><span>Captured street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>Sholinganallur-1 has {omrGuidelineLiveRegisterSummary.currentInventoryCount} current items, but row-level republication requires permission</small></div>
+                <div className="coverage-progress-row"><div><span>Captured street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>{inr.format(omrGuidelineLiveRegisterSummary.currentInventoryCount)} current items are inventoried, but zero row-level values are captured or republished</small></div>
                 <div className="coverage-progress-row"><div><span>Current verified values</span><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>{omrGuidelineSnapshotSummary.recordCount} archived row is shown separately and excluded from this total</small></div>
                 <div className="coverage-progress-row"><div><span>Planning evidence</span><strong>{omrCoveragePercent.planning}%</strong></div><div className="coverage-progress planning"><i style={{ width: `${omrCoveragePercent.planning}%` }} /></div><small>{omrPlanningSummary.villageCount} of {omrCoverageSummary.unitCount} villages have directly linked CMDA records</small></div>
               </section>
@@ -354,12 +354,12 @@ export default function MitoApp() {
               <section className="inspector-section">
                 <div className="section-heading"><div><span>Release gate</span><h2>OMR cannot pass yet</h2></div><LockKeyhole size={17} /></div>
                 <div className="gate-row passed"><Check size={14} /><span>24 corridor jurisdictions carry official IDs</span></div>
-                <div className="gate-row"><X size={14} /><span>Every jurisdiction must have a known street total</span></div>
+                <div className="gate-row passed"><Check size={14} /><span>All 24 jurisdictions have a current official inventory total</span></div>
                 <div className="gate-row"><X size={14} /><span>100% of official street records must be captured</span></div>
                 <div className="gate-row"><X size={14} /><span>Each record needs source and verification dates</span></div>
               </section>
 
-              <section className="gap-card"><AlertTriangle size={18} /><div><strong>Row-level publication needs permission</strong><p>{omrGuidelineCaptureRun.publicMessage} The current item count is official metadata; it is not permission to copy the register. {omrGuidelineCaptureRun.nextAction}</p></div></section>
+              <section className="gap-card"><AlertTriangle size={18} /><div><strong>Row-level publication needs permission</strong><p>All 24 current village inventories are verified, but their item counts are coverage metadata—not permission to copy the register. {omrGuidelineOmrInventoryAudit.publication.nextAction}</p></div></section>
             </>
           )}
 
@@ -372,9 +372,9 @@ export default function MitoApp() {
                   <div><strong>{omrCoverage.source.title}</strong><p>{omrCoverage.source.organization}</p><small>Retrieved {omrCoverage.source.retrievedAt} · source updated {omrCoverage.source.lastUpdatedBySource}</small></div>
                   <ExternalLink size={15} />
                 </a>
-                <a href={omrGuidelineLiveRegisterAudit.source.url} target="_blank" rel="noreferrer" className="source-card live-source">
+                <a href={omrGuidelineOmrInventoryAudit.source.url} target="_blank" rel="noreferrer" className="source-card live-source">
                   <span className="source-kind official">official</span>
-                  <div><strong>{omrGuidelineLiveRegisterAudit.source.title}</strong><p>{omrGuidelineLiveRegisterAudit.source.organization}</p><small>{omrGuidelineLiveRegisterSummary.currentInventoryCount} current items · checked 16 Jul 2026 · metadata only</small></div>
+                  <div><strong>{omrGuidelineOmrInventoryAudit.source.title}</strong><p>{omrGuidelineOmrInventoryAudit.source.organization}</p><small>{inr.format(omrGuidelineLiveRegisterSummary.currentInventoryCount)} items across {omrGuidelineLiveRegisterSummary.auditedVillageCount} current village queries · metadata only</small></div>
                   <ExternalLink size={15} />
                 </a>
                 <a href={omrGuidelineSnapshotLedger.source.url} target="_blank" rel="noreferrer" className="source-card archived-source">
@@ -400,12 +400,12 @@ export default function MitoApp() {
                 </div>
                 <p className="coverage-method">Only row 11 is visible. Rows 12–17 are redacted and rows 1–10 are absent from the filing. MITO does not infer or reconstruct them.</p>
                 <div className="secondary-match-card">
-                  <span>{omrGuidelineLiveRegisterSummary.currentInventoryCount} current items</span>
-                  <div><strong>Official current inventory supersedes the archived 17-item target</strong><p>The normal TNREGINET village-wise query returned {omrGuidelineLiveRegisterSummary.currentInventoryCount} items for Sholinganallur 1, effective from 1 Jul 2024.</p><small>Visible rows inspected: {omrGuidelineLiveRegisterSummary.visibleRowsInspected} · values republished: {omrGuidelineLiveRegisterSummary.currentOfficialValuesPublished}</small></div>
+                  <span>{omrGuidelineLiveRegisterSummary.sholinganallur1InventoryCount} current items</span>
+                  <div><strong>Official current inventory supersedes the archived 17-item target</strong><p>The normal TNREGINET village-wise query returned {omrGuidelineLiveRegisterSummary.sholinganallur1InventoryCount} items for Sholinganallur 1, effective from 1 Jul 2024.</p><small>Visible rows inspected: {omrGuidelineLiveRegisterSummary.visibleRowsInspected} · values republished: {omrGuidelineLiveRegisterSummary.currentOfficialValuesPublished}</small></div>
                 </div>
                 <div className="inventory-conflict-card resolved">
                   <ShieldCheck size={16} />
-                  <div><strong>Street-count conflict resolved for the current target</strong><p>Live official register: {omrGuidelineLiveRegisterSummary.currentInventoryCount} items. Archived screen: 17. MITO uses the live count and preserves the older count as historical evidence.</p></div>
+                  <div><strong>Street-count conflict resolved for the current target</strong><p>Live official Sholinganallur-1 register: {omrGuidelineLiveRegisterSummary.sholinganallur1InventoryCount} items. Archived screen: 17. MITO uses the live count and preserves the older count as historical evidence.</p></div>
                 </div>
                 <div className="capture-blocker">
                   <span>permission</span>
@@ -459,7 +459,7 @@ export default function MitoApp() {
                 <p>Source record ID, SRO and village codes, street name, classification, raw unit, normalized ₹/sq ft, effective date, snapshot hash, location evidence and verification status are mandatory. An absent official street code is allowed only for a pending archived row and blocks verification. A live inventory count is coverage metadata, not a row import; authorized reuse is required before current values are stored or published.</p>
                 <a href="/api/evidence" target="_blank" rel="noreferrer">Inspect the machine-readable evidence ledger <ArrowUpRight size={13} /></a>
               </div>
-              {["Resolve the official street inventory for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
+              {["Obtain authorized row-level access for every target village", "Capture guideline value, classification and effective date", "Reconcile Tamil and English street names without merging conflicts", "Add registered transactions only when legally accessible", "Audit the 100% release gate before publishing OMR complete"].map((item) => <div className="check-row" key={item}><span /><p>{item}</p></div>)}
               <p className="legal-note">Release ready: <strong>{omrReleaseReady ? "yes" : "no"}</strong>. A missing street total is treated as missing evidence, not zero coverage. Planning records remain separate from price evidence.</p>
             </section>
           )}

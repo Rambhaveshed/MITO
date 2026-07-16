@@ -11,6 +11,8 @@ Dear Sir/Madam,
 
 MITO is an evidence-backed land-intelligence platform being developed to help citizens understand Tamil Nadu land values without confusing government guideline values, registered transactions, asking prices or model estimates.
 
+For the OMR pilot, we have used the normal public interface to verify metadata-only inventory totals for 24 registration villages from Adyar to Mamallapuram. The current register displays 2,715 items across those villages. We have not stored or republished the row-level register content.
+
 We request written permission to collect, normalize and republish the following non-personal fields from the public TNREGINET guideline-value register:
 
 - zone, registration district and sub-registrar office;

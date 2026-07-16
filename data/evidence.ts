@@ -3,6 +3,7 @@ import guidelineImportSchema from "./evidence/guideline-value-import.schema.json
 import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-07-16.json";
 import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-corroboration-2026-07-16.json";
 import guidelineLiveRegisterAudit from "./evidence/tnreginet-live-register-audit-2026-07-16.json";
+import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit-2026-07-16.json";
 import planningLedger from "./evidence/omr-planning-records.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
@@ -20,6 +21,7 @@ export const omrGuidelineCaptureRun = captureRun;
 export const omrGuidelineSnapshotLedger = guidelineSnapshot;
 export const omrGuidelineSecondaryCorroborationLedger = guidelineSecondaryCorroboration;
 export const omrGuidelineLiveRegisterAudit = guidelineLiveRegisterAudit;
+export const omrGuidelineOmrInventoryAudit = guidelineOmrInventoryAudit;
 export const guidelineValueImportSchema = guidelineImportSchema;
 
 const snapshotVillageKeys = new Set(
@@ -48,13 +50,15 @@ export const omrGuidelineSecondaryCorroborationSummary = {
 };
 
 export const omrGuidelineLiveRegisterSummary = {
-  auditedVillageCount: 1,
-  currentInventoryCount: guidelineLiveRegisterAudit.query.displayedItemCount,
+  auditedVillageCount: guidelineOmrInventoryAudit.summary.auditedVillageCount,
+  targetVillageCount: guidelineOmrInventoryAudit.summary.targetVillageCount,
+  currentInventoryCount: guidelineOmrInventoryAudit.summary.displayedItemCountTotal,
+  sholinganallur1InventoryCount: guidelineLiveRegisterAudit.query.displayedItemCount,
   visibleRowsInspected: guidelineLiveRegisterAudit.query.visibleRowsInspected,
-  currentOfficialRowsStored: guidelineLiveRegisterAudit.publication.currentOfficialRowsStored,
-  currentOfficialValuesPublished: guidelineLiveRegisterAudit.publication.currentOfficialGuidelineValuesPublished,
-  officialStreetCodePublished: guidelineLiveRegisterAudit.query.officialStreetCodePublished,
-  permissionRequired: guidelineLiveRegisterAudit.source.reproductionPolicy === "permission_required",
+  currentOfficialRowsStored: guidelineOmrInventoryAudit.summary.currentOfficialRowsStored,
+  currentOfficialValuesPublished: guidelineOmrInventoryAudit.summary.currentOfficialGuidelineValuesPublished,
+  officialStreetCodePublished: guidelineOmrInventoryAudit.summary.officialStreetCodesPublished > 0,
+  permissionRequired: guidelineOmrInventoryAudit.source.reproductionPolicy === "permission_required",
   reconciliationStatus: guidelineLiveRegisterAudit.reconciliation.status,
 };
 
