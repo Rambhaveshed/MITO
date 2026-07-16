@@ -1,6 +1,8 @@
 import {
   chennaiRevenueCoverage,
   chennaiRevenueSummary,
+  chennaiRegistrationCrosswalk,
+  chennaiTalukCrosswalkProgress,
   resolveChennaiRevenuePlace,
 } from "../../../data/chennai";
 
@@ -15,7 +17,16 @@ export async function GET(request: Request) {
     officialClaims: chennaiRevenueCoverage.officialClaims,
     conflicts: chennaiRevenueCoverage.conflicts,
     publication: chennaiRevenueCoverage.publication,
+    registrationCrosswalk: {
+      id: chennaiRegistrationCrosswalk.id,
+      compiledAt: chennaiRegistrationCrosswalk.compiledAt,
+      methodology: chennaiRegistrationCrosswalk.methodology,
+      summary: chennaiRegistrationCrosswalk.summary,
+      publication: chennaiRegistrationCrosswalk.publication,
+      limitations: chennaiRegistrationCrosswalk.limitations,
+    },
     sources: chennaiRevenueCoverage.sources,
+    talukCrosswalkProgress: query === null ? chennaiTalukCrosswalkProgress : undefined,
     taluks: query === null ? chennaiRevenueCoverage.taluks : undefined,
     resolution: query === null ? undefined : resolveChennaiRevenuePlace(query),
   });

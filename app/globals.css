@@ -425,6 +425,15 @@ button {
 .chennai-source-card .coverage-unit-state i { background: #d09b36; }
 .coverage-unit-state.source-only { color: #7d6b49; }
 .coverage-unit-state.source-only b { color: #9a7221; }
+.chennai-source-card.crosswalk-verified { border-style: solid; border-color: #b8d6ca; background: #f2f9f5; }
+.chennai-source-card.crosswalk-verified .coverage-unit-index { color: #275f4f; background: #dceee6; }
+.chennai-source-card.crosswalk-verified .coverage-unit-state i { background: #3c966d; }
+.coverage-unit-state.crosswalk-linked { color: #376d5a; }
+.coverage-unit-state.crosswalk-linked b { color: #2c6c55; }
+.chennai-source-card.crosswalk-ambiguous { border-color: #dcc797; background: #fffaf0; }
+.chennai-source-card.crosswalk-ambiguous .coverage-unit-state i { background: #bd8726; }
+.coverage-unit-state.crosswalk-pending { color: #806124; }
+.coverage-unit-state.crosswalk-pending b { color: #946c1d; }
 .resolver-notice { margin: 0 3px 8px; padding: 8px 9px; border: 1px solid #d9e1dd; border-radius: 9px; background: #f8faf8; }
 .resolver-notice strong, .resolver-notice span { display: block; }
 .resolver-notice strong { color: var(--green); font-size: 8px; }

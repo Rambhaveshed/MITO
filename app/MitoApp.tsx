@@ -30,6 +30,8 @@ import {
   chennaiRevenueCoverage,
   chennaiRevenueSummary,
   chennaiRevenueUnits,
+  chennaiRegistrationCrosswalk,
+  chennaiTalukCrosswalkProgress,
   resolveChennaiRevenuePlace,
 } from "../data/chennai";
 import {
@@ -192,10 +194,12 @@ export default function MitoApp() {
     : selectedChennaiUnit?.name ?? "Chennai District expansion";
   const coverageInspectorSubtitle = coverageScope === "omr"
     ? selectedCoverageUnit ? `${selectedCoverageUnit.nameTa} · ${selectedCoverageOffice?.nameEn} SRO` : "Adyar → Mamallapuram · official jurisdiction ledger"
-    : selectedChennaiUnit ? `${selectedChennaiUnit.talukName} taluk · revenue source row` : "426 sq km · source inventory awaiting registration crosswalk";
+    : selectedChennaiUnit
+      ? `${selectedChennaiUnit.talukName} taluk · ${selectedChennaiUnit.registrationCrosswalkStatus === "verified" ? "verified registration link" : "revenue source row"}`
+      : `426 sq km · ${chennaiRevenueSummary.registrationCrosswalkCount} of ${chennaiRevenueSummary.sourceVillageCount} registration links verified`;
   const coverageInspectorEyebrow = coverageScope === "omr"
     ? selectedCoverageUnit ? "Verified registration village" : "Auditable coverage programme"
-    : selectedChennaiUnit ? "Official revenue source entry" : "Chennai expansion programme";
+    : selectedChennaiUnit ? selectedChennaiUnit.registrationCrosswalkStatus === "verified" ? "Verified registration crosswalk" : "Official revenue source entry" : "Chennai expansion programme";
 
   const activeComparableRates = selected.comparables
     .filter((comparable) => selectedComparables.includes(comparable.id))
@@ -312,7 +316,7 @@ export default function MitoApp() {
           >
             <MapPin size={15} /> {coverageScope === "omr" ? "OMR pilot" : "Chennai District"} <ChevronDown size={14} />
           </button>
-          <div className="release-pill"><span /> {coverageScope === "omr" ? "24 current inventories" : "144 source rows · conflict open"}</div>
+          <div className="release-pill"><span /> {coverageScope === "omr" ? "24 current inventories" : `${chennaiRevenueSummary.registrationCrosswalkCount} verified links · conflict open`}</div>
         </div>
         <div className="topbar-actions">
           <button className="text-button" type="button">தமிழ்</button>
@@ -441,16 +445,23 @@ export default function MitoApp() {
                   key={unit.key}
                   type="button"
                   aria-pressed={selectedChennaiKey === unit.key}
-                  className={`coverage-unit-card chennai-source-card ${selectedChennaiKey === unit.key ? "selected" : ""}`}
+                  className={`coverage-unit-card chennai-source-card ${unit.registrationCrosswalkStatus === "verified" ? "crosswalk-verified" : unit.registrationCrosswalkStatus === "ambiguous" ? "crosswalk-ambiguous" : ""} ${selectedChennaiKey === unit.key ? "selected" : ""}`}
                   onClick={() => selectChennaiUnit(unit.key)}
                 >
                   <div className="coverage-unit-index">{unit.talukSequence}.{unit.sequence}</div>
                   <div>
                     <strong>{unit.name}</strong>
                     <span>{unit.talukName} taluk · official source spelling</span>
-                    <small>Registration ID, Tamil alias and geometry pending</small>
+                    <small>{unit.registrationCrosswalk
+                      ? `${unit.registrationCrosswalk.officialSroName} SRO · village ID ${unit.registrationCrosswalk.officialVillageCode}`
+                      : unit.crosswalkAmbiguity
+                        ? `Candidate ${unit.crosswalkAmbiguity.candidateRegistrationVillageName} split unresolved`
+                        : "Registration ID, Tamil alias and geometry pending"}</small>
                   </div>
-                  <div className="coverage-unit-state source-only"><i /> source row<br /><b>0 current values</b></div>
+                  <div className={`coverage-unit-state ${unit.registrationCrosswalkStatus === "verified" ? "crosswalk-linked" : unit.registrationCrosswalkStatus === "ambiguous" ? "crosswalk-pending" : "source-only"}`}>
+                    <i /> {unit.registrationCrosswalkStatus === "verified" ? "verified link" : unit.registrationCrosswalkStatus === "ambiguous" ? "ambiguous" : "source row"}<br />
+                    <b>{unit.registrationCrosswalk ? `${inr.format(unit.registrationCrosswalk.currentInventoryItemCount)} inventory items · values withheld` : "0 current values"}</b>
+                  </div>
                 </button>
               ))}
               {!filteredChennaiUnits.length && <div className="empty-list"><Search size={19} /><strong>No verified source match</strong><span>{chennaiResolution.explanation}</span></div>}
@@ -479,7 +490,7 @@ export default function MitoApp() {
         {activeView === "Coverage" ? (
           <>
             <span><i className="legend-gap" /> Village geometry unplotted</span>
-            <span>{coverageScope === "omr" ? "Search the verified jurisdiction ledger" : "Source inventory · crosswalk pending"}</span>
+            <span>{coverageScope === "omr" ? "Search the verified jurisdiction ledger" : `${chennaiRevenueSummary.registrationCrosswalkCount} verified links · ${chennaiRevenueSummary.ambiguousRegistrationCrosswalkCount} ambiguities`}</span>
           </>
         ) : (
           <>
@@ -511,8 +522,10 @@ export default function MitoApp() {
                   ? <><strong>{inr.format(selectedCoverageUnit.streetTargetCount)}</strong><span>current official inventory items</span></>
                   : <><strong>{omrCoveragePercent.streetRegister}%</strong><span>verified street registers</span></>
                 : selectedChennaiUnit
-                  ? <><strong>0</strong><span>current official values</span></>
-                  : <><strong>{chennaiRevenueSummary.sourceVillageCount}</strong><span>source-listed village rows</span></>
+                  ? selectedChennaiUnit.registrationCrosswalk
+                    ? <><strong>{inr.format(selectedChennaiUnit.registrationCrosswalk.currentInventoryItemCount)}</strong><span>current official inventory items</span></>
+                    : <><strong>0</strong><span>current official values</span></>
+                  : <><strong>{chennaiRevenueSummary.registrationCrosswalkCount}</strong><span>verified registration links</span></>
             ) : selected.price ? (
               <><strong>{formatRate(selected.price.low)}–{formatRate(selected.price.high)}</strong><span>per sq ft</span></>
             ) : (
@@ -522,7 +535,13 @@ export default function MitoApp() {
           <div className="price-type"><Info size={14} /> {activeView === "Coverage"
             ? coverageScope === "omr"
               ? selectedCoverageUnit ? "0 current values published · row access pending" : "Jurisdictions are mapped; price evidence is not complete"
-              : selectedChennaiUnit ? "Registration crosswalk and price evidence pending" : "Official source counts conflict · Chennai is not complete"
+              : selectedChennaiUnit
+                ? selectedChennaiUnit.registrationCrosswalkStatus === "verified"
+                  ? "Registration identity verified · 0 current values published"
+                  : selectedChennaiUnit.registrationCrosswalkStatus === "ambiguous"
+                    ? "Registration split unresolved · 0 current values published"
+                    : "Registration crosswalk and price evidence pending"
+                : "Nine registration links verified · Chennai is not complete"
             : selected.price?.type ?? "MITO will not manufacture a price"}</div>
         </div>
 
@@ -818,11 +837,22 @@ export default function MitoApp() {
           {activeView === "Coverage" && coverageScope === "chennai" && inspectorTab === "Overview" && (
             selectedChennaiUnit ? (
               <>
-                <section className="confidence-card coverage-confidence source-inventory-confidence">
-                  <div className="confidence-badge"><Database size={17} /></div>
-                  <div><strong>Official revenue source row captured</strong><span>Taluk {selectedChennaiUnit.talukSequence} · row {selectedChennaiUnit.sequence} · source spelling preserved</span></div>
+                <section className={`confidence-card coverage-confidence ${selectedChennaiUnit.registrationCrosswalkStatus === "verified" ? "" : "source-inventory-confidence"}`}>
+                  <div className="confidence-badge">{selectedChennaiUnit.registrationCrosswalkStatus === "verified" ? <MapPin size={17} /> : selectedChennaiUnit.registrationCrosswalkStatus === "ambiguous" ? <AlertTriangle size={17} /> : <Database size={17} />}</div>
+                  <div>
+                    <strong>{selectedChennaiUnit.registrationCrosswalkStatus === "verified" ? "Official registration identity resolved" : selectedChennaiUnit.registrationCrosswalkStatus === "ambiguous" ? "Source split preserved as unresolved" : "Official revenue source row captured"}</strong>
+                    <span>Taluk {selectedChennaiUnit.talukSequence} · row {selectedChennaiUnit.sequence} · source spelling preserved</span>
+                  </div>
                   <ShieldCheck size={20} />
                 </section>
+
+                {selectedChennaiUnit.registrationCrosswalk && (
+                  <section className="live-register-card">
+                    <div><Database size={17} /></div>
+                    <p><strong>{inr.format(selectedChennaiUnit.registrationCrosswalk.currentInventoryItemCount)} current official inventory items</strong><span>{selectedChennaiUnit.registrationCrosswalk.officialSroName} SRO · registration village {selectedChennaiUnit.registrationCrosswalk.officialVillageCode} · audited {selectedChennaiUnit.registrationCrosswalk.currentInventoryAsOf}</span></p>
+                    <em>Metadata</em>
+                  </section>
+                )}
 
                 <section className="inspector-section">
                   <div className="section-heading"><div><span>Source identity</span><h2>What this row establishes</h2></div><MapPin size={17} /></div>
@@ -831,28 +861,41 @@ export default function MitoApp() {
                     <div><dt>Source taluk</dt><dd>{selectedChennaiUnit.talukName}</dd></div>
                     <div><dt>MITO source key</dt><dd>{selectedChennaiUnit.key}</dd></div>
                     <div><dt>Source status</dt><dd>Official page listed</dd></div>
-                    <div><dt>Registration crosswalk</dt><dd>Not started</dd></div>
+                    <div><dt>Registration crosswalk</dt><dd>{selectedChennaiUnit.registrationCrosswalkStatus === "verified" ? "Verified" : selectedChennaiUnit.registrationCrosswalkStatus === "ambiguous" ? "Unresolved split" : "Not started"}</dd></div>
                     <div><dt>Geometry</dt><dd>Unplotted</dd></div>
+                    {selectedChennaiUnit.registrationCrosswalk && <div><dt>Sub Registrar Office</dt><dd>{selectedChennaiUnit.registrationCrosswalk.officialSroName} · {selectedChennaiUnit.registrationCrosswalk.officialSroCode}</dd></div>}
+                    {selectedChennaiUnit.registrationCrosswalk && <div><dt>Official village ID</dt><dd>{selectedChennaiUnit.registrationCrosswalk.officialVillageCode}</dd></div>}
                   </dl>
                 </section>
 
                 <section className="inspector-section">
                   <div className="section-heading"><div><span>Evidence status</span><h2>No price claim yet</h2></div><LockKeyhole size={17} /></div>
                   <div className="planning-evidence-summary village-evidence-summary">
-                    <div><strong>0</strong><span>registration IDs</span></div>
+                    <div><strong>{selectedChennaiUnit.registrationCrosswalk ? 1 : 0}</strong><span>registration IDs</span></div>
                     <div><strong>0</strong><span>guideline values</span></div>
                     <div><strong>0</strong><span>transactions</span></div>
                   </div>
-                  <p className="coverage-method">The official page proves only that this name appears under {selectedChennaiUnit.talukName}. It does not prove a TNREGINET village, parcel, ward, street, boundary or price.</p>
+                  <p className="coverage-method">{selectedChennaiUnit.registrationCrosswalk
+                    ? `The revenue row is linked to ${selectedChennaiUnit.registrationCrosswalk.registrationVillageName} in ${selectedChennaiUnit.registrationCrosswalk.officialSroName} SRO. That proves a registration identity and inventory size—not a parcel, street geometry, guideline value, transaction or market price.`
+                    : selectedChennaiUnit.crosswalkAmbiguity
+                      ? selectedChennaiUnit.crosswalkAmbiguity.reason
+                      : `The official page proves only that this name appears under ${selectedChennaiUnit.talukName}. It does not prove a registration village, parcel, ward, street, boundary or price.`}</p>
                 </section>
 
-                <section className="gap-card"><AlertTriangle size={18} /><div><strong>Registration identity must be resolved next</strong><p>MITO will not reuse a matching place name as a registration crosswalk. The exact registration district, SRO, village code and current inventory must be independently verified.</p></div></section>
+                <section className="gap-card"><AlertTriangle size={18} /><div>
+                  <strong>{selectedChennaiUnit.registrationCrosswalk ? "Price rows remain permission-gated" : selectedChennaiUnit.crosswalkAmbiguity ? "Do not collapse the revenue split" : "Registration identity must be resolved next"}</strong>
+                  <p>{selectedChennaiUnit.registrationCrosswalk
+                    ? `${selectedChennaiUnit.registrationCrosswalk.currentInventoryItemCount} is a register item count, not a price. MITO stores zero current row-level values for this crosswalk.`
+                    : selectedChennaiUnit.crosswalkAmbiguity
+                      ? `The candidate registration village ${selectedChennaiUnit.crosswalkAmbiguity.candidateRegistrationVillageName} cannot be assigned until an authoritative subdivision crosswalk is found.`
+                      : "MITO will not reuse a matching place name as a registration crosswalk. The exact registration district, SRO, village code and current inventory must be independently verified."}</p>
+                </div></section>
               </>
             ) : (
               <>
                 <section className="confidence-card coverage-confidence source-inventory-confidence">
                   <div className="confidence-badge"><Database size={17} /></div>
-                  <div><strong>{chennaiRevenueSummary.sourceVillageCount} official source rows captured</strong><span>{chennaiRevenueSummary.talukGroupCount} listed taluk groups · {chennaiRevenueSummary.firkaCount} firkas · zero registration mappings</span></div>
+                  <div><strong>{chennaiRevenueSummary.sourceVillageCount} official source rows captured</strong><span>{chennaiRevenueSummary.registrationCrosswalkCount} verified registration links · {chennaiRevenueSummary.ambiguousRegistrationCrosswalkCount} source splits unresolved</span></div>
                   <ShieldCheck size={20} />
                 </section>
 
@@ -863,7 +906,8 @@ export default function MitoApp() {
                     <div><dt>GCC zones</dt><dd>{chennaiRevenueCoverage.officialClaims.greaterChennaiCorporation.zones}</dd></div>
                     <div><dt>GCC wards</dt><dd>{chennaiRevenueCoverage.officialClaims.greaterChennaiCorporation.wards}</dd></div>
                     <div><dt>Preferred table rows</dt><dd>{chennaiRevenueSummary.sourceVillageCount}</dd></div>
-                    <div><dt>Registration crosswalks</dt><dd>0</dd></div>
+                    <div><dt>Registration crosswalks</dt><dd>{chennaiRevenueSummary.registrationCrosswalkCount}</dd></div>
+                    <div><dt>Inventory metadata</dt><dd>{inr.format(chennaiRevenueSummary.currentInventoryItemCount)} items</dd></div>
                     <div><dt>Current price values</dt><dd>0</dd></div>
                   </dl>
                   <p className="coverage-method">{chennaiRevenueCoverage.scopeDefinition}</p>
@@ -872,7 +916,8 @@ export default function MitoApp() {
                 <section className="inspector-section">
                   <div className="section-heading"><div><span>Expansion progress</span><h2>What is actually complete</h2></div><Database size={17} /></div>
                   <div className="coverage-progress-row"><div><span>Preferred official source table captured</span><strong>144/144</strong></div><div className="coverage-progress"><i style={{ width: "100%" }} /></div><small>This proves source capture only; the official page conflict remains open.</small></div>
-                  <div className="coverage-progress-row"><div><span>Registration crosswalks</span><strong>0/144</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>SRO and registration-village identifiers are not yet assigned.</small></div>
+                  <div className="coverage-progress-row"><div><span>Registration crosswalks</span><strong>{chennaiRevenueSummary.registrationCrosswalkCount}/144</strong></div><div className="coverage-progress"><i style={{ width: `${chennaiRevenueSummary.crosswalkCoveragePercent}%` }} /></div><small>{chennaiRevenueSummary.taluksWithVerifiedCrosswalks} taluks have verified OMR overlaps · {chennaiRevenueSummary.ambiguousRegistrationCrosswalkCount} split rows remain unresolved</small></div>
+                  <div className="coverage-progress-row"><div><span>Current inventory metadata</span><strong>{inr.format(chennaiRevenueSummary.currentInventoryItemCount)}</strong></div><div className="coverage-progress current-inventory"><i style={{ width: `${chennaiRevenueSummary.crosswalkCoveragePercent}%` }} /></div><small>{chennaiRevenueSummary.currentInventoryMetadataCount} linked registration villages · row-level values withheld</small></div>
                   <div className="coverage-progress-row"><div><span>Current verified price rows</span><strong>0</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>No guideline value or transaction is published from this expansion inventory.</small></div>
                 </section>
 
@@ -903,6 +948,55 @@ export default function MitoApp() {
                 )}
                 <p className="coverage-method">MITO selected the detailed 17-group, 144-row table as the working source inventory because it contains the most granular current official list. That preference does not resolve the source conflict.</p>
               </section>
+
+              {selectedChennaiUnit?.registrationCrosswalk && (
+                <section className="inspector-section evidence-section">
+                  <div className="section-heading"><div><span>Registration evidence</span><h2>Verified OMR overlap</h2></div><ShieldCheck size={17} /></div>
+                  <dl className="detail-grid">
+                    <div><dt>Registration district</dt><dd>{selectedChennaiUnit.registrationCrosswalk.officialDistrictName} · {selectedChennaiUnit.registrationCrosswalk.officialDistrictCode}</dd></div>
+                    <div><dt>Sub Registrar Office</dt><dd>{selectedChennaiUnit.registrationCrosswalk.officialSroName} · {selectedChennaiUnit.registrationCrosswalk.officialSroCode}</dd></div>
+                    <div><dt>Official village ID</dt><dd>{selectedChennaiUnit.registrationCrosswalk.officialVillageCode}</dd></div>
+                    <div><dt>Register label</dt><dd>{selectedChennaiUnit.registrationCrosswalk.guidelineVillageName}</dd></div>
+                    <div><dt>Inventory metadata</dt><dd>{inr.format(selectedChennaiUnit.registrationCrosswalk.currentInventoryItemCount)} items</dd></div>
+                    <div><dt>Verified</dt><dd>{selectedChennaiUnit.registrationCrosswalk.verifiedAt}</dd></div>
+                  </dl>
+                  <p className="coverage-method">{chennaiRegistrationCrosswalk.methodology}</p>
+                  <div className="capture-blocker">
+                    <span>permission</span>
+                    <div><strong>Identity verified; current values still withheld</strong><p>The linked inventory count is metadata. No current street names, classifications or guideline-value rows are stored or republished.</p><small>{chennaiRegistrationCrosswalk.publication.blockerCode}</small></div>
+                  </div>
+                </section>
+              )}
+
+              {selectedChennaiUnit?.crosswalkAmbiguity && (
+                <section className="inspector-section evidence-section">
+                  <div className="section-heading"><div><span>Crosswalk conflict</span><h2>Revenue subdivision unresolved</h2></div><AlertTriangle size={17} /></div>
+                  <dl className="detail-grid">
+                    <div><dt>Candidate SRO ID</dt><dd>{selectedChennaiUnit.crosswalkAmbiguity.candidateOfficialSroCode}</dd></div>
+                    <div><dt>Candidate village ID</dt><dd>{selectedChennaiUnit.crosswalkAmbiguity.candidateOfficialVillageCode}</dd></div>
+                    <div><dt>Candidate label</dt><dd>{selectedChennaiUnit.crosswalkAmbiguity.candidateRegistrationVillageName}</dd></div>
+                    <div><dt>MITO status</dt><dd>Unresolved</dd></div>
+                  </dl>
+                  <div className="inventory-conflict-card"><AlertTriangle size={16} /><div><strong>Name overlap rejected as proof</strong><p>{selectedChennaiUnit.crosswalkAmbiguity.reason}</p></div></div>
+                </section>
+              )}
+
+              {!selectedChennaiUnit && (
+                <section className="inspector-section evidence-section">
+                  <div className="section-heading"><div><span>Registration crosswalk</span><h2>{chennaiRevenueSummary.registrationCrosswalkCount} verified overlaps</h2></div><Route size={17} /></div>
+                  <div className="planning-evidence-summary">
+                    <div><strong>{chennaiRevenueSummary.registrationCrosswalkCount}</strong><span>verified links</span></div>
+                    <div><strong>{chennaiRevenueSummary.ambiguousRegistrationCrosswalkCount}</strong><span>ambiguities</span></div>
+                    <div><strong>{inr.format(chennaiRevenueSummary.currentInventoryItemCount)}</strong><span>inventory items</span></div>
+                  </div>
+                  <p className="coverage-method">{chennaiRegistrationCrosswalk.methodology}</p>
+                  <div className="office-ledger">
+                    {chennaiTalukCrosswalkProgress.filter((taluk) => taluk.verifiedCrosswalkCount > 0 || taluk.ambiguousCrosswalkCount > 0).map((taluk) => (
+                      <div key={taluk.talukSequence}><span>{taluk.talukName}<small>{taluk.sourceVillageCount} source rows</small></span><strong>{taluk.verifiedCrosswalkCount} verified</strong><b>{taluk.ambiguousCrosswalkCount} ambiguous</b></div>
+                    ))}
+                  </div>
+                </section>
+              )}
 
               <section className="inspector-section evidence-section">
                 <div className="section-heading"><div><span>Conflict ledger</span><h2>Current official pages disagree</h2></div><AlertTriangle size={17} /></div>
@@ -938,7 +1032,7 @@ export default function MitoApp() {
                 <div className="section-heading"><div><span>Expansion method</span><h2>{selectedChennaiUnit ? "Resolve this row safely" : "Move from names to evidence"}</h2></div><Route size={17} /></div>
                 <ol className="lookup-steps">
                   <li>Reconcile the official district source conflict without deleting any published interpretation.</li>
-                  <li>Resolve each revenue row to its registration district, SRO and registration-village ID.</li>
+                  <li>Extend the verified registration crosswalk beyond the {chennaiRevenueSummary.registrationCrosswalkCount} exact OMR overlaps.</li>
                   <li>Capture Tamil and portal spellings with explicit ambiguity rules.</li>
                   <li>Verify the current official inventory before requesting or importing authorized row-level values.</li>
                   <li>Add ward, street and geometry links only when an authoritative crosswalk supports them.</li>
@@ -949,11 +1043,12 @@ export default function MitoApp() {
               <section className="inspector-section context-section">
                 <div className="section-heading"><div><span>Release gate</span><h2>Chennai cannot pass yet</h2></div><LockKeyhole size={17} /></div>
                 <div className="gate-row passed"><Check size={14} /><span>Preferred official 144-row source table captured</span></div>
+                <div className="gate-row passed"><Check size={14} /><span>{chennaiRevenueSummary.registrationCrosswalkCount} registration links independently verified</span></div>
                 <div className="gate-row"><X size={14} /><span>Official 122-versus-144 village conflict must be reconciled</span></div>
                 <div className="gate-row"><X size={14} /><span>Every row needs a verified registration crosswalk</span></div>
                 <div className="gate-row"><X size={14} /><span>Authorized current price evidence must be captured</span></div>
                 <div className="gate-row"><X size={14} /><span>Geometry and street coverage must be audited</span></div>
-                <p className="legal-note">A source-listed village is searchable but remains unplotted and unpriced. Missing evidence is never treated as a zero price or a safe property.</p>
+                <p className="legal-note">A verified crosswalk identifies a registration jurisdiction and inventory size only. All Chennai rows remain unplotted and unpriced; missing evidence is never treated as a zero price or a safe property.</p>
               </section>
             </>
           )}

@@ -161,13 +161,35 @@ test("Chennai coverage API publishes the source inventory and unresolved officia
   assert.equal(payload.summary.talukGroupCount, 17);
   assert.equal(payload.summary.sourceVillageCount, 144);
   assert.equal(payload.summary.firkaCount, 49);
-  assert.equal(payload.summary.registrationCrosswalkCount, 0);
+  assert.equal(payload.summary.registrationCrosswalkCount, 9);
+  assert.equal(payload.summary.ambiguousRegistrationCrosswalkCount, 3);
+  assert.equal(payload.summary.currentInventoryMetadataCount, 9);
+  assert.equal(payload.summary.currentInventoryItemCount, 2117);
   assert.equal(payload.summary.officialGuidelineValueCount, 0);
   assert.equal(payload.summary.registeredTransactionCount, 0);
   assert.equal(payload.summary.plottedGeometryCount, 0);
   assert.equal(payload.summary.conflictCount, 1);
   assert.equal(payload.taluks.length, 17);
+  assert.equal(payload.talukCrosswalkProgress.find((taluk) => taluk.talukName === "Velachery").verifiedCrosswalkCount, 2);
+  assert.equal(payload.talukCrosswalkProgress.find((taluk) => taluk.talukName === "Sholinganallur").verifiedCrosswalkCount, 7);
+  assert.equal(payload.registrationCrosswalk.summary.currentOfficialValuesPublished, 0);
   assert.equal(payload.conflicts[0].status, "unresolved");
+});
+
+test("Chennai resolver exposes a verified registration identity without inventing a price", async () => {
+  const response = await render("/api/chennai-coverage?query=Taramani");
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  const match = payload.resolution.matches[0];
+  assert.equal(payload.resolution.status, "matched");
+  assert.equal(match.key, "8:3");
+  assert.equal(match.registrationCrosswalkStatus, "verified");
+  assert.equal(match.registrationCrosswalk.officialSroCode, "20051");
+  assert.equal(match.registrationCrosswalk.officialVillageCode, "7");
+  assert.equal(match.registrationCrosswalk.currentInventoryItemCount, 80);
+  assert.equal(match.officialGuidelineValues, 0);
+  assert.equal(match.registeredTransactions, 0);
+  assert.equal(match.geometryStatus, "unplotted");
 });
 
 test("Chennai resolver keeps duplicate village names separate by taluk", async () => {

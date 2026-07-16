@@ -40,11 +40,15 @@ The resolver never geocodes an address or assigns a parcel. It exposes ambiguity
 
 ## Chennai District expansion
 
-MITO's next coverage scope is the 426 sq km Chennai District / Greater Chennai Corporation area, kept separate from the much larger Chennai Metropolitan Area. The preferred current Chennai District Revenue Administration table contains 17 taluk groups, 49 firkas and 144 village rows. Every source spelling is searchable and remains unplotted and unpriced until a registration crosswalk is verified.
+MITO's next coverage scope is the 426 sq km Chennai District / Greater Chennai Corporation area, kept separate from the much larger Chennai Metropolitan Area. The preferred current Chennai District Revenue Administration table contains 17 taluk groups, 49 firkas and 144 village rows. Every source spelling is searchable and remains unplotted and unpriced.
+
+Nine source rows now have independently verified registration-village links inherited from the completed OMR jurisdiction audit: Taramani and Kanagam in Velachery taluk, plus Sholinganallur-I, Sholinganallur-II, Semmancheri, Perungudi, Karapakkam, Okkiyam Thoraipakkam and Seevaram in Sholinganallur taluk. Together, their current official inventories contain 2,117 items. These are inventory counts, not guideline values: MITO still stores and publishes zero current row-level values for the Chennai expansion.
+
+Three Guindy taluk source rows—Adayar Part I, Adayar Government Farm and Adayar Part II—remain explicitly unresolved against the single verified Adyar registration village. MITO does not assign one registration ID to all three merely because the names overlap. The crosswalk ledger is in `data/evidence/chennai-registration-crosswalk-2026-07-17.json`.
 
 The official sources conflict: the Chennai District homepage reports 16 taluks and 122 villages; the detailed Revenue Administration page says 17 taluks in one summary, labels a section as 16, lists 17 groups and totals 144 villages; the separate Village page lists only 10 taluk groups and 68 rows. MITO preserves this conflict and cannot call Chennai complete until it is reconciled. The ledger is in `data/coverage/chennai-district-revenue-2026-07-16.json`.
 
-The Chennai scope adds `/api/chennai-coverage`, with optional deterministic source-table search such as `/api/chennai-coverage?query=Alandur`. A source-name match never becomes a TNREGINET ID, ward, parcel, geometry, guideline value or market estimate.
+The Chennai scope adds `/api/chennai-coverage`, with optional deterministic source-table search such as `/api/chennai-coverage?query=Taramani`. The endpoint exposes verified registration metadata, unresolved splits and zero-value publication status. A source-name match without independent evidence never becomes a TNREGINET ID, ward, parcel, geometry, guideline value or market estimate.
 
 The map markers in this pilot are approximate locality anchors. They are not parcel, property or transaction coordinates. Individual listing evidence stays unplotted until the location can be independently verified.
 

@@ -58,11 +58,13 @@
   ],
   "publication": {
     "geometryStatus": "unplotted",
-    "registrationCrosswalkStatus": "not_started",
+    "registrationCrosswalkStatus": "partial_verified",
+    "verifiedRegistrationCrosswalks": 9,
+    "ambiguousRegistrationCrosswalks": 3,
     "officialGuidelineValuesPublished": 0,
     "registeredTransactionsPublished": 0,
     "marketEstimatesPublished": 0,
-    "caveat": "A revenue-village name does not establish a registration village, ward, parcel, survey boundary, street or price. No coordinates are assigned from this inventory."
+    "caveat": "Nine rows have independently verified registration identities from the existing OMR evidence programme. Every other revenue-village name still does not establish a registration village, ward, parcel, survey boundary, street or price. No coordinates are assigned from this inventory."
   },
   "taluks": [
     { "sequence": 1, "sourceName": "Tondiarpet", "firkaCount": 4, "villageCount": 4, "villages": ["Tondiarpet Part I", "Tondiarpet Part II", "Tondiarpet Part III", "Tondiarpet Part IV"] },
