@@ -124,8 +124,8 @@ test("official planning records stay scoped, unplotted and source-backed", async
   const sourceIds = new Set(ledger.sources.map((source) => source.id));
   const recordIds = ledger.records.map((record) => record.id);
 
-  assert.equal(ledger.sources.length, 11);
-  assert.equal(ledger.records.length, 29);
+  assert.equal(ledger.sources.length, 12);
+  assert.equal(ledger.records.length, 30);
   assert.equal(new Set(recordIds).size, recordIds.length);
   assert.ok(ledger.records.every((record) => sourceIds.has(record.sourceId)));
   assert.ok(ledger.records.every((record) => record.scopeCaveat.length > 40));
@@ -205,6 +205,31 @@ test("Semmancheri approved-plan metrics preserve the local permit and geometry l
   assert.equal(record.siteMetrics.fsiFactor, 1.917);
   assert.equal(record.siteMetrics.landLeftForRoadWideningSqm, 16.8);
   assert.equal(record.siteMetrics.buildingHeightM, 17.97);
+  assert.equal(record.siteMetrics.localBodyBuildingPermitRequired, true);
+  assert.equal(record.geometryStatus, "unplotted");
+  assert.equal(record.privacy.personalDataFieldsStored, 0);
+  assert.match(record.locationEvidence, /not to scale/i);
+  assert.match(record.scopeCaveat, /not a local-body building permit/i);
+});
+
+test("Okkiyam Thoraipakkam approved-plan metrics preserve the local permit and geometry limits", async () => {
+  const ledger = await readJson(planningUrl);
+  const source = ledger.sources.find((candidate) => candidate.id === "cmda-pp-nhrb-s-0429-2022-approved-plan");
+  const record = ledger.records.find((candidate) => candidate.id === "cmda-pp-nhrb-s-0429-2022-okkiyam-thoraipakkam");
+
+  assert.equal(source.sha256, "be34c06ab86956b7db73243209025221d90093aafb605f0c1ae611c3d8683ea1");
+  assert.equal(source.sourceDate, "2023-04-19");
+  assert.equal(record.officialSroCode, "20066");
+  assert.equal(record.officialVillageCode, "250");
+  assert.equal(record.decisionStatus, "planning_permission_approved_subject_to_local_building_permit");
+  assert.equal(record.siteMetrics.siteAreaAsPerPattaSqm, 1400);
+  assert.equal(record.siteMetrics.areaConsideredForFsiSqm, 1383.64);
+  assert.equal(record.siteMetrics.totalFsiAreaSqm, 3427.51);
+  assert.equal(record.siteMetrics.fsiFactor, 2.477);
+  assert.equal(record.siteMetrics.landLeftForRoadWideningSqm, 0);
+  assert.equal(record.siteMetrics.buildingHeightM, 18.3);
+  assert.equal(record.siteMetrics.parking.carsProvided, 30);
+  assert.equal(record.siteMetrics.parking.twoWheelersProvided, 113);
   assert.equal(record.siteMetrics.localBodyBuildingPermitRequired, true);
   assert.equal(record.geometryStatus, "unplotted");
   assert.equal(record.privacy.personalDataFieldsStored, 0);

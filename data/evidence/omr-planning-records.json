@@ -127,6 +127,19 @@
       "sourcePages": [1, 2],
       "sha256": "eef29ec6815f9f05625c1c5ed379ea8321bb916acd02120019faf6521761d39c",
       "verificationStatus": "verified"
+    },
+    {
+      "id": "cmda-pp-nhrb-s-0429-2022-approved-plan",
+      "organization": "Chennai Metropolitan Development Authority",
+      "title": "Approved plan — CMDA/PP/NHRB/S/0429/2022",
+      "category": "official_approved_plan",
+      "url": "https://www.cmdachennai.gov.in/pdfs/OnlinePPAApprovalDetails/PP-NHRB-S-0429-2022/ApprovedPlan.pdf",
+      "sourceDate": "2023-04-19",
+      "sourceDateBasis": "Approval date printed on sheet 1; CMDA digital signature dated 2023-04-20",
+      "retrievedAt": "2026-07-17",
+      "sourcePages": [1, 2],
+      "sha256": "be34c06ab86956b7db73243209025221d90093aafb605f0c1ae611c3d8683ea1",
+      "verificationStatus": "verified"
     }
   ],
   "indexAudits": [
@@ -909,6 +922,63 @@
           "carsProvided": 17,
           "twoWheelersRequired": 64,
           "twoWheelersProvided": 68
+        },
+        "localBodyBuildingPermitRequired": true
+      },
+      "privacy": {
+        "personalDataFieldsStored": 0,
+        "excludedFields": ["owner names", "signatures", "professional names", "QR payload"]
+      },
+      "qualityFlags": [
+        "site_specific_approval",
+        "local_body_building_permit_required",
+        "current_construction_status_unknown",
+        "title_not_inferred",
+        "approved_plan_geometry_not_digitised",
+        "key_plan_not_to_scale"
+      ],
+      "verifiedAt": "2026-07-17"
+    },
+    {
+      "id": "cmda-pp-nhrb-s-0429-2022-okkiyam-thoraipakkam",
+      "sourceId": "cmda-pp-nhrb-s-0429-2022-approved-plan",
+      "sourceRecordId": "CMDA/PP/NHRB/S/0429/2022 · OL-PP/NHRB/0143/2023",
+      "sourcePage": 1,
+      "recordType": "approved_plan_site_metrics",
+      "officialSroCode": "20066",
+      "officialVillageCode": "250",
+      "candidateVillageKeys": [],
+      "mappingStatus": "verified",
+      "sourceVillageName": "Okkiyam Thoraipakkam",
+      "decisionStatus": "planning_permission_approved_subject_to_local_building_permit",
+      "decisionDate": "2023-04-19",
+      "surveyReference": "S.No.350/1A1B and 2B, Plot Nos.9A and 9B of Okkiyam Thoraipakkam Village",
+      "roadReferences": ["12.0 m wide road", "Old Mahabalipuram Road (schematic key-plan reference)"],
+      "landUseBefore": null,
+      "landUseAfter": null,
+      "planningConstraint": "The approved plan records a site-specific stilt-plus-five-floor commercial office proposal. The drawing states that the approval is valid only after the concerned local body issues a building permit; it does not establish title, current construction, completion, occupancy or market value.",
+      "geometryStatus": "unplotted",
+      "locationEvidence": "The CMDA drawing directly names Okkiyam Thoraipakkam Village, Plot Nos.9A and 9B and S.No.350/1A1B and 2B. Its key plan is labelled not to scale and taken from user inputs, so MITO does not digitise or geocode the site from the drawing.",
+      "summary": "CMDA approved a site-specific commercial-office plan in Okkiyam Thoraipakkam with a 1,400.00 sq m patta area, 3,427.51 sq m total FSI area and FSI 2.477.",
+      "scopeCaveat": "These are site-specific approved-plan metrics, not a local-body building permit, title finding, construction-status finding, parcel geometry, transaction, guideline value or village-wide development entitlement.",
+      "siteMetrics": {
+        "proposal": "Stilt floor plus five floors commercial building — office",
+        "cmdaApprovalNumber": "OL-PP/NHRB/0143/2023",
+        "cmdaPermitNumber": "OL-00273",
+        "siteAreaAsPerPattaSqm": 1400,
+        "siteAreaAsPerDocumentSqm": 1383.64,
+        "areaConsideredForFsiSqm": 1383.64,
+        "landLeftForRoadWideningSqm": 0,
+        "osrAreaSqm": 0,
+        "totalFsiAreaSqm": 3427.51,
+        "fsiFactor": 2.477,
+        "buildingHeightM": 18.3,
+        "floorConfiguration": "stilt_plus_5",
+        "parking": {
+          "carsRequired": 29,
+          "carsProvided": 30,
+          "twoWheelersRequired": 113,
+          "twoWheelersProvided": 113
         },
         "localBodyBuildingPermitRequired": true
       },
