@@ -37,12 +37,15 @@ import {
 } from "../data/chennai";
 import {
   archivedGuidelineRecordsForVillage,
+  officialAllotmentRatesForVillage,
   omrGuidelineCaptureRun,
   omrGuidelineLiveRegisterSummary,
   omrGuidelineOmrInventoryAudit,
   omrGuidelineSecondaryCorroborationLedger,
   omrGuidelineSnapshotLedger,
   omrGuidelineSnapshotSummary,
+  omrOfficialAllotmentRateLedger,
+  omrOfficialAllotmentRateSummary,
   omrPlanningLedger,
   omrPlanningSummary,
   planningRecordsForVillage,
@@ -180,6 +183,9 @@ export default function MitoApp() {
     : [];
   const selectedCoverageArchivedRecords = selectedCoverageUnit
     ? archivedGuidelineRecordsForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
+  const selectedCoverageAllotmentRates = selectedCoverageUnit
+    ? officialAllotmentRatesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
     : [];
   const selectedCoverageInventory = selectedCoverageUnit
     ? omrGuidelineOmrInventoryAudit.queries.find(
@@ -535,7 +541,11 @@ export default function MitoApp() {
           </div>
           <div className="price-type"><Info size={14} /> {activeView === "Coverage"
             ? coverageScope === "omr"
-              ? selectedCoverageUnit ? "0 current values published · row access pending" : "Jurisdictions are mapped; price evidence is not complete"
+              ? selectedCoverageUnit
+                ? selectedCoverageAllotmentRates.length
+                  ? `${selectedCoverageAllotmentRates.length} official leasehold allotment rates · not market prices`
+                  : "0 current values published · row access pending"
+                : "Jurisdictions are mapped; price evidence is not complete"
               : selectedChennaiUnit
                 ? selectedChennaiUnit.registrationCrosswalkStatus === "verified"
                   ? "Registration identity verified · 0 current values published"
@@ -568,6 +578,14 @@ export default function MitoApp() {
                   <em>Metadata</em>
                 </section>
 
+                {selectedCoverageAllotmentRates.length > 0 && (
+                  <section className="allotment-evidence-card">
+                    <div><Building2 size={17} /></div>
+                    <p><strong>{selectedCoverageAllotmentRates.length} official SIPCOT allotment rates</strong><span>Siruseri IT Park · 99-year leasehold plot cost · retrieved 17 Jul 2026</span></p>
+                    <em>Not market price</em>
+                  </section>
+                )}
+
                 <section className="inspector-section">
                   <div className="section-heading"><div><span>Official identity</span><h2>Registration crosswalk</h2></div><Route size={17} /></div>
                   <dl className="detail-grid">
@@ -588,10 +606,27 @@ export default function MitoApp() {
                   <p className="coverage-method">The official inventory size and jurisdiction are verified. Individual street values, transactions and parcel geometry are not published as current evidence.</p>
                 </section>
 
+                {selectedCoverageAllotmentRates.length > 0 && (
+                  <section className="inspector-section">
+                    <div className="section-heading"><div><span>Government allotment schedule</span><h2>Siruseri IT Park plot cost</h2></div><Building2 size={17} /></div>
+                    <div className="allotment-rate-list">
+                      {selectedCoverageAllotmentRates.map((record) => (
+                        <article key={record.id} className="allotment-rate-card">
+                          <div><span>{record.propertyClass.replaceAll("_", " ")}</span><em>{record.availableAreaAcres} acre available</em></div>
+                          <strong>{formatRate(record.normalizedInrPerSqft)}<small>/sq ft</small></strong>
+                          <p>₹{inr.format(record.rawPlotCostLakhsPerAcre)} lakh/acre · 99-year leasehold</p>
+                        </article>
+                      ))}
+                    </div>
+                    <p className="coverage-method">Normalized from SIPCOT&apos;s displayed lakh/acre schedule using 43,560 sq ft per acre. It is not a guideline value, registered sale, asking price, market estimate or village-wide rate.</p>
+                  </section>
+                )}
+
                 <section className="inspector-section">
                   <div className="section-heading"><div><span>Village release gate</span><h2>Price evidence is not complete</h2></div><LockKeyhole size={17} /></div>
                   <div className="gate-row passed"><Check size={14} /><span>Official SRO and village identifiers verified</span></div>
                   <div className="gate-row passed"><Check size={14} /><span>Current official inventory total verified</span></div>
+                  {selectedCoverageAllotmentRates.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Two official SIPCOT leasehold allotment rates captured separately</span></div>}
                   <div className="gate-row"><X size={14} /><span>Authorized row-level guideline values not captured</span></div>
                   <div className="gate-row"><X size={14} /><span>No verified registered transactions in MITO yet</span></div>
                 </section>
@@ -618,12 +653,19 @@ export default function MitoApp() {
                 <em>Rows withheld</em>
               </section>
 
+              <section className="allotment-evidence-card">
+                <div><Building2 size={17} /></div>
+                <p><strong>{omrOfficialAllotmentRateSummary.recordCount} official SIPCOT allotment rates captured</strong><span>Siruseri IT Park · industrial and commercial · 99-year leasehold plot cost</span></p>
+                <em>Not market price</em>
+              </section>
+
               <section className="inspector-section">
                 <div className="section-heading"><div><span>Collection progress</span><h2>What is actually complete</h2></div><Database size={17} /></div>
                 <div className="coverage-progress-row"><div><span>Jurisdiction IDs</span><strong>{omrCoveragePercent.jurisdiction}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.jurisdiction}%` }} /></div><small>{omrCoverageSummary.jurisdictionVerifiedCount} of {omrCoverageSummary.unitCount} verified against TNREGINET</small></div>
                 <div className="coverage-progress-row"><div><span>Current inventories</span><strong>{omrCoveragePercent.currentInventory}%</strong></div><div className="coverage-progress current-inventory"><i style={{ width: `${omrCoveragePercent.currentInventory}%` }} /></div><small>{omrCoverageSummary.currentStreetInventoryVerifiedCount} of {omrCoverageSummary.unitCount} village totals verified from the current official register</small></div>
                 <div className="coverage-progress-row"><div><span>Captured street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>{inr.format(omrGuidelineLiveRegisterSummary.currentInventoryCount)} current items are inventoried, but zero row-level values are captured or republished</small></div>
                 <div className="coverage-progress-row"><div><span>Current verified values</span><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>{omrGuidelineSnapshotSummary.recordCount} archived row is shown separately and excluded from this total</small></div>
+                <div className="coverage-progress-row"><div><span>Official allotment rates</span><strong>{omrCoverageSummary.officialAllotmentRateCount}</strong></div><div className="coverage-progress allotment"><i style={{ width: `${Math.round((omrCoverageSummary.officialAllotmentRateVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named park association; these leasehold plot costs do not count as guideline or transaction coverage</small></div>
                 <div className="coverage-progress-row"><div><span>Planning evidence</span><strong>{omrCoveragePercent.planning}%</strong></div><div className="coverage-progress planning"><i style={{ width: `${omrCoveragePercent.planning}%` }} /></div><small>{omrPlanningSummary.villageCount} of {omrCoverageSummary.unitCount} villages have directly linked CMDA records</small></div>
               </section>
 
@@ -643,6 +685,28 @@ export default function MitoApp() {
           {activeView === "Coverage" && coverageScope === "omr" && inspectorTab === "Evidence" && (
             selectedCoverageUnit && selectedCoverageInventory ? (
               <>
+                {selectedCoverageAllotmentRates.length > 0 && (
+                  <section className="inspector-section evidence-section">
+                    <div className="section-heading"><div><span>Official allotment evidence</span><h2>SIPCOT Siruseri schedule</h2></div><Building2 size={17} /></div>
+                    <a href={omrOfficialAllotmentRateLedger.source.url} target="_blank" rel="noreferrer" className="source-card allotment-source">
+                      <span className="source-kind official">official</span>
+                      <div><strong>{omrOfficialAllotmentRateLedger.source.title}</strong><p>{omrOfficialAllotmentRateLedger.source.organization}</p><small>Retrieved {omrOfficialAllotmentRateLedger.source.retrievedAt} · no effective date displayed · factual excerpt only</small></div>
+                      <ExternalLink size={15} />
+                    </a>
+                    <div className="allotment-rate-list">
+                      {selectedCoverageAllotmentRates.map((record) => (
+                        <article key={record.id} className="allotment-rate-card detailed">
+                          <div><span>{record.priceTypeLabel}</span><em>{record.verificationStatus.replaceAll("_", " ")}</em></div>
+                          <strong>{formatRate(record.normalizedInrPerSqft)}<small>/sq ft</small></strong>
+                          <p>Source: ₹{inr.format(record.rawPlotCostLakhsPerAcre)} lakh/acre · {record.availableAreaAcres} acre shown available</p>
+                          <footer><span>99-year leasehold</span><b>Unplotted</b></footer>
+                        </article>
+                      ))}
+                    </div>
+                    <p className="coverage-method">{omrOfficialAllotmentRateLedger.publication.caveat}</p>
+                  </section>
+                )}
+
                 <section className="inspector-section evidence-section">
                   <div className="section-heading"><div><span>Current register</span><h2>Official inventory query</h2></div><Database size={17} /></div>
                   <a href={omrGuidelineOmrInventoryAudit.source.url} target="_blank" rel="noreferrer" className="source-card live-source">
@@ -708,6 +772,11 @@ export default function MitoApp() {
             <>
               <section className="inspector-section evidence-section">
                 <div className="section-heading"><div><span>Price source ledger</span><h2>Official collection and rights status</h2></div><Database size={17} /></div>
+                <a href={omrOfficialAllotmentRateLedger.source.url} target="_blank" rel="noreferrer" className="source-card allotment-source">
+                  <span className="source-kind official">official</span>
+                  <div><strong>{omrOfficialAllotmentRateLedger.source.title}</strong><p>{omrOfficialAllotmentRateLedger.source.organization}</p><small>{omrOfficialAllotmentRateSummary.recordCount} Siruseri leasehold allotment rates · not guideline or market evidence</small></div>
+                  <ExternalLink size={15} />
+                </a>
                 <a href={omrCoverage.source.url} target="_blank" rel="noreferrer" className="source-card">
                   <span className="source-kind official">official</span>
                   <div><strong>{omrCoverage.source.title}</strong><p>{omrCoverage.source.organization}</p><small>Retrieved {omrCoverage.source.retrievedAt} · source updated {omrCoverage.source.lastUpdatedBySource}</small></div>
@@ -794,6 +863,20 @@ export default function MitoApp() {
           {activeView === "Coverage" && coverageScope === "omr" && inspectorTab === "Context" && (
             selectedCoverageUnit && selectedCoverageInventory ? (
               <>
+                {selectedCoverageAllotmentRates.length > 0 && (
+                  <section className="inspector-section context-section">
+                    <div className="section-heading"><div><span>Price interpretation</span><h2>What the Siruseri figures mean</h2></div><CircleHelp size={17} /></div>
+                    <dl className="detail-grid">
+                      <div><dt>Evidence type</dt><dd>Government allotment plot cost</dd></div>
+                      <div><dt>Tenure</dt><dd>99-year SIPCOT leasehold</dd></div>
+                      <div><dt>Effective date</dt><dd>Not displayed</dd></div>
+                      <div><dt>Geometry</dt><dd>Unplotted park association</dd></div>
+                    </dl>
+                    <p className="coverage-method">The SIPCOT source labels the district Kancheepuram; MITO&apos;s current registration crosswalk is Chengalpattu. The source conflict is preserved. The park boundary is not reconciled to the registration-village polygon, and the potential 10% backend subsidy is not deducted because eligibility is project-specific.</p>
+                    <a className="resolver-api-link" href={omrOfficialAllotmentRateLedger.tenureEvidence.url} target="_blank" rel="noreferrer">Open the official standard lease evidence <ArrowUpRight size={13} /></a>
+                  </section>
+                )}
+
                 <section className="inspector-section context-section">
                   <div className="section-heading"><div><span>Address resolver</span><h2>Verified names for this jurisdiction</h2></div><Route size={17} /></div>
                   <div className="alias-list">

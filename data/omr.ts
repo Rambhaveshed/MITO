@@ -1,6 +1,6 @@
 import coverage from "./coverage/omr-corridor.json";
 import placeAliases from "./evidence/omr-place-aliases.json";
-import { omrGuidelineOmrInventoryAudit, omrGuidelineSnapshotSummary, omrPlanningSummary } from "./evidence";
+import { omrGuidelineOmrInventoryAudit, omrGuidelineSnapshotSummary, omrOfficialAllotmentRateSummary, omrPlanningSummary } from "./evidence";
 
 export type OmrCoverageStatus = "not_started" | "collecting" | "captured" | "verified" | "blocked";
 
@@ -200,6 +200,8 @@ export const omrCoverageSummary = {
   archivedGuidelineRecordCount: omrGuidelineSnapshotSummary.recordCount,
   pendingGuidelineRecheckCount: omrGuidelineSnapshotSummary.pendingLiveRecheckCount,
   registeredTransactionRecordCount: units.reduce((sum, unit) => sum + unit.registeredTransactionRecords, 0),
+  officialAllotmentRateCount: omrOfficialAllotmentRateSummary.recordCount,
+  officialAllotmentRateVillageCount: omrOfficialAllotmentRateSummary.villageAssociationCount,
   officialPlanningRecordCount: omrPlanningSummary.recordCount,
   planningVillageCount: omrPlanningSummary.villageCount,
   unresolvedPlanningRecordCount: omrPlanningSummary.unresolvedRecordCount,

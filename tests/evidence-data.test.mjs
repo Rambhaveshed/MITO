@@ -11,6 +11,7 @@ const archivedSnapshotUrl = new URL("../data/evidence/omr-guideline-archived-sna
 const secondaryCorroborationUrl = new URL("../data/evidence/omr-guideline-secondary-corroboration-2026-07-16.json", import.meta.url);
 const liveRegisterAuditUrl = new URL("../data/evidence/tnreginet-live-register-audit-2026-07-16.json", import.meta.url);
 const omrInventoryAuditUrl = new URL("../data/evidence/tnreginet-omr-inventory-audit-2026-07-16.json", import.meta.url);
+const sipcotSiruseriLandRatesUrl = new URL("../data/evidence/sipcot-siruseri-land-rates-2026-07-17.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
@@ -158,6 +159,35 @@ test("reuse request asks for authorized access before row-level publication", as
   assert.match(request, /authorized bulk export or documented API/i);
   assert.match(request, /No TNREGINET row-level register will be republished/i);
   assert.match(request, /never label guideline value as confirmed market price/i);
+});
+
+test("SIPCOT Siruseri rates remain leasehold allotment evidence rather than market prices", async () => {
+  const ledger = await readJson(sipcotSiruseriLandRatesUrl);
+
+  assert.equal(ledger.source.organization, "State Industries Promotion Corporation of Tamil Nadu Limited (SIPCOT)");
+  assert.equal(ledger.source.sourceType, "official_government_allotment_schedule");
+  assert.equal(ledger.source.rightsStatus, "no_explicit_reuse_policy_found");
+  assert.equal(ledger.location.placeName, "Siruseri IT Park");
+  assert.equal(ledger.location.sourceDistrictName, "Kancheepuram");
+  assert.equal(ledger.location.currentRegistrationAssociation.officialSroCode, "22604");
+  assert.equal(ledger.location.currentRegistrationAssociation.officialVillageCode, "800000275");
+  assert.equal(ledger.location.currentRegistrationAssociation.status, "named_locality_association");
+  assert.equal(ledger.location.administrativeConflict.status, "preserved");
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.records.length, 2);
+  assert.deepEqual(ledger.records.map((record) => record.propertyClass), ["industrial_land", "commercial_land"]);
+  assert.deepEqual(ledger.records.map((record) => record.rawPlotCostLakhsPerAcre), [780, 1560]);
+  assert.deepEqual(ledger.records.map((record) => record.normalizedInrPerSqft), [1790.63, 3581.27]);
+  assert.ok(ledger.records.every((record) => record.evidenceType === "government_allotment_plot_cost"));
+  assert.ok(ledger.records.every((record) => record.tenure === "99_year_leasehold"));
+  assert.ok(ledger.records.every((record) => record.geometryStatus === "unplotted"));
+  assert.ok(ledger.records.every((record) => !record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate));
+  assert.equal(ledger.publication.currentOfficialGuidelineValues, 0);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.marketEstimates, 0);
+  assert.equal(ledger.subsidy.appliedToPublishedRates, false);
+  assert.ok(Math.abs((780 * 100000) / 43560 - ledger.records[0].normalizedInrPerSqft) < 0.01);
+  assert.ok(Math.abs((1560 * 100000) / 43560 - ledger.records[1].normalizedInrPerSqft) < 0.01);
 });
 
 test("guideline import schema requires provenance, normalized values and location evidence", async () => {

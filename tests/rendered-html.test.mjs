@@ -32,6 +32,8 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /1(?:<!-- -->)? archived TNREGINET street row recovered/i);
   assert.match(html, /All current village inventories verified/i);
   assert.match(html, /2,715(?:<!-- -->)? items across/i);
+  assert.match(html, /2(?:<!-- -->)? official SIPCOT allotment rates captured/i);
+  assert.match(html, /Not market price/i);
   assert.match(html, /Row-level publication needs permission/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
@@ -71,6 +73,8 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.officialGuidelineRecordCount, 0);
   assert.equal(payload.summary.archivedGuidelineRecordCount, 1);
   assert.equal(payload.summary.pendingGuidelineRecheckCount, 1);
+  assert.equal(payload.summary.officialAllotmentRateCount, 2);
+  assert.equal(payload.summary.officialAllotmentRateVillageCount, 1);
   assert.equal(payload.offices.length, 6);
 });
 
@@ -85,6 +89,19 @@ test("evidence API publishes planning provenance, current register metadata and 
   assert.equal(payload.planning.summary.unresolvedRecordCount, 3);
   assert.equal(payload.planning.summary.sourceCount, 9);
   assert.equal(payload.planning.records.length, 27);
+  assert.equal(payload.officialAllotmentRates.summary.recordCount, 2);
+  assert.equal(payload.officialAllotmentRates.summary.villageAssociationCount, 1);
+  assert.deepEqual(payload.officialAllotmentRates.summary.normalizedRateRangeInrPerSqft, { low: 1790.63, high: 3581.27 });
+  assert.equal(payload.officialAllotmentRates.source.rightsStatus, "no_explicit_reuse_policy_found");
+  assert.equal(payload.officialAllotmentRates.location.geometryStatus, "unplotted");
+  assert.equal(payload.officialAllotmentRates.location.currentRegistrationAssociation.status, "named_locality_association");
+  assert.equal(payload.officialAllotmentRates.records[0].evidenceType, "government_allotment_plot_cost");
+  assert.equal(payload.officialAllotmentRates.records[0].tenure, "99_year_leasehold");
+  assert.equal(payload.officialAllotmentRates.records[0].normalizedInrPerSqft, 1790.63);
+  assert.equal(payload.officialAllotmentRates.records[1].normalizedInrPerSqft, 3581.27);
+  assert.equal(payload.officialAllotmentRates.publication.currentOfficialGuidelineValues, 0);
+  assert.equal(payload.officialAllotmentRates.publication.registeredTransactions, 0);
+  assert.equal(payload.officialAllotmentRates.subsidy.appliedToPublishedRates, false);
   assert.equal(payload.guidelineValueCollection.captureRun.status, "blocked");
   assert.equal(payload.guidelineValueCollection.captureRun.recordsSeen, 10);
   assert.equal(payload.guidelineValueCollection.captureRun.recordsAccepted, 0);

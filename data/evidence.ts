@@ -5,6 +5,7 @@ import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-
 import guidelineLiveRegisterAudit from "./evidence/tnreginet-live-register-audit-2026-07-16.json";
 import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit-2026-07-16.json";
 import planningLedger from "./evidence/omr-planning-records.json";
+import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
 
@@ -22,6 +23,7 @@ export const omrGuidelineSnapshotLedger = guidelineSnapshot;
 export const omrGuidelineSecondaryCorroborationLedger = guidelineSecondaryCorroboration;
 export const omrGuidelineLiveRegisterAudit = guidelineLiveRegisterAudit;
 export const omrGuidelineOmrInventoryAudit = guidelineOmrInventoryAudit;
+export const omrOfficialAllotmentRateLedger = sipcotSiruseriLandRates;
 export const guidelineValueImportSchema = guidelineImportSchema;
 
 const snapshotVillageKeys = new Set(
@@ -71,6 +73,24 @@ export const omrPlanningSummary = {
   unplottedRecordCount: planningLedger.records.filter((record) => record.geometryStatus === "unplotted").length,
 };
 
+export const omrOfficialAllotmentRateSummary = {
+  recordCount: sipcotSiruseriLandRates.records.length,
+  villageAssociationCount: new Set(
+    sipcotSiruseriLandRates.records.map(
+      () => `${sipcotSiruseriLandRates.location.currentRegistrationAssociation.officialSroCode}:${sipcotSiruseriLandRates.location.currentRegistrationAssociation.officialVillageCode}`,
+    ),
+  ).size,
+  propertyClasses: [...new Set(sipcotSiruseriLandRates.records.map((record) => record.propertyClass))],
+  normalizedRateRangeInrPerSqft: {
+    low: Math.min(...sipcotSiruseriLandRates.records.map((record) => record.normalizedInrPerSqft)),
+    high: Math.max(...sipcotSiruseriLandRates.records.map((record) => record.normalizedInrPerSqft)),
+  },
+  unplottedCount: sipcotSiruseriLandRates.records.filter((record) => record.geometryStatus === "unplotted").length,
+  officialGuidelineValueCount: sipcotSiruseriLandRates.publication.currentOfficialGuidelineValues,
+  registeredTransactionCount: sipcotSiruseriLandRates.publication.registeredTransactions,
+  verifiedAt: sipcotSiruseriLandRates.auditedAt,
+};
+
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
@@ -81,6 +101,12 @@ export function archivedGuidelineRecordsForVillage(officialSroCode: string, offi
   return guidelineSnapshot.rows.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
   );
+}
+
+export function officialAllotmentRatesForVillage(officialSroCode: string, officialVillageCode: string) {
+  const association = sipcotSiruseriLandRates.location.currentRegistrationAssociation;
+  if (association.officialSroCode !== officialSroCode || association.officialVillageCode !== officialVillageCode) return [];
+  return sipcotSiruseriLandRates.records;
 }
 
 export const unresolvedPlanningRecords = planningLedger.records.filter(

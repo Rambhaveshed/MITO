@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sipcot-siruseri-land-rates-2026-07-17",
+  "scopeId": "omr-corridor-2026",
+  "auditedAt": "2026-07-17",
+  "source": {
+    "id": "sipcot-land-details-current",
+    "organization": "State Industries Promotion Corporation of Tamil Nadu Limited (SIPCOT)",
+    "title": "Availability of land in SIPCOT industrial parks",
+    "url": "https://sipcot.tn.gov.in/portal/reports/landdetails",
+    "sourceType": "official_government_allotment_schedule",
+    "publicationDate": null,
+    "effectiveDate": null,
+    "retrievedAt": "2026-07-17",
+    "verifiedAt": "2026-07-17",
+    "captureMethod": "manual_factual_excerpt_from_public_official_table",
+    "rightsStatus": "no_explicit_reuse_policy_found",
+    "capturedFields": [
+      "industrial park name",
+      "district label",
+      "land-use category",
+      "available extent in acres",
+      "plot cost in lakh rupees per acre"
+    ],
+    "reuseCaveat": "MITO preserves only the two Siruseri factual rows needed for source-backed price interpretation. The source table was not bulk copied and no open-data licence was found during this audit."
+  },
+  "tenureEvidence": {
+    "organization": "State Industries Promotion Corporation of Tamil Nadu Limited (SIPCOT)",
+    "title": "Draft Standard Lease Deed",
+    "url": "https://www.sipcot.tn.gov.in/webroot/img/Annexure-II-Draft-Standard-Lease-Deed.pdf",
+    "retrievedAt": "2026-07-17",
+    "interpretation": "SIPCOT's standard document describes the plot cost as consideration for use of developed land under a long lease and specifies a 99-year lease term. This schedule is therefore not recorded as a freehold sale transaction."
+  },
+  "location": {
+    "placeName": "Siruseri IT Park",
+    "corridor": "Old Mahabalipuram Road (OMR)",
+    "locationEvidenceUrl": "https://sipcot.tn.gov.in/webroot/img/Pilot-EV-Charging-Ad-Approved.pdf",
+    "locationEvidence": "An official SIPCOT notice identifies Siruseri IT Park as an approximately 800-acre park on Old Mahabalipuram Road.",
+    "sourceDistrictName": "Kancheepuram",
+    "currentRegistrationAssociation": {
+      "officialSroCode": "22604",
+      "officialVillageCode": "800000275",
+      "registrationVillageName": "Siruseri",
+      "status": "named_locality_association",
+      "caveat": "The exact park boundary has not been reconciled to a verified registration-village polygon. These park-level rates must not be applied to the whole Siruseri registration village."
+    },
+    "administrativeConflict": {
+      "status": "preserved",
+      "note": "The live SIPCOT table labels the park's district as Kancheepuram, while MITO's current official registration crosswalk places Siruseri under Chengalpattu registration district. MITO preserves the source label and does not silently rewrite it."
+    },
+    "geometryStatus": "unplotted",
+    "geometryType": "none",
+    "coordinatePrecision": "unavailable",
+    "positionalUncertainty": "Park location is named and corridor membership is corroborated, but an authorized or open park boundary has not been verified."
+  },
+  "records": [
+    {
+      "id": "sipcot-siruseri-industrial-2026-07-17",
+      "sourceRecordId": "siruseri-industrial",
+      "evidenceType": "government_allotment_plot_cost",
+      "priceTypeLabel": "SIPCOT industrial leasehold plot cost",
+      "tenure": "99_year_leasehold",
+      "propertyClass": "industrial_land",
+      "availableAreaAcres": 1,
+      "rawPlotCostLakhsPerAcre": 780,
+      "rawPlotCostInrPerAcre": 78000000,
+      "normalizedInrPerSqft": 1790.63,
+      "conversionBasis": "780 lakh INR per acre × 100,000 INR per lakh ÷ 43,560 sq ft per acre",
+      "priceDate": null,
+      "effectiveDate": null,
+      "retrievedAt": "2026-07-17",
+      "verifiedAt": "2026-07-17",
+      "sourceDisplayStatus": "current_as_displayed",
+      "verificationStatus": "verified_source_transcription",
+      "geometryStatus": "unplotted",
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "scopeCaveat": "This is a SIPCOT park-level leasehold allotment plot cost, not a market rate, registered sale, guideline value, parcel valuation or village-wide price."
+    },
+    {
+      "id": "sipcot-siruseri-commercial-2026-07-17",
+      "sourceRecordId": "siruseri-commercial",
+      "evidenceType": "government_allotment_plot_cost",
+      "priceTypeLabel": "SIPCOT commercial leasehold plot cost",
+      "tenure": "99_year_leasehold",
+      "propertyClass": "commercial_land",
+      "availableAreaAcres": 0.2,
+      "rawPlotCostLakhsPerAcre": 1560,
+      "rawPlotCostInrPerAcre": 156000000,
+      "normalizedInrPerSqft": 3581.27,
+      "conversionBasis": "1,560 lakh INR per acre × 100,000 INR per lakh ÷ 43,560 sq ft per acre",
+      "priceDate": null,
+      "effectiveDate": null,
+      "retrievedAt": "2026-07-17",
+      "verifiedAt": "2026-07-17",
+      "sourceDisplayStatus": "current_as_displayed",
+      "verificationStatus": "verified_source_transcription",
+      "geometryStatus": "unplotted",
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "scopeCaveat": "This is a SIPCOT park-level leasehold allotment plot cost, not a market rate, registered sale, guideline value, parcel valuation or village-wide price."
+    }
+  ],
+  "subsidy": {
+    "potentialPercent": 10,
+    "sourceDescription": "The live land-details page describes a potential 10% backend land-cost subsidy for category A and B districts, subject to investment and employment conditions.",
+    "appliedToPublishedRates": false,
+    "reasonNotApplied": "Eligibility and implementation conditions are project-specific; MITO does not assume that a prospective allottee qualifies."
+  },
+  "publication": {
+    "recordCount": 2,
+    "currentOfficialGuidelineValues": 0,
+    "registeredTransactions": 0,
+    "askingPrices": 0,
+    "marketEstimates": 0,
+    "plottedGeometries": 0,
+    "caveat": "The two normalized figures are published only as official government allotment plot costs. They do not satisfy MITO's guideline-value or market-transaction release gates."
+  }
+}

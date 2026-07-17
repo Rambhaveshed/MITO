@@ -8,6 +8,8 @@ import {
   omrGuidelineSecondaryCorroborationSummary,
   omrGuidelineSnapshotLedger,
   omrGuidelineSnapshotSummary,
+  omrOfficialAllotmentRateLedger,
+  omrOfficialAllotmentRateSummary,
   omrPlanningLedger,
   omrPlanningSummary,
   unresolvedPlanningRecords,
@@ -15,7 +17,7 @@ import {
 
 export async function GET() {
   return Response.json({
-    generatedAt: "2026-07-16",
+    generatedAt: "2026-07-17",
     scopeId: omrPlanningLedger.scopeId,
     planning: {
       summary: omrPlanningSummary,
@@ -24,6 +26,16 @@ export async function GET() {
       sources: omrPlanningLedger.sources,
       records: omrPlanningLedger.records,
       unresolvedCrosswalks: unresolvedPlanningRecords,
+    },
+    officialAllotmentRates: {
+      summary: omrOfficialAllotmentRateSummary,
+      source: omrOfficialAllotmentRateLedger.source,
+      tenureEvidence: omrOfficialAllotmentRateLedger.tenureEvidence,
+      location: omrOfficialAllotmentRateLedger.location,
+      subsidy: omrOfficialAllotmentRateLedger.subsidy,
+      records: omrOfficialAllotmentRateLedger.records,
+      publication: omrOfficialAllotmentRateLedger.publication,
+      publicationRule: "These rows are SIPCOT leasehold allotment plot costs. They must never be relabelled as guideline values, registered transactions, asking prices, market estimates or a village-wide Siruseri rate.",
     },
     guidelineValueCollection: {
       captureRun: omrGuidelineCaptureRun,
