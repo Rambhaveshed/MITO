@@ -2,7 +2,7 @@
   "id": "omr-cmda-planning-2026-07-15",
   "scopeId": "omr-corridor-2026",
   "title": "OMR official planning evidence ledger",
-  "generatedAt": "2026-07-16",
+  "generatedAt": "2026-07-17",
   "methodology": "MITO records only the jurisdiction, decision, survey, road and programme facts visible in official government orders, CMDA rules, indexes, meeting minutes, approval letters and office-copy maps. A planning record is linked to a current registration village only when the crosswalk is unambiguous. No record is treated as price, title evidence or a village-wide land-use statement.",
   "coverageCaveat": "A record may establish planning-area membership for a named village or describe a specific survey, layout, road or planning decision. Planning-area membership does not prove parcel zoning, approval, title or value; site-specific records do not apply village-wide.",
   "sources": [
@@ -102,9 +102,92 @@
       "retrievedAt": "2026-07-16",
       "sourcePages": [1, 2, 3],
       "verificationStatus": "verified"
+    },
+    {
+      "id": "cmda-high-rise-index-2024",
+      "organization": "Chennai Metropolitan Development Authority",
+      "title": "Planning Permission Approval Details — High Rise Buildings — 2024",
+      "category": "official_planning_permission_index",
+      "url": "https://cmdachennai.gov.in/MSB/2024.html",
+      "sourceDate": "2024",
+      "sourceDatePrecision": "year",
+      "lastUpdatedBySource": "2024-11-06",
+      "retrievedAt": "2026-07-17",
+      "verificationStatus": "verified"
+    }
+  ],
+  "indexAudits": [
+    {
+      "id": "cmda-approval-index-omr-gap-audit-2026-07-17",
+      "auditedAt": "2026-07-17",
+      "indexPageCount": 30,
+      "categories": [
+        "non_high_rise_buildings",
+        "high_rise_buildings",
+        "industries_and_institution_buildings",
+        "layouts"
+      ],
+      "yearsByCategory": {
+        "nonHighRiseBuildings": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
+        "highRiseBuildings": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
+        "industriesAndInstitutionBuildings": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
+        "layouts": [2019, 2020, 2021, 2022, 2023, 2024]
+      },
+      "matchingMethod": "Case-insensitive exact source-text search for Kazhipattur, Kalipattur, Kazhipathur, Kalipathur, Sholinganallur I and Sholinganallur II, followed by manual table-column inspection for every positive page.",
+      "directMatches": [
+        {
+          "sourceId": "cmda-high-rise-index-2024",
+          "sourceRecordId": "P.P. No. 15612 / CMDA/PP/HRB/S/500/2023",
+          "sourceLabel": "Sholinganallur I Village",
+          "candidateVillageKey": "20066:254",
+          "mappingStatus": "verified"
+        }
+      ],
+      "noExactLabelMatchVillageKeys": [
+        "20066:20514",
+        "22604:800000279"
+      ],
+      "noExactLabelMatchTerms": [
+        "Sholinganallur II",
+        "Kazhipattur",
+        "Kalipattur",
+        "Kazhipathur",
+        "Kalipathur"
+      ],
+      "falseNegativeCaveat": "A source-text non-match across these dated indexes does not prove that no approval, layout or planning record exists. Older, differently spelled, unindexed, offline or separately published CMDA records may still apply."
     }
   ],
   "records": [
+    {
+      "id": "cmda-pp-15612-2024-sholinganallur-1",
+      "sourceId": "cmda-high-rise-index-2024",
+      "sourceRecordId": "P.P. No. 15612 / CMDA/PP/HRB/S/500/2023",
+      "recordType": "planning_permission_index",
+      "officialSroCode": "20066",
+      "officialVillageCode": "254",
+      "candidateVillageKeys": [],
+      "mappingStatus": "verified",
+      "sourceVillageName": "Sholinganallur I",
+      "decisionStatus": "planning_permission_approved",
+      "decisionDate": "2024-04-17",
+      "surveyReference": "S.Nos.508/4A, 4B, 6A1, 6A2, 6B, 6C, 6D, 7A, 7B, 7C, 7D, 7E, 7F, 7G, 7H, 7I, 8A, 8B1, 8B2, 11A, 11B, 21A, 28, 36B, 36C1, 36C2, 38A1, 45, 48, 575/2A2A1, 2A2A2, 2A2A3, 2A2B1, 2A2B2, 2A2B3, 2A3, 2B, 2C, 3B1, 4A, 4B, 4C, 5A, 5B, 6A, 6B, 6C, 7A1, 7A2, 7B, 7C, 7D, 8A1, 8A2, 8A3, 8B1, 8B2, 9A, 9B1, 9B2, 9B3, 9C1, 10A1, 10A2, 10B, 10C, 10D1, 10D2, 10E, 10F, 10G, 12A, 12B, 12C, 13A, 13B, 13C, 13D, 13E1, 13E2, 13F, 14A, 14B, 14C, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 579/1, 2, 580, 581/1, 2, 3, 4, 5, 724/3 and 5 of Sholinganallur I Village",
+      "roadReferences": [],
+      "landUseBefore": null,
+      "landUseAfter": null,
+      "planningConstraint": "The official index records planning permission for a site-specific 1,818-dwelling-unit high-rise group development on a 119,400 sq m plot. The index does not establish current construction status, local-body building permit, completion, title or parcel boundaries.",
+      "geometryStatus": "unplotted",
+      "locationEvidence": "CMDA's 2024 high-rise index explicitly identifies the survey schedule as Sholinganallur I Village. MITO links that Roman-numeral label to the independently verified current registration village Sholinganallur 1 and does not infer a geometry from the survey list.",
+      "summary": "CMDA's official index records P.P. No.15612 for a specific 1,818-dwelling-unit high-rise group development in Sholinganallur I Village.",
+      "scopeCaveat": "This is a site-specific planning-permission index record, not a current construction-status finding, local building permit, title finding, village-wide approval, transaction or land-value observation.",
+      "qualityFlags": [
+        "site_specific_approval",
+        "index_summary_only",
+        "current_construction_status_unknown",
+        "building_permit_not_inferred",
+        "approved_plan_geometry_not_digitised"
+      ],
+      "verifiedAt": "2026-07-17"
+    },
     {
       "id": "cmda-221-agenda-3-4-adyar",
       "sourceId": "cmda-authority-meeting-221",

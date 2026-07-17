@@ -36,8 +36,8 @@ test("official planning records stay scoped, unplotted and source-backed", async
   const sourceIds = new Set(ledger.sources.map((source) => source.id));
   const recordIds = ledger.records.map((record) => record.id);
 
-  assert.equal(ledger.sources.length, 9);
-  assert.equal(ledger.records.length, 27);
+  assert.equal(ledger.sources.length, 10);
+  assert.equal(ledger.records.length, 28);
   assert.equal(new Set(recordIds).size, recordIds.length);
   assert.ok(ledger.records.every((record) => sourceIds.has(record.sourceId)));
   assert.ok(ledger.records.every((record) => record.scopeCaveat.length > 40));
@@ -99,6 +99,24 @@ test("Seevaram approval remains site-specific and does not imply title or buildi
   assert.match(record.planningConstraint, /local-body building permit is still required/i);
   assert.match(record.planningConstraint, /does not confirm ownership or title/i);
   assert.match(record.scopeCaveat, /site-specific/i);
+});
+
+test("CMDA's explicit Sholinganallur I index row links only registration village 1", async () => {
+  const ledger = await readJson(planningUrl);
+  const record = ledger.records.find((candidate) => candidate.id === "cmda-pp-15612-2024-sholinganallur-1");
+  const audit = ledger.indexAudits.find((candidate) => candidate.id === "cmda-approval-index-omr-gap-audit-2026-07-17");
+
+  assert.equal(record.officialSroCode, "20066");
+  assert.equal(record.officialVillageCode, "254");
+  assert.equal(record.sourceVillageName, "Sholinganallur I");
+  assert.equal(record.decisionDate, "2024-04-17");
+  assert.match(record.surveyReference, /Sholinganallur I Village$/);
+  assert.match(record.planningConstraint, /1,818-dwelling-unit/i);
+  assert.match(record.scopeCaveat, /not a current construction-status finding/i);
+  assert.equal(audit.indexPageCount, 30);
+  assert.deepEqual(audit.noExactLabelMatchVillageKeys, ["20066:20514", "22604:800000279"]);
+  assert.equal(audit.directMatches[0].candidateVillageKey, "20066:254");
+  assert.match(audit.falseNegativeCaveat, /does not prove/i);
 });
 
 test("live guideline capture publishes inventory metadata but withholds rows requiring permission", async () => {

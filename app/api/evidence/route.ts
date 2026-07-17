@@ -27,6 +27,7 @@ export async function GET() {
       summary: omrPlanningSummary,
       methodology: omrPlanningLedger.methodology,
       coverageCaveat: omrPlanningLedger.coverageCaveat,
+      indexAudits: omrPlanningLedger.indexAudits,
       sources: omrPlanningLedger.sources,
       records: omrPlanningLedger.records,
       unresolvedCrosswalks: unresolvedPlanningRecords,
