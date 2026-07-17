@@ -39,6 +39,7 @@ import {
   archivedGuidelineRecordsForVillage,
   officialAllotmentRatesForVillage,
   officialAuctionReservePricesForVillage,
+  officialCommercialAuctionReservesForVillage,
   omrGuidelineCaptureRun,
   omrGuidelineLiveRegisterSummary,
   omrGuidelineOmrInventoryAudit,
@@ -49,6 +50,8 @@ import {
   omrOfficialAllotmentRateSummary,
   omrOfficialAuctionReservePriceLedger,
   omrOfficialAuctionReservePriceSummary,
+  omrOfficialCommercialAuctionReserveLedger,
+  omrOfficialCommercialAuctionReserveSummary,
   omrPlanningLedger,
   omrPlanningSummary,
   omrSiruseriFootprint,
@@ -207,6 +210,9 @@ export default function MitoApp() {
     : [];
   const selectedCoverageAuctionReservePrices = selectedCoverageUnit
     ? officialAuctionReservePricesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
+  const selectedCoverageCommercialAuctionReserves = selectedCoverageUnit
+    ? officialCommercialAuctionReservesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
     : [];
   const selectedCoverageHousingOffers = selectedCoverageUnit
     ? tnhbHousingOffersForCandidateVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
@@ -496,6 +502,8 @@ export default function MitoApp() {
                 const planningRecordCount = planningRecordsForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const archivedRateCount = archivedGuidelineRecordsForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const auctionReserveRecordCount = officialAuctionReservePricesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
+                const commercialAuctionReserveRecordCount = officialCommercialAuctionReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
+                const totalAuctionReserveRecordCount = auctionReserveRecordCount + commercialAuctionReserveRecordCount;
                 const hasCurrentInventory = "streetTargetEvidenceStatus" in unit && unit.streetTargetEvidenceStatus === "live_official_metadata";
                 const unitKey = `${unit.officialSroCode}:${unit.officialVillageCode}`;
                 const match = coverageMatchByKey.get(unitKey);
@@ -504,7 +512,7 @@ export default function MitoApp() {
                     key={unitKey}
                     type="button"
                     aria-pressed={selectedCoverageKey === unitKey}
-                    className={`coverage-unit-card ${planningRecordCount ? "has-planning-evidence" : ""} ${archivedRateCount ? "has-guideline-snapshot" : ""} ${auctionReserveRecordCount ? "has-auction-reserve" : ""} ${selectedCoverageKey === unitKey ? "selected" : ""}`}
+                    className={`coverage-unit-card ${planningRecordCount ? "has-planning-evidence" : ""} ${archivedRateCount ? "has-guideline-snapshot" : ""} ${totalAuctionReserveRecordCount ? "has-auction-reserve" : ""} ${selectedCoverageKey === unitKey ? "selected" : ""}`}
                     onClick={() => selectCoverageUnit(unit.officialSroCode, unit.officialVillageCode)}
                   >
                     <div className="coverage-unit-index">{unit.sequence}</div>
@@ -513,7 +521,7 @@ export default function MitoApp() {
                       <span>{unit.nameTa}</span>
                       <small>{query && match ? `Matched “${match.matchedAlias}” · ` : ""}{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
                     </div>
-                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{auctionReserveRecordCount ? `${auctionReserveRecordCount} official reserve record · not sale` : hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
+                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{auctionReserveRecordCount ? `${auctionReserveRecordCount} direct land reserve · not sale` : commercialAuctionReserveRecordCount ? `${commercialAuctionReserveRecordCount} combined-asset reserve events · not sale` : hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
                   </button>
                 );
               })}
@@ -620,7 +628,9 @@ export default function MitoApp() {
               ? selectedCoverageUnit
                 ? selectedCoverageAuctionReservePrices.length
                   ? "Official 2025 liquidation reserve · auction outcome price unknown"
-                  : selectedCoverageAllotmentRates.length
+                  : selectedCoverageCommercialAuctionReserves.length
+                    ? "Two official combined-asset reserves · auction outcome price unknown"
+                    : selectedCoverageAllotmentRates.length
                     ? `${selectedCoverageAllotmentRates.length} official leasehold allotment rates · not market prices`
                     : selectedCoverageHousingOffers.length
                       ? `${selectedCoverageHousingOffers.length} closed TNHB apartment price records · locality crosswalk unresolved`
@@ -666,6 +676,14 @@ export default function MitoApp() {
                   </section>
                 )}
 
+                {selectedCoverageCommercialAuctionReserves.length > 0 && (
+                  <section className="auction-evidence-card">
+                    <div><Building2 size={17} /></div>
+                    <p><strong>{selectedCoverageCommercialAuctionReserves.length} official combined-asset reserve events</strong><span>₹32.00 crore → ₹28.10 crore · Plot A-17, Siruseri · outcomes unpublished</span></p>
+                    <em>Land + building, not land rate</em>
+                  </section>
+                )}
+
                 {selectedCoverageAllotmentRates.length > 0 && (
                   <section className="allotment-evidence-card">
                     <div><Building2 size={17} /></div>
@@ -705,11 +723,11 @@ export default function MitoApp() {
                   <div className="planning-evidence-summary village-evidence-summary">
                     <div><strong>{selectedCoveragePlanningRecords.length}</strong><span>planning records</span></div>
                     <div><strong>{selectedCoverageArchivedRecords.length}</strong><span>archived values</span></div>
-                    <div><strong>{selectedCoverageAuctionReservePrices.length}</strong><span>auction reserves</span></div>
+                    <div><strong>{selectedCoverageAuctionReservePrices.length + selectedCoverageCommercialAuctionReserves.length}</strong><span>auction reserves</span></div>
                     <div><strong>{selectedCoverageHousingOffers.length}</strong><span>unresolved housing prices</span></div>
                     <div><strong>0</strong><span>current values</span></div>
                   </div>
-                  <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAuctionReservePrices.length ? "One exact-village liquidation reserve is published, but the winning bid, registered transfer and parcel geometry remain unavailable." : selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
+                  <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAuctionReservePrices.length ? "One exact-village liquidation reserve is published, but the winning bid, registered transfer and parcel geometry remain unavailable." : selectedCoverageCommercialAuctionReserves.length ? "Two reserve observations are published for one Siruseri commercial asset, but they combine land and building, have no verified auction outcome and use only a named park association." : selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
                 </section>
 
                 {selectedCoverageEvidenceMatrix && (
@@ -719,7 +737,7 @@ export default function MitoApp() {
                       <div><span>Current official register</span><strong>{inr.format(selectedCoverageEvidenceMatrix.currentGuidelineRegister.displayedItemCount)} inventory items · values withheld</strong></div>
                       <div><span>TNHB public sales</span><strong>{selectedCoverageEvidenceMatrix.tnhbPublicSales.status === "unresolved_locality_match" ? `${selectedCoverageEvidenceMatrix.tnhbPublicSales.unresolvedRecordCount} unresolved locality records` : "No normalized place-name match in 17 Jul snapshot"}</strong></div>
                       <div><span>SIPCOT land schedule</span><strong>{selectedCoverageEvidenceMatrix.governmentAllotment.recordCount ? `${selectedCoverageEvidenceMatrix.governmentAllotment.recordCount} named park rates` : "No named park association"}</strong></div>
-                      <div><span>IBBI liquidation auction</span><strong>{selectedCoverageEvidenceMatrix.officialAuctionReservePrices.recordCount ? "1 direct reserve record · outcome price unknown" : "No direct record in current ledger"}</strong></div>
+                      <div><span>IBBI liquidation auction</span><strong>{selectedCoverageEvidenceMatrix.officialAuctionReservePrices.recordCount ? "1 direct land reserve · outcome price unknown" : selectedCoverageEvidenceMatrix.officialCommercialAuctionReserves.recordCount ? `${selectedCoverageEvidenceMatrix.officialCommercialAuctionReserves.recordCount} named-park combined reserves · outcomes unknown` : "No record in current ledger"}</strong></div>
                       <div><span>CMDA planning</span><strong>{selectedCoverageEvidenceMatrix.planning.directRecordCount ? `${selectedCoverageEvidenceMatrix.planning.directRecordCount} direct ${selectedCoverageEvidenceMatrix.planning.directRecordCount === 1 ? "record" : "records"}` : "No direct record in current ledger"}</strong></div>
                       <div className="blocked"><span>Registered land transactions</span><strong>0 verified records</strong></div>
                       <div className="blocked"><span>Market land value</span><strong>Not released · insufficient evidence</strong></div>
@@ -759,6 +777,21 @@ export default function MitoApp() {
                   </section>
                 )}
 
+                {selectedCoverageCommercialAuctionReserves.length > 0 && (
+                  <section className="inspector-section auction-reserve-section">
+                    <div className="section-heading"><div><span>Official liquidation auction</span><h2>Siruseri commercial reserve timeline</h2></div><Building2 size={17} /></div>
+                    {selectedCoverageCommercialAuctionReserves.map((record) => (
+                      <article key={record.id} className="auction-reserve-card">
+                        <div><span>combined land + building</span><em>{record.auctionDate === "2022-11-03" ? "re-auction" : "auction"}</em></div>
+                        <strong>{formatRate(record.derivedCombinedReserveInrPerBuildingSqft)}<small>/building sq ft</small></strong>
+                        <p>₹{(record.totalReservePriceInr / 10_000_000).toFixed(2)} crore reserve · 1 acre land + {inr.format(record.buildingAreaSqft)} sq ft building</p>
+                        <footer><span>Auction {new Date(`${record.auctionDate}T00:00:00+05:30`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span><b>Unplotted</b></footer>
+                      </article>
+                    ))}
+                    <p className="coverage-method">The normalized figure divides each combined reserve by building area only so the two notices can be compared. It is not a land rate or building-only valuation. The later reserve is 12.19% lower; neither auction&apos;s winning bid or transfer is published.</p>
+                  </section>
+                )}
+
                 <section className="inspector-section">
                   <div className="section-heading"><div><span>Village release gate</span><h2>Price evidence is not complete</h2></div><LockKeyhole size={17} /></div>
                   <div className="gate-row passed"><Check size={14} /><span>Official SRO and village identifiers verified</span></div>
@@ -769,11 +802,13 @@ export default function MitoApp() {
                   {selectedCoverageHousingOffers.length > 0 && <div className="gate-row"><X size={14} /><span>TNHB locality not resolved to Sholinganallur registration village 1 or 2</span></div>}
                   {selectedCoverageAuctionReservePrices.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Official liquidation reserve and document/patta areas captured</span></div>}
                   {selectedCoverageAuctionReservePrices.length > 0 && <div className="gate-row"><X size={14} /><span>Auction winning bid and registered transfer are not published</span></div>}
+                  {selectedCoverageCommercialAuctionReserves.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Two official Siruseri combined-asset reserve observations reconciled</span></div>}
+                  {selectedCoverageCommercialAuctionReserves.length > 0 && <div className="gate-row"><X size={14} /><span>Land-only value, winning bids, registered transfer and exact asset geometry are not published</span></div>}
                   <div className="gate-row"><X size={14} /><span>Authorized row-level guideline values not captured</span></div>
                   <div className="gate-row"><X size={14} /><span>No verified registered transactions in MITO yet</span></div>
                 </section>
 
-                <section className="gap-card"><AlertTriangle size={18} /><div><strong>{selectedCoverageAuctionReservePrices.length ? "Do not treat the reserve as a completed sale" : "Do not treat the inventory count as a price"}</strong><p>{selectedCoverageAuctionReservePrices.length ? "₹4,505–₹4,514 per sq ft is the normalized floor set for one 2025 liquidation auction. It does not establish the winning bid, current market value or a village-wide rate." : `${selectedCoverageInventory.displayedItemCount} is the number of official register items returned for this village. MITO publishes no current ₹/sq ft figure until authorized row data or independently verified transaction evidence is available.`}</p></div></section>
+                <section className="gap-card"><AlertTriangle size={18} /><div><strong>{selectedCoverageAuctionReservePrices.length || selectedCoverageCommercialAuctionReserves.length ? "Do not treat an auction reserve as a completed sale" : "Do not treat the inventory count as a price"}</strong><p>{selectedCoverageAuctionReservePrices.length ? "₹4,505–₹4,514 per sq ft is the normalized floor set for one 2025 liquidation auction. It does not establish the winning bid, current market value or a village-wide rate." : selectedCoverageCommercialAuctionReserves.length ? "₹1,965–₹2,237 per building sq ft is a comparison of two floors for one combined land-and-building asset. It is not a land price, winning bid, registered consideration or village-wide Siruseri value." : `${selectedCoverageInventory.displayedItemCount} is the number of official register items returned for this village. MITO publishes no current ₹/sq ft figure until authorized row data or independently verified transaction evidence is available.`}</p></div></section>
               </>
             ) : (
             <>
@@ -813,6 +848,12 @@ export default function MitoApp() {
                 <em>Reserve price, not sale</em>
               </section>
 
+              <section className="auction-evidence-card">
+                <div><Building2 size={17} /></div>
+                <p><strong>{omrOfficialCommercialAuctionReserveSummary.recordCount} Siruseri commercial reserve events</strong><span>One Plot A-17 combined asset · ₹32.00 crore → ₹28.10 crore · outcomes unknown</span></p>
+                <em>Land + building, not land rate</em>
+              </section>
+
               <section className="geometry-evidence-card">
                 <div><Layers3 size={17} /></div>
                 <p><strong>{omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount} approximate footprint published</strong><span>SIPCOT Siruseri · OpenStreetMap ODbL · official GIS used for comparison only</span></p>
@@ -828,6 +869,7 @@ export default function MitoApp() {
                 <div className="coverage-progress-row"><div><span>Official allotment rates</span><strong>{omrCoverageSummary.officialAllotmentRateCount}</strong></div><div className="coverage-progress allotment"><i style={{ width: `${Math.round((omrCoverageSummary.officialAllotmentRateVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named park association; these leasehold plot costs do not count as guideline or transaction coverage</small></div>
                 <div className="coverage-progress-row"><div><span>Official housing price records</span><strong>{omrCoverageSummary.officialHousingOfferCount}</strong></div><div className="coverage-progress housing"><i style={{ width: "0%" }} /></div><small>{omrCoverageSummary.closedOfficialHousingOfferCount} closed TNHB apartment offers · zero direct village links and zero land-price records</small></div>
                 <div className="coverage-progress-row"><div><span>Official auction reserve prices</span><strong>{omrCoverageSummary.officialAuctionReservePriceCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialAuctionReservePriceVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One exact-village liquidation reserve · zero winning-bid or registered-transaction records</small></div>
+                <div className="coverage-progress-row"><div><span>Commercial auction reserve history</span><strong>{omrCoverageSummary.officialCommercialAuctionReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialCommercialAuctionNamedParkAssociationCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One Siruseri combined land-and-building asset · named park association · zero winning-bid or land-rate records</small></div>
                 <div className="coverage-progress-row"><div><span>Publishable approximate geometries</span><strong>{omrCoverageSummary.publishableApproximateGeometryCount}</strong></div><div className="coverage-progress geometry"><i style={{ width: `${Math.round((omrCoverageSummary.publishableApproximateGeometryCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named OSM park footprint · zero exact, official or cadastral geometries published</small></div>
                 <div className="coverage-progress-row"><div><span>Planning evidence</span><strong>{omrCoveragePercent.planning}%</strong></div><div className="coverage-progress planning"><i style={{ width: `${omrCoveragePercent.planning}%` }} /></div><small>{omrPlanningSummary.villageCount} of {omrCoverageSummary.unitCount} villages have directly linked CMDA records</small></div>
               </section>
@@ -867,6 +909,28 @@ export default function MitoApp() {
                       </article>
                     ))}
                     <p className="coverage-method">{omrOfficialAuctionReservePriceLedger.publication.caveat} The source&apos;s current Chennai and historical Kancheepuram district labels, plus its deed-count ambiguity, are preserved rather than silently reconciled.</p>
+                  </section>
+                )}
+
+                {selectedCoverageCommercialAuctionReserves.length > 0 && (
+                  <section className="inspector-section evidence-section auction-source-section">
+                    <div className="section-heading"><div><span>Official combined-asset reserve evidence</span><h2>IBBI Siruseri source chain</h2></div><Building2 size={17} /></div>
+                    {omrOfficialCommercialAuctionReserveLedger.sources.map((source) => (
+                      <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="source-card auction-source">
+                        <span className="source-kind official">official</span>
+                        <div><strong>{source.title}</strong><p>{source.organization}</p><small>{("publicationDate" in source ? source.publicationDate : source.indexPublicationDate)} · pages {source.pagesInspected.join(", ")} · factual excerpt only</small></div>
+                        <ExternalLink size={15} />
+                      </a>
+                    ))}
+                    {selectedCoverageCommercialAuctionReserves.map((record) => (
+                      <article key={record.id} className="auction-reserve-card detailed">
+                        <div><span>{record.priceTypeLabel}</span><em>{record.lifecycleStatus.replaceAll("_", " ")}</em></div>
+                        <strong>{formatRate(record.derivedCombinedReserveInrPerBuildingSqft)}<small>/building sq ft</small></strong>
+                        <p>₹{(record.totalReservePriceInr / 10_000_000).toFixed(2)} crore combined reserve divided by {inr.format(record.buildingAreaSqft)} building sq ft.</p>
+                        <footer><span>Winning bid: unpublished</span><b>Named park association</b></footer>
+                      </article>
+                    ))}
+                    <p className="coverage-method">{omrOfficialCommercialAuctionReserveLedger.publication.caveat} The asset stays unplotted; MITO does not reuse the approximate Siruseri park footprint as Plot A-17 geometry.</p>
                   </section>
                 )}
 
@@ -996,6 +1060,11 @@ export default function MitoApp() {
                   <div><strong>{omrOfficialAuctionReservePriceLedger.sources[1].title}</strong><p>{omrOfficialAuctionReservePriceLedger.sources[1].organization}</p><small>1 Sholinganallur 1 reserve record · auction outcome price unknown · unplotted</small></div>
                   <ExternalLink size={15} />
                 </a>
+                <a href={omrOfficialCommercialAuctionReserveLedger.sources[1].url} target="_blank" rel="noreferrer" className="source-card auction-source">
+                  <span className="source-kind official">official</span>
+                  <div><strong>{omrOfficialCommercialAuctionReserveLedger.sources[1].title}</strong><p>{omrOfficialCommercialAuctionReserveLedger.sources[1].organization}</p><small>2 Siruseri combined-asset reserves · auction outcomes unknown · asset unplotted</small></div>
+                  <ExternalLink size={15} />
+                </a>
                 <a href={omrOfficialAllotmentRateLedger.source.url} target="_blank" rel="noreferrer" className="source-card allotment-source">
                   <span className="source-kind official">official</span>
                   <div><strong>{omrOfficialAllotmentRateLedger.source.title}</strong><p>{omrOfficialAllotmentRateLedger.source.organization}</p><small>{omrOfficialAllotmentRateSummary.recordCount} Siruseri leasehold allotment rates · not guideline or market evidence</small></div>
@@ -1111,6 +1180,23 @@ export default function MitoApp() {
                     <p className="coverage-method">A reserve price is the seller&apos;s auction floor, not proof of what a buyer paid. MITO publishes both document-area and patta-area calculations because the official schedule differs by 0.0192 acre. It does not infer a parcel polygon from survey references.</p>
                     <a className="resolver-api-link" href={omrOfficialAuctionReservePriceLedger.sources[1].url} target="_blank" rel="noreferrer">Open the official detailed auction notice <ArrowUpRight size={13} /></a>
                     <a className="resolver-api-link" href={omrOfficialAuctionReservePriceLedger.sources[2].url} target="_blank" rel="noreferrer">Open the later NCLT order <ArrowUpRight size={13} /></a>
+                  </section>
+                )}
+
+                {selectedCoverageCommercialAuctionReserves.length > 0 && (
+                  <section className="inspector-section context-section">
+                    <div className="section-heading"><div><span>Price interpretation</span><h2>What the Siruseri auction history means</h2></div><CircleHelp size={17} /></div>
+                    <dl className="detail-grid">
+                      <div><dt>Evidence</dt><dd>Combined-asset reserves</dd></div>
+                      <div><dt>Auction dates</dt><dd>8 Sep & 3 Nov 2022</dd></div>
+                      <div><dt>Asset</dt><dd>1 acre + 143,020 sq ft building</dd></div>
+                      <div><dt>Reserve change</dt><dd>−12.19%</dd></div>
+                      <div><dt>Winning bids</dt><dd>Not published</dd></div>
+                      <div><dt>Geometry</dt><dd>Unplotted</dd></div>
+                    </dl>
+                    <p className="coverage-method">The reserve moved from ₹32.00 crore to ₹28.10 crore for the same Plot A-17 asset. Because each figure includes both land and building, MITO does not derive a land rate. The Siruseri link is name-based and the approximate park polygon is not used as asset geometry.</p>
+                    <a className="resolver-api-link" href={omrOfficialCommercialAuctionReserveLedger.sources[0].url} target="_blank" rel="noreferrer">Open the official ₹32.00 crore schedule <ArrowUpRight size={13} /></a>
+                    <a className="resolver-api-link" href={omrOfficialCommercialAuctionReserveLedger.sources[1].url} target="_blank" rel="noreferrer">Open the official ₹28.10 crore re-auction notice <ArrowUpRight size={13} /></a>
                   </section>
                 )}
 

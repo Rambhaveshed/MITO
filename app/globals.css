@@ -844,7 +844,7 @@ button {
     padding: 8px;
     border-radius: 13px;
   }
-  .search-row { height: 44px; }
+  .search-row { height: 46px; }
   .search-row input { height: 100%; font-size: 11px; }
   .search-row kbd { display: none; }
   .view-tabs { margin: 7px 0 4px; }

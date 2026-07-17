@@ -4,10 +4,12 @@ import {
   archivedGuidelineRecordsForVillage,
   officialAllotmentRatesForVillage,
   officialAuctionReservePricesForVillage,
+  officialCommercialAuctionReservesForVillage,
   omrGuidelineOmrInventoryAudit,
   omrGuidelineSnapshotSummary,
   omrOfficialAllotmentRateSummary,
   omrOfficialAuctionReservePriceSummary,
+  omrOfficialCommercialAuctionReserveSummary,
   omrPlanningSummary,
   omrTnhbHousingOfferLedger,
   omrTnhbHousingOfferSummary,
@@ -207,6 +209,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   const archivedGuidelineRecords = archivedGuidelineRecordsForVillage(unit.officialSroCode, unit.officialVillageCode);
   const governmentAllotmentRates = officialAllotmentRatesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const officialAuctionReservePrices = officialAuctionReservePricesForVillage(unit.officialSroCode, unit.officialVillageCode);
+  const officialCommercialAuctionReserves = officialCommercialAuctionReservesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const unresolvedHousingOffers = tnhbHousingOffersForCandidateVillage(unit.officialSroCode, unit.officialVillageCode);
   const tnhbPlaceMatched = omrTnhbHousingOfferLedger.omrScopeAudit.matchedCandidateVillageKeys.includes(key);
   const availableEvidenceTypes = ["current_guideline_inventory_metadata"];
@@ -215,6 +218,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   if (archivedGuidelineRecords.length) availableEvidenceTypes.push("archived_guideline_value");
   if (governmentAllotmentRates.length) availableEvidenceTypes.push("government_leasehold_allotment_rates");
   if (officialAuctionReservePrices.length) availableEvidenceTypes.push("official_liquidation_auction_reserve_price");
+  if (officialCommercialAuctionReserves.length) availableEvidenceTypes.push("official_liquidation_combined_asset_reserve_history");
   if (unresolvedHousingOffers.length) availableEvidenceTypes.push("unresolved_official_housing_prices");
   if (governmentAllotmentRates.length && omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount) {
     availableEvidenceTypes.push("approximate_open_data_geometry");
@@ -227,6 +231,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   ];
   if (tnhbPlaceMatched) primaryBlockers.push("TNHB's Sholinganallur place label is unresolved between registration villages 1 and 2.");
   if (officialAuctionReservePrices.length) primaryBlockers.push("The concluded liquidation auction's winning bid and registered transfer are not published.");
+  if (officialCommercialAuctionReserves.length) primaryBlockers.push("The Siruseri auction outcome and asset-to-registration-polygon crosswalk are not published.");
 
   return {
     key,
@@ -259,6 +264,21 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
       directRecordCount: officialAuctionReservePrices.length,
       lifecycleStatus: officialAuctionReservePrices[0]?.lifecycleStatus ?? null,
       derivedReservePriceRangeInrPerSqft: officialAuctionReservePrices[0]?.derivedReservePriceRangeInrPerSqft ?? null,
+      registeredTransactionCount: 0,
+      winningBidRecordCount: 0,
+    },
+    officialCommercialAuctionReserves: {
+      status: officialCommercialAuctionReserves.length ? "named_park_reserve_history_found" : "no_named_park_record_in_ledger",
+      recordCount: officialCommercialAuctionReserves.length,
+      assetCount: officialCommercialAuctionReserves.length ? 1 : 0,
+      directRecordCount: 0,
+      namedParkAssociationCount: officialCommercialAuctionReserves.length ? 1 : 0,
+      lifecycleStatus: officialCommercialAuctionReserves.at(-1)?.lifecycleStatus ?? null,
+      reservePriceRangeInr: officialCommercialAuctionReserves.length ? omrOfficialCommercialAuctionReserveSummary.reservePriceRangeInr : null,
+      derivedCombinedReserveRangeInrPerBuildingSqft: officialCommercialAuctionReserves.length
+        ? omrOfficialCommercialAuctionReserveSummary.derivedCombinedReserveRangeInrPerBuildingSqft
+        : null,
+      landReservePriceRecordCount: 0,
       registeredTransactionCount: 0,
       winningBidRecordCount: 0,
     },
@@ -307,6 +327,11 @@ export const omrCoverageSummary = {
   officialAuctionReservePriceCount: omrOfficialAuctionReservePriceSummary.recordCount,
   officialAuctionReservePriceVillageCount: omrOfficialAuctionReservePriceSummary.directVillageLinkCount,
   officialAuctionWinningBidRecordCount: omrOfficialAuctionReservePriceSummary.winningBidRecordCount,
+  officialCommercialAuctionReserveCount: omrOfficialCommercialAuctionReserveSummary.recordCount,
+  officialCommercialAuctionAssetCount: omrOfficialCommercialAuctionReserveSummary.assetCount,
+  officialCommercialAuctionNamedParkAssociationCount: omrOfficialCommercialAuctionReserveSummary.namedParkAssociationCount,
+  officialCommercialAuctionDirectVillageLinkCount: omrOfficialCommercialAuctionReserveSummary.directVillageLinkCount,
+  officialCommercialAuctionWinningBidRecordCount: omrOfficialCommercialAuctionReserveSummary.winningBidRecordCount,
   officialHousingOfferCount: omrTnhbHousingOfferSummary.recordCount,
   closedOfficialHousingOfferCount: omrTnhbHousingOfferSummary.closedOfferCount,
   directHousingOfferVillageCount: omrTnhbHousingOfferSummary.directVillageLinkCount,

@@ -6,6 +6,7 @@ import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-
 import guidelineLiveRegisterAudit from "./evidence/tnreginet-live-register-audit-2026-07-16.json";
 import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit-2026-07-16.json";
 import ibbiSholinganallurLandAuction from "./evidence/ibbi-sholinganallur-land-auction-2025.json";
+import ibbiTecproSiruseriCommercialAuctions from "./evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json";
 import planningLedger from "./evidence/omr-planning-records.json";
 import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
@@ -30,6 +31,7 @@ export const omrGuidelineLiveRegisterAudit = guidelineLiveRegisterAudit;
 export const omrGuidelineOmrInventoryAudit = guidelineOmrInventoryAudit;
 export const omrOfficialAllotmentRateLedger = sipcotSiruseriLandRates;
 export const omrOfficialAuctionReservePriceLedger = ibbiSholinganallurLandAuction;
+export const omrOfficialCommercialAuctionReserveLedger = ibbiTecproSiruseriCommercialAuctions;
 export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
 export const omrSiruseriGeometryAudit = sipcotSiruseriGeometryAudit;
 export const omrSiruseriFootprint = sipcotSiruseriFootprint as FeatureCollection<Polygon>;
@@ -136,6 +138,28 @@ export const omrOfficialAuctionReservePriceSummary = {
   verifiedAt: ibbiSholinganallurLandAuction.auditedAt,
 };
 
+export const omrOfficialCommercialAuctionReserveSummary = {
+  recordCount: ibbiTecproSiruseriCommercialAuctions.publication.recordCount,
+  assetCount: ibbiTecproSiruseriCommercialAuctions.publication.assetCount,
+  namedParkAssociationCount: ibbiTecproSiruseriCommercialAuctions.publication.namedParkAssociationCount,
+  directVillageLinkCount: ibbiTecproSiruseriCommercialAuctions.publication.directVillageLinkCount,
+  combinedLandBuildingReserveRecordCount: ibbiTecproSiruseriCommercialAuctions.publication.combinedLandBuildingReserveRecords,
+  landReservePriceRecordCount: ibbiTecproSiruseriCommercialAuctions.publication.landReservePriceRecords,
+  registeredTransactionCount: ibbiTecproSiruseriCommercialAuctions.publication.registeredTransactions,
+  winningBidRecordCount: ibbiTecproSiruseriCommercialAuctions.publication.winningBidRecords,
+  plottedRecordCount: ibbiTecproSiruseriCommercialAuctions.publication.plottedRecordCount,
+  reservePriceRangeInr: {
+    low: Math.min(...ibbiTecproSiruseriCommercialAuctions.records.map((record) => record.totalReservePriceInr)),
+    high: Math.max(...ibbiTecproSiruseriCommercialAuctions.records.map((record) => record.totalReservePriceInr)),
+  },
+  derivedCombinedReserveRangeInrPerBuildingSqft: {
+    low: Math.min(...ibbiTecproSiruseriCommercialAuctions.records.map((record) => record.derivedCombinedReserveInrPerBuildingSqft)),
+    high: Math.max(...ibbiTecproSiruseriCommercialAuctions.records.map((record) => record.derivedCombinedReserveInrPerBuildingSqft)),
+  },
+  reserveReductionPercent: ibbiTecproSiruseriCommercialAuctions.reconciliation.reserveReductionPercent,
+  verifiedAt: ibbiTecproSiruseriCommercialAuctions.auditedAt,
+};
+
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
@@ -158,6 +182,12 @@ export function officialAuctionReservePricesForVillage(officialSroCode: string, 
   const location = ibbiSholinganallurLandAuction.location;
   if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
   return ibbiSholinganallurLandAuction.records;
+}
+
+export function officialCommercialAuctionReservesForVillage(officialSroCode: string, officialVillageCode: string) {
+  const location = ibbiTecproSiruseriCommercialAuctions.location;
+  if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
+  return ibbiTecproSiruseriCommercialAuctions.records;
 }
 
 export function tnhbHousingOffersForCandidateVillage(officialSroCode: string, officialVillageCode: string) {

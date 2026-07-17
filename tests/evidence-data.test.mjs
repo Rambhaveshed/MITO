@@ -16,6 +16,7 @@ const sipcotSiruseriGeometryAuditUrl = new URL("../data/evidence/sipcot-siruseri
 const sipcotSiruseriFootprintUrl = new URL("../data/geometry/sipcot-siruseri-osm-footprint-2026-07-17.json", import.meta.url);
 const tnhbSholinganallurHousingOffersUrl = new URL("../data/evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json", import.meta.url);
 const ibbiSholinganallurLandAuctionUrl = new URL("../data/evidence/ibbi-sholinganallur-land-auction-2025.json", import.meta.url);
+const ibbiTecproSiruseriCommercialAuctionsUrl = new URL("../data/evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
@@ -61,6 +62,51 @@ test("IBBI Sholinganallur reserve evidence stays distinct from a completed sale 
   assert.equal(ledger.privacy.personalDataFieldsStored, 0);
   assert.equal(ledger.publication.personalDataFieldsStored, 0);
   assert.equal(ledger.conflicts.find((conflict) => conflict.id === "deed-count-source-ambiguity").status, "not_promoted_to_transaction_evidence");
+});
+
+test("IBBI Siruseri commercial reserve history stays combined, unplotted and outcome-unknown", async () => {
+  const ledger = await readJson(ibbiTecproSiruseriCommercialAuctionsUrl);
+  const [firstAuction, reauction] = ledger.records;
+
+  assert.equal(ledger.sources.length, 3);
+  assert.deepEqual(ledger.sources.map((source) => source.documentDigest), [
+    "sha256:02ca439877317a470a88600e846a45ca136ba4171f16c145e02719a7bfab9e40",
+    "sha256:ffd49076a408a142c9fdf21eec7fd910e1e977b96017e424dfa7158af4297fd5",
+    "sha256:294602a6092f0da6bb6cf1e84b965fa69beb1655533bafbc1334c9a9961090ec",
+  ]);
+  assert.ok(ledger.sources.every((source) => source.rightsStatus === "official_public_record_factual_excerpt_only_no_open_licence_found"));
+  assert.equal(ledger.location.mappingStatus, "named_park_association");
+  assert.equal(ledger.location.officialSroCode, "22604");
+  assert.equal(ledger.location.officialVillageCode, "800000275");
+  assert.equal(ledger.location.directVillageLink, false);
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.location.geometryType, null);
+  assert.equal(ledger.asset.plotNumber, "A-17");
+  assert.equal(ledger.asset.landAreaSqft, 43560);
+  assert.equal(ledger.asset.buildingAreaSqft, 143020);
+  assert.equal(ledger.asset.tenure, "unknown_from_auction_sources");
+  assert.deepEqual(ledger.records.map((record) => record.totalReservePriceInr), [320000000, 281000000]);
+  assert.deepEqual(ledger.records.map((record) => record.derivedCombinedReserveInrPerBuildingSqft), [2237.45, 1964.76]);
+  assert.equal(firstAuction.derivedCombinedReserveInrPerBuildingSqft, Math.round((firstAuction.totalReservePriceInr / firstAuction.buildingAreaSqft) * 100) / 100);
+  assert.equal(reauction.derivedCombinedReserveInrPerBuildingSqft, Math.round((reauction.totalReservePriceInr / reauction.buildingAreaSqft) * 100) / 100);
+  assert.equal(reauction.reserveChangeFromPreviousPercent, -12.19);
+  assert.equal(ledger.reconciliation.reserveReductionInr, 39000000);
+  assert.equal(ledger.reconciliation.reserveReductionPercent, 12.19);
+  assert.equal(ledger.reconciliation.assetMatchStatus, "same_asset_verified");
+  assert.ok(ledger.records.every((record) => record.isCombinedLandBuildingReservePrice && !record.isLandReservePrice));
+  assert.ok(ledger.records.every((record) => record.winningBidInr === null && !record.saleCertificateVerified && !record.registeredTransferVerified));
+  assert.ok(ledger.records.every((record) => record.geometryStatus === "unplotted" && record.directVillageLink === false));
+  assert.ok(ledger.records.every((record) => !record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate && !record.isWinningBid));
+  assert.equal(ledger.publication.recordCount, 2);
+  assert.equal(ledger.publication.assetCount, 1);
+  assert.equal(ledger.publication.namedParkAssociationCount, 1);
+  assert.equal(ledger.publication.directVillageLinkCount, 0);
+  assert.equal(ledger.publication.landReservePriceRecords, 0);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.winningBidRecords, 0);
+  assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.privacy.personalDataFieldsStored, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
 });
 
 function pointInRing([x, y], ring) {
