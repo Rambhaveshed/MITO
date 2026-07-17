@@ -12,6 +12,8 @@ import {
   omrOfficialAllotmentRateSummary,
   omrPlanningLedger,
   omrPlanningSummary,
+  omrSiruseriFootprint,
+  omrSiruseriGeometryAudit,
   unresolvedPlanningRecords,
 } from "../../../data/evidence";
 
@@ -36,6 +38,15 @@ export async function GET() {
       records: omrOfficialAllotmentRateLedger.records,
       publication: omrOfficialAllotmentRateLedger.publication,
       publicationRule: "These rows are SIPCOT leasehold allotment plot costs. They must never be relabelled as guideline values, registered transactions, asking prices, market estimates or a village-wide Siruseri rate.",
+    },
+    geometryEvidence: {
+      summary: omrSiruseriGeometryAudit.publication,
+      decision: omrSiruseriGeometryAudit.decision,
+      officialVerificationSource: omrSiruseriGeometryAudit.officialSource,
+      openSource: omrSiruseriGeometryAudit.openSource,
+      comparison: omrSiruseriGeometryAudit.comparison,
+      featureCollection: omrSiruseriFootprint,
+      publicationRule: "MITO publishes only the ODbL-licensed approximate OSM footprint. The official SIPCOT boundary is neither stored nor republished, and the open footprint must never be described as official, exact, cadastral, legal or complete.",
     },
     guidelineValueCollection: {
       captureRun: omrGuidelineCaptureRun,

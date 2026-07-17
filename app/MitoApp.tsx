@@ -48,6 +48,9 @@ import {
   omrOfficialAllotmentRateSummary,
   omrPlanningLedger,
   omrPlanningSummary,
+  omrSiruseriFootprint,
+  omrSiruseriFootprintCenter,
+  omrSiruseriGeometryAudit,
   planningRecordsForVillage,
 } from "../data/evidence";
 import {
@@ -64,6 +67,10 @@ import { marketAreas, sourceById, type MarketArea } from "../data/pilot";
 const views = ["Market", "Guideline", "Transactions", "Planning", "Risk", "Coverage"] as const;
 type View = (typeof views)[number];
 type CoverageScope = "omr" | "chennai";
+const SIRUSERI_VILLAGE_KEY = "22604:800000275";
+const SIRUSERI_SOURCE_ID = "sipcot-siruseri-footprint";
+const SIRUSERI_FILL_LAYER_ID = "sipcot-siruseri-footprint-fill";
+const SIRUSERI_LINE_LAYER_ID = "sipcot-siruseri-footprint-line";
 
 const inr = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 0 });
 const auditDateTime = new Intl.DateTimeFormat("en-IN", {
@@ -130,6 +137,7 @@ export default function MitoApp() {
   const [query, setQuery] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [evidenceMapReady, setEvidenceMapReady] = useState(false);
   const [inspectorTab, setInspectorTab] = useState<"Overview" | "Evidence" | "Context">("Overview");
   const [selectedComparables, setSelectedComparables] = useState<string[]>([
     "shol-nb-9600",
@@ -221,10 +229,14 @@ export default function MitoApp() {
   };
 
   const selectCoverageUnit = (officialSroCode: string, officialVillageCode: string) => {
-    setSelectedCoverageKey(`${officialSroCode}:${officialVillageCode}`);
+    const key = `${officialSroCode}:${officialVillageCode}`;
+    setSelectedCoverageKey(key);
     setActiveView("Coverage");
     setInspectorTab("Overview");
     setQuery("");
+    if (key === SIRUSERI_VILLAGE_KEY) {
+      mapRef.current?.flyTo({ center: omrSiruseriFootprintCenter, zoom: 13.7, duration: 900 });
+    }
   };
 
   const selectChennaiUnit = (key: string) => {
@@ -265,6 +277,37 @@ export default function MitoApp() {
       map.addControl(new maplibre.NavigationControl({ showCompass: false }), "bottom-right");
       mapRef.current = map;
 
+      map.on("load", () => {
+        map.addSource(SIRUSERI_SOURCE_ID, {
+          type: "geojson",
+          data: omrSiruseriFootprint,
+          attribution: "© OpenStreetMap contributors",
+        });
+        map.addLayer({
+          id: SIRUSERI_FILL_LAYER_ID,
+          type: "fill",
+          source: SIRUSERI_SOURCE_ID,
+          paint: {
+            "fill-color": "#4179a6",
+            "fill-opacity": 0.16,
+          },
+        });
+        map.addLayer({
+          id: SIRUSERI_LINE_LAYER_ID,
+          type: "line",
+          source: SIRUSERI_SOURCE_ID,
+          paint: {
+            "line-color": "#275e8d",
+            "line-width": 2,
+            "line-dasharray": [2, 2],
+          },
+        });
+        map.on("click", SIRUSERI_FILL_LAYER_ID, () => selectCoverageUnit("22604", "800000275"));
+        map.on("mouseenter", SIRUSERI_FILL_LAYER_ID, () => { map.getCanvas().style.cursor = "pointer"; });
+        map.on("mouseleave", SIRUSERI_FILL_LAYER_ID, () => { map.getCanvas().style.cursor = ""; });
+        setEvidenceMapReady(true);
+      });
+
       markersRef.current = marketAreas.map((area) => {
         const button = document.createElement("button");
         button.type = "button";
@@ -300,6 +343,18 @@ export default function MitoApp() {
       marker.getElement().hidden = activeView === "Coverage";
     });
   }, [activeView]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !evidenceMapReady) return;
+    const isVisible = activeView === "Coverage" && coverageScope === "omr";
+    const isSelected = selectedCoverageKey === SIRUSERI_VILLAGE_KEY;
+    for (const layerId of [SIRUSERI_FILL_LAYER_ID, SIRUSERI_LINE_LAYER_ID]) {
+      map.setLayoutProperty(layerId, "visibility", isVisible ? "visible" : "none");
+    }
+    map.setPaintProperty(SIRUSERI_FILL_LAYER_ID, "fill-opacity", isSelected ? 0.25 : 0.16);
+    map.setPaintProperty(SIRUSERI_LINE_LAYER_ID, "line-width", isSelected ? 3 : 2);
+  }, [activeView, coverageScope, evidenceMapReady, selectedCoverageKey]);
 
   return (
     <main className="mito-shell">
@@ -496,7 +551,9 @@ export default function MitoApp() {
       <div className="map-legend">
         {activeView === "Coverage" ? (
           <>
-            <span><i className="legend-gap" /> Village geometry unplotted</span>
+            {coverageScope === "omr"
+              ? <span><i className="legend-approx" /> 1 approximate OSM footprint · village geometry unplotted</span>
+              : <span><i className="legend-gap" /> Village geometry unplotted</span>}
             <span>{coverageScope === "omr" ? "Search the verified jurisdiction ledger" : `${chennaiRevenueSummary.registrationCrosswalkCount} verified links · ${chennaiRevenueSummary.ambiguousRegistrationCrosswalkCount} ambiguities`}</span>
           </>
         ) : (
@@ -586,6 +643,14 @@ export default function MitoApp() {
                   </section>
                 )}
 
+                {selectedCoverageAllotmentRates.length > 0 && (
+                  <section className="geometry-evidence-card">
+                    <div><Layers3 size={17} /></div>
+                    <p><strong>Approximate open-data footprint published</strong><span>OSM way {omrSiruseriGeometryAudit.openSource.objectId} · partial versus official SIPCOT GIS boundary</span></p>
+                    <em>Not official</em>
+                  </section>
+                )}
+
                 <section className="inspector-section">
                   <div className="section-heading"><div><span>Official identity</span><h2>Registration crosswalk</h2></div><Route size={17} /></div>
                   <dl className="detail-grid">
@@ -603,7 +668,7 @@ export default function MitoApp() {
                     <div><strong>{selectedCoverageArchivedRecords.length}</strong><span>archived values</span></div>
                     <div><strong>0</strong><span>current values</span></div>
                   </div>
-                  <p className="coverage-method">The official inventory size and jurisdiction are verified. Individual street values, transactions and parcel geometry are not published as current evidence.</p>
+                  <p className="coverage-method">The official inventory size and jurisdiction are verified. Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished.</p>
                 </section>
 
                 {selectedCoverageAllotmentRates.length > 0 && (
@@ -627,6 +692,7 @@ export default function MitoApp() {
                   <div className="gate-row passed"><Check size={14} /><span>Official SRO and village identifiers verified</span></div>
                   <div className="gate-row passed"><Check size={14} /><span>Current official inventory total verified</span></div>
                   {selectedCoverageAllotmentRates.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Two official SIPCOT leasehold allotment rates captured separately</span></div>}
+                  {selectedCoverageAllotmentRates.length > 0 && <div className="gate-row passed"><Check size={14} /><span>One ODbL approximate park footprint published with attribution</span></div>}
                   <div className="gate-row"><X size={14} /><span>Authorized row-level guideline values not captured</span></div>
                   <div className="gate-row"><X size={14} /><span>No verified registered transactions in MITO yet</span></div>
                 </section>
@@ -659,6 +725,12 @@ export default function MitoApp() {
                 <em>Not market price</em>
               </section>
 
+              <section className="geometry-evidence-card">
+                <div><Layers3 size={17} /></div>
+                <p><strong>{omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount} approximate footprint published</strong><span>SIPCOT Siruseri · OpenStreetMap ODbL · official GIS used for comparison only</span></p>
+                <em>Partial</em>
+              </section>
+
               <section className="inspector-section">
                 <div className="section-heading"><div><span>Collection progress</span><h2>What is actually complete</h2></div><Database size={17} /></div>
                 <div className="coverage-progress-row"><div><span>Jurisdiction IDs</span><strong>{omrCoveragePercent.jurisdiction}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.jurisdiction}%` }} /></div><small>{omrCoverageSummary.jurisdictionVerifiedCount} of {omrCoverageSummary.unitCount} verified against TNREGINET</small></div>
@@ -666,6 +738,7 @@ export default function MitoApp() {
                 <div className="coverage-progress-row"><div><span>Captured street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>{inr.format(omrGuidelineLiveRegisterSummary.currentInventoryCount)} current items are inventoried, but zero row-level values are captured or republished</small></div>
                 <div className="coverage-progress-row"><div><span>Current verified values</span><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>{omrGuidelineSnapshotSummary.recordCount} archived row is shown separately and excluded from this total</small></div>
                 <div className="coverage-progress-row"><div><span>Official allotment rates</span><strong>{omrCoverageSummary.officialAllotmentRateCount}</strong></div><div className="coverage-progress allotment"><i style={{ width: `${Math.round((omrCoverageSummary.officialAllotmentRateVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named park association; these leasehold plot costs do not count as guideline or transaction coverage</small></div>
+                <div className="coverage-progress-row"><div><span>Publishable approximate geometries</span><strong>{omrCoverageSummary.publishableApproximateGeometryCount}</strong></div><div className="coverage-progress geometry"><i style={{ width: `${Math.round((omrCoverageSummary.publishableApproximateGeometryCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named OSM park footprint · zero exact, official or cadastral geometries published</small></div>
                 <div className="coverage-progress-row"><div><span>Planning evidence</span><strong>{omrCoveragePercent.planning}%</strong></div><div className="coverage-progress planning"><i style={{ width: `${omrCoveragePercent.planning}%` }} /></div><small>{omrPlanningSummary.villageCount} of {omrCoverageSummary.unitCount} villages have directly linked CMDA records</small></div>
               </section>
 
@@ -693,13 +766,23 @@ export default function MitoApp() {
                       <div><strong>{omrOfficialAllotmentRateLedger.source.title}</strong><p>{omrOfficialAllotmentRateLedger.source.organization}</p><small>Retrieved {omrOfficialAllotmentRateLedger.source.retrievedAt} · no effective date displayed · factual excerpt only</small></div>
                       <ExternalLink size={15} />
                     </a>
+                    <a href={omrSiruseriGeometryAudit.openSource.sourceUrl} target="_blank" rel="noreferrer" className="source-card geometry-publishable-source">
+                      <span className="source-kind open-data">open data</span>
+                      <div><strong>{omrSiruseriGeometryAudit.openSource.title} approximate footprint</strong><p>{omrSiruseriGeometryAudit.openSource.organization}</p><small>Way {omrSiruseriGeometryAudit.openSource.objectId} · version {omrSiruseriGeometryAudit.openSource.version} · ODbL · partial footprint</small></div>
+                      <ExternalLink size={15} />
+                    </a>
+                    <a href={omrSiruseriGeometryAudit.officialSource.landingPageUrl} target="_blank" rel="noreferrer" className="source-card geometry-verification-source">
+                      <span className="source-kind snapshot">verify only</span>
+                      <div><strong>{omrSiruseriGeometryAudit.officialSource.title}</strong><p>{omrSiruseriGeometryAudit.officialSource.organization}</p><small>{omrSiruseriGeometryAudit.officialSource.rightsStatus.replaceAll("_", " ")} · coordinates excluded from MITO</small></div>
+                      <ExternalLink size={15} />
+                    </a>
                     <div className="allotment-rate-list">
                       {selectedCoverageAllotmentRates.map((record) => (
                         <article key={record.id} className="allotment-rate-card detailed">
                           <div><span>{record.priceTypeLabel}</span><em>{record.verificationStatus.replaceAll("_", " ")}</em></div>
                           <strong>{formatRate(record.normalizedInrPerSqft)}<small>/sq ft</small></strong>
                           <p>Source: ₹{inr.format(record.rawPlotCostLakhsPerAcre)} lakh/acre · {record.availableAreaAcres} acre shown available</p>
-                          <footer><span>99-year leasehold</span><b>Unplotted</b></footer>
+                          <footer><span>99-year leasehold</span><b>Approximate shared footprint</b></footer>
                         </article>
                       ))}
                     </div>
@@ -775,6 +858,16 @@ export default function MitoApp() {
                 <a href={omrOfficialAllotmentRateLedger.source.url} target="_blank" rel="noreferrer" className="source-card allotment-source">
                   <span className="source-kind official">official</span>
                   <div><strong>{omrOfficialAllotmentRateLedger.source.title}</strong><p>{omrOfficialAllotmentRateLedger.source.organization}</p><small>{omrOfficialAllotmentRateSummary.recordCount} Siruseri leasehold allotment rates · not guideline or market evidence</small></div>
+                  <ExternalLink size={15} />
+                </a>
+                <a href={omrSiruseriGeometryAudit.openSource.sourceUrl} target="_blank" rel="noreferrer" className="source-card geometry-publishable-source">
+                  <span className="source-kind open-data">open data</span>
+                  <div><strong>SIPCOT Siruseri approximate footprint</strong><p>{omrSiruseriGeometryAudit.openSource.organization}</p><small>OSM way {omrSiruseriGeometryAudit.openSource.objectId} · version {omrSiruseriGeometryAudit.openSource.version} · {omrSiruseriGeometryAudit.openSource.license}</small></div>
+                  <ExternalLink size={15} />
+                </a>
+                <a href={omrSiruseriGeometryAudit.officialSource.landingPageUrl} target="_blank" rel="noreferrer" className="source-card geometry-verification-source">
+                  <span className="source-kind snapshot">verify only</span>
+                  <div><strong>SIPCOT Siruseri official GIS comparison</strong><p>{omrSiruseriGeometryAudit.officialSource.organization}</p><small>1 boundary feature inspected · 0 official coordinates stored or published</small></div>
                   <ExternalLink size={15} />
                 </a>
                 <a href={omrCoverage.source.url} target="_blank" rel="noreferrer" className="source-card">
@@ -870,9 +963,10 @@ export default function MitoApp() {
                       <div><dt>Evidence type</dt><dd>Government allotment plot cost</dd></div>
                       <div><dt>Tenure</dt><dd>99-year SIPCOT leasehold</dd></div>
                       <div><dt>Effective date</dt><dd>Not displayed</dd></div>
-                      <div><dt>Geometry</dt><dd>Unplotted park association</dd></div>
+                      <div><dt>Geometry</dt><dd>Approximate OSM footprint</dd></div>
                     </dl>
-                    <p className="coverage-method">The SIPCOT source labels the district Kancheepuram; MITO&apos;s current registration crosswalk is Chengalpattu. The source conflict is preserved. The park boundary is not reconciled to the registration-village polygon, and the potential 10% backend subsidy is not deducted because eligibility is project-specific.</p>
+                    <p className="coverage-method">The OSM polygon is a named partial footprint, not an official or legal boundary. It covers about {omrSiruseriGeometryAudit.comparison.openAreaAsPercentOfOfficialComputedArea.toFixed(1)}% of SIPCOT&apos;s computed GIS area and differs materially in outline. SIPCOT&apos;s land table says Kancheepuram while its current GIS index and MITO&apos;s registration crosswalk say Chengalpattu; the conflict is preserved. The potential 10% backend subsidy is not deducted because eligibility is project-specific.</p>
+                    <a className="resolver-api-link" href={omrSiruseriGeometryAudit.openSource.sourceUrl} target="_blank" rel="noreferrer">Open the attributed OSM footprint <ArrowUpRight size={13} /></a>
                     <a className="resolver-api-link" href={omrOfficialAllotmentRateLedger.tenureEvidence.url} target="_blank" rel="noreferrer">Open the official standard lease evidence <ArrowUpRight size={13} /></a>
                   </section>
                 )}

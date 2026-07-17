@@ -1,3 +1,4 @@
+import type { FeatureCollection, Polygon } from "geojson";
 import captureRun from "./capture-runs/omr-guideline-2026-07-16.json";
 import guidelineImportSchema from "./evidence/guideline-value-import.schema.json";
 import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-07-16.json";
@@ -5,7 +6,9 @@ import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-
 import guidelineLiveRegisterAudit from "./evidence/tnreginet-live-register-audit-2026-07-16.json";
 import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit-2026-07-16.json";
 import planningLedger from "./evidence/omr-planning-records.json";
+import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
+import sipcotSiruseriFootprint from "./geometry/sipcot-siruseri-osm-footprint-2026-07-17.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
 
@@ -24,6 +27,9 @@ export const omrGuidelineSecondaryCorroborationLedger = guidelineSecondaryCorrob
 export const omrGuidelineLiveRegisterAudit = guidelineLiveRegisterAudit;
 export const omrGuidelineOmrInventoryAudit = guidelineOmrInventoryAudit;
 export const omrOfficialAllotmentRateLedger = sipcotSiruseriLandRates;
+export const omrSiruseriGeometryAudit = sipcotSiruseriGeometryAudit;
+export const omrSiruseriFootprint = sipcotSiruseriFootprint as FeatureCollection<Polygon>;
+export const omrSiruseriFootprintCenter = sipcotSiruseriGeometryAudit.openSource.centroid as [number, number];
 export const guidelineValueImportSchema = guidelineImportSchema;
 
 const snapshotVillageKeys = new Set(
@@ -85,7 +91,10 @@ export const omrOfficialAllotmentRateSummary = {
     low: Math.min(...sipcotSiruseriLandRates.records.map((record) => record.normalizedInrPerSqft)),
     high: Math.max(...sipcotSiruseriLandRates.records.map((record) => record.normalizedInrPerSqft)),
   },
-  unplottedCount: sipcotSiruseriLandRates.records.filter((record) => record.geometryStatus === "unplotted").length,
+  approximateRecordCount: sipcotSiruseriLandRates.records.filter((record) => record.geometryStatus === "approximate").length,
+  sharedPublishableGeometryCount: sipcotSiruseriGeometryAudit.publication.publishableGeometryCount,
+  exactGeometryCount: sipcotSiruseriGeometryAudit.publication.exactGeometryCount,
+  officialGeometryPublishedCount: sipcotSiruseriGeometryAudit.publication.officialGeometryPublishedCount,
   officialGuidelineValueCount: sipcotSiruseriLandRates.publication.currentOfficialGuidelineValues,
   registeredTransactionCount: sipcotSiruseriLandRates.publication.registeredTransactions,
   verifiedAt: sipcotSiruseriLandRates.auditedAt,

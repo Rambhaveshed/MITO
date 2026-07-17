@@ -466,6 +466,7 @@ button {
 .map-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
 .legend-price { background: var(--green); box-shadow: 0 0 0 3px rgba(24,79,69,.12); }
 .legend-gap { background: #d0d6d3; border: 1px solid #9aa5a1; }
+.legend-approx { width: 12px !important; border: 2px dashed #326c9d; border-radius: 2px !important; background: rgba(65, 121, 166, .16); }
 .map-legend button { display: flex; align-items: center; gap: 5px; height: 25px; padding: 0 8px; border: 0; border-radius: 6px; background: #f1f3ef; color: var(--ink); font-size: 8px; font-weight: 750; cursor: pointer; }
 
 .locate-button {
@@ -619,6 +620,7 @@ button {
 .source-kind.discovery { background: #e8eef7; color: #496285; }
 .source-kind.listing { background: #fff0d2; color: #805b13; }
 .source-kind.planning { background: #e9eef8; color: #475f8e; }
+.source-kind.open-data { background: #e2edf7; color: #315f88; }
 .geometry-source-card { border-color: #d9d2be; background: #fcfaf4; }
 .geometry-source-card + .geometry-source-card { margin-top: 7px; }
 .geometry-readiness-section { border-color: #d9d2be; background: #fffdf8; }
@@ -649,6 +651,15 @@ button {
 .allotment-evidence-card strong { display: block; font-size: 8px; }
 .allotment-evidence-card span { display: block; margin-top: 3px; color: #5d7287; font-size: 6px; line-height: 1.45; }
 .allotment-evidence-card em { padding: 4px 6px; border-radius: 5px; background: #e3edf7; color: #3f668a; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
+.geometry-evidence-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; margin-top: 8px; padding: 11px; border: 1px dashed #8fb2cf; border-radius: 10px; background: #f2f7fb; }
+.geometry-evidence-card > div { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #dceaf4; color: #326c9d; }
+.geometry-evidence-card p { min-width: 0; margin: 0; }
+.geometry-evidence-card strong { display: block; font-size: 8px; }
+.geometry-evidence-card span { display: block; margin-top: 3px; color: #5a7287; font-size: 6px; line-height: 1.45; }
+.geometry-evidence-card em { padding: 4px 6px; border-radius: 5px; background: #e1edf6; color: #3c6689; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
+.geometry-publishable-source { border: 1px dashed #9bbbd3; border-radius: 9px; background: #f4f8fb; }
+.geometry-verification-source { border: 1px solid #ded3b9; border-radius: 9px; background: #fcfaf4; }
+.coverage-progress.geometry i { background: repeating-linear-gradient(90deg, #4f83ad 0 8px, #89afcb 8px 12px); }
 .allotment-source { border: 1px solid #cbdbea; border-radius: 9px; background: #f6f9fc; }
 .allotment-rate-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
 .allotment-rate-card { min-width: 0; padding: 11px; border: 1px solid #c7d8e7; border-radius: 10px; background: #f7fafd; }
@@ -856,6 +867,8 @@ button {
   .inspector-section, .gap-card { margin-top: 8px; }
   .allotment-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
   .allotment-evidence-card em { grid-column: 2; justify-self: start; }
+  .geometry-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
+  .geometry-evidence-card em { grid-column: 2; justify-self: start; }
   .allotment-rate-list { grid-template-columns: 1fr; }
   .mobile-nav {
     position: absolute;

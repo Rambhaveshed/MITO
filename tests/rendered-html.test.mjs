@@ -33,6 +33,8 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /All current village inventories verified/i);
   assert.match(html, /2,715(?:<!-- -->)? items across/i);
   assert.match(html, /2(?:<!-- -->)? official SIPCOT allotment rates captured/i);
+  assert.match(html, /1(?:<!-- -->)? approximate footprint published/i);
+  assert.match(html, /official GIS used for comparison only/i);
   assert.match(html, /Not market price/i);
   assert.match(html, /Row-level publication needs permission/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
@@ -75,6 +77,9 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.pendingGuidelineRecheckCount, 1);
   assert.equal(payload.summary.officialAllotmentRateCount, 2);
   assert.equal(payload.summary.officialAllotmentRateVillageCount, 1);
+  assert.equal(payload.summary.publishableApproximateGeometryCount, 1);
+  assert.equal(payload.summary.exactEvidenceGeometryCount, 0);
+  assert.equal(payload.summary.officialEvidenceGeometryPublishedCount, 0);
   assert.equal(payload.offices.length, 6);
 });
 
@@ -93,7 +98,8 @@ test("evidence API publishes planning provenance, current register metadata and 
   assert.equal(payload.officialAllotmentRates.summary.villageAssociationCount, 1);
   assert.deepEqual(payload.officialAllotmentRates.summary.normalizedRateRangeInrPerSqft, { low: 1790.63, high: 3581.27 });
   assert.equal(payload.officialAllotmentRates.source.rightsStatus, "no_explicit_reuse_policy_found");
-  assert.equal(payload.officialAllotmentRates.location.geometryStatus, "unplotted");
+  assert.equal(payload.officialAllotmentRates.location.geometryStatus, "approximate");
+  assert.equal(payload.officialAllotmentRates.location.geometryId, "osm-way-98358103");
   assert.equal(payload.officialAllotmentRates.location.currentRegistrationAssociation.status, "named_locality_association");
   assert.equal(payload.officialAllotmentRates.records[0].evidenceType, "government_allotment_plot_cost");
   assert.equal(payload.officialAllotmentRates.records[0].tenure, "99_year_leasehold");
@@ -102,6 +108,16 @@ test("evidence API publishes planning provenance, current register metadata and 
   assert.equal(payload.officialAllotmentRates.publication.currentOfficialGuidelineValues, 0);
   assert.equal(payload.officialAllotmentRates.publication.registeredTransactions, 0);
   assert.equal(payload.officialAllotmentRates.subsidy.appliedToPublishedRates, false);
+  assert.equal(payload.geometryEvidence.summary.publishableGeometryCount, 1);
+  assert.equal(payload.geometryEvidence.summary.approximateGeometryCount, 1);
+  assert.equal(payload.geometryEvidence.summary.exactGeometryCount, 0);
+  assert.equal(payload.geometryEvidence.summary.officialGeometryPublishedCount, 0);
+  assert.equal(payload.geometryEvidence.decision.officialBoundaryClaim, false);
+  assert.equal(payload.geometryEvidence.officialVerificationSource.geometryPublishedByMito, false);
+  assert.equal(payload.geometryEvidence.openSource.objectId, 98358103);
+  assert.equal(payload.geometryEvidence.openSource.license, "ODbL-1.0");
+  assert.equal(payload.geometryEvidence.comparison.openCentroidInsideOfficialBoundary, true);
+  assert.equal(payload.geometryEvidence.featureCollection.features[0].properties.geometryStatus, "approximate");
   assert.equal(payload.guidelineValueCollection.captureRun.status, "blocked");
   assert.equal(payload.guidelineValueCollection.captureRun.recordsSeen, 10);
   assert.equal(payload.guidelineValueCollection.captureRun.recordsAccepted, 0);

@@ -12,10 +12,22 @@ const secondaryCorroborationUrl = new URL("../data/evidence/omr-guideline-second
 const liveRegisterAuditUrl = new URL("../data/evidence/tnreginet-live-register-audit-2026-07-16.json", import.meta.url);
 const omrInventoryAuditUrl = new URL("../data/evidence/tnreginet-omr-inventory-audit-2026-07-16.json", import.meta.url);
 const sipcotSiruseriLandRatesUrl = new URL("../data/evidence/sipcot-siruseri-land-rates-2026-07-17.json", import.meta.url);
+const sipcotSiruseriGeometryAuditUrl = new URL("../data/evidence/sipcot-siruseri-geometry-audit-2026-07-17.json", import.meta.url);
+const sipcotSiruseriFootprintUrl = new URL("../data/geometry/sipcot-siruseri-osm-footprint-2026-07-17.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
+}
+
+function pointInRing([x, y], ring) {
+  let inside = false;
+  for (let index = 0, previous = ring.length - 1; index < ring.length; previous = index++) {
+    const [xi, yi] = ring[index];
+    const [xj, yj] = ring[previous];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
 }
 
 test("official planning records stay scoped, unplotted and source-backed", async () => {
@@ -173,21 +185,73 @@ test("SIPCOT Siruseri rates remain leasehold allotment evidence rather than mark
   assert.equal(ledger.location.currentRegistrationAssociation.officialVillageCode, "800000275");
   assert.equal(ledger.location.currentRegistrationAssociation.status, "named_locality_association");
   assert.equal(ledger.location.administrativeConflict.status, "preserved");
-  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.location.geometryStatus, "approximate");
+  assert.equal(ledger.location.geometryId, "osm-way-98358103");
+  assert.equal(ledger.location.geometryLicence, "ODbL-1.0");
   assert.equal(ledger.records.length, 2);
   assert.deepEqual(ledger.records.map((record) => record.propertyClass), ["industrial_land", "commercial_land"]);
   assert.deepEqual(ledger.records.map((record) => record.rawPlotCostLakhsPerAcre), [780, 1560]);
   assert.deepEqual(ledger.records.map((record) => record.normalizedInrPerSqft), [1790.63, 3581.27]);
   assert.ok(ledger.records.every((record) => record.evidenceType === "government_allotment_plot_cost"));
   assert.ok(ledger.records.every((record) => record.tenure === "99_year_leasehold"));
-  assert.ok(ledger.records.every((record) => record.geometryStatus === "unplotted"));
+  assert.ok(ledger.records.every((record) => record.geometryStatus === "approximate"));
+  assert.ok(ledger.records.every((record) => record.geometryId === "osm-way-98358103"));
   assert.ok(ledger.records.every((record) => !record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate));
   assert.equal(ledger.publication.currentOfficialGuidelineValues, 0);
   assert.equal(ledger.publication.registeredTransactions, 0);
   assert.equal(ledger.publication.marketEstimates, 0);
+  assert.equal(ledger.publication.plottedGeometries, 1);
+  assert.equal(ledger.publication.officialGeometriesPublished, 0);
+  assert.equal(ledger.publication.exactGeometriesPublished, 0);
   assert.equal(ledger.subsidy.appliedToPublishedRates, false);
   assert.ok(Math.abs((780 * 100000) / 43560 - ledger.records[0].normalizedInrPerSqft) < 0.01);
   assert.ok(Math.abs((1560 * 100000) / 43560 - ledger.records[1].normalizedInrPerSqft) < 0.01);
+});
+
+test("Siruseri publishes one attributed approximate footprint without republishing official GIS coordinates", async () => {
+  const [footprint, audit, rates] = await Promise.all([
+    readJson(sipcotSiruseriFootprintUrl),
+    readJson(sipcotSiruseriGeometryAuditUrl),
+    readJson(sipcotSiruseriLandRatesUrl),
+  ]);
+
+  assert.equal(footprint.type, "FeatureCollection");
+  assert.equal(footprint.metadata.license, "ODbL-1.0");
+  assert.match(footprint.metadata.attribution, /OpenStreetMap contributors/);
+  assert.equal(footprint.metadata.publicationStatus, "publishable_approximate_geometry");
+  assert.equal(footprint.features.length, 1);
+
+  const [feature] = footprint.features;
+  const [ring] = feature.geometry.coordinates;
+  assert.equal(feature.id, "osm-way-98358103");
+  assert.equal(feature.geometry.type, "Polygon");
+  assert.equal(feature.properties.sourceObjectId, 98358103);
+  assert.equal(feature.properties.sourceVersion, 8);
+  assert.equal(feature.properties.sourceTimestamp, "2025-07-03T09:28:27Z");
+  assert.equal(feature.properties.geometryStatus, "approximate");
+  assert.equal(feature.properties.geometryPrecision, "partial_named_open_source_footprint");
+  assert.equal(ring.length, 40);
+  assert.deepEqual(ring[0], ring.at(-1));
+  assert.ok(ring.every(([longitude, latitude]) => longitude >= 80.2 && longitude <= 80.24 && latitude >= 12.8 && latitude <= 12.86));
+  assert.equal(pointInRing(feature.properties.centroid, ring), true);
+
+  assert.equal(audit.decision.legalBoundaryClaim, false);
+  assert.equal(audit.decision.officialBoundaryClaim, false);
+  assert.equal(audit.officialSource.layerId, "cite:industrial_complex_boundary-Siruseri");
+  assert.equal(audit.officialSource.rightsStatus, "no_explicit_reuse_policy_found");
+  assert.equal(audit.officialSource.geometryStoredInRepository, false);
+  assert.equal(audit.officialSource.geometryPublishedByMito, false);
+  assert.equal(Object.hasOwn(audit.officialSource, "geometry"), false);
+  assert.equal(audit.openSource.objectId, 98358103);
+  assert.equal(audit.openSource.license, "ODbL-1.0");
+  assert.equal(audit.comparison.openCentroidInsideOfficialBoundary, true);
+  assert.ok(Math.abs(audit.comparison.openAreaAsPercentOfOfficialComputedArea - 88.40368) < 0.00001);
+  assert.equal(audit.publication.publishableGeometryCount, 1);
+  assert.equal(audit.publication.approximateGeometryCount, 1);
+  assert.equal(audit.publication.exactGeometryCount, 0);
+  assert.equal(audit.publication.officialGeometryPublishedCount, 0);
+  assert.equal(rates.location.geometryId, feature.id);
+  assert.match(rates.location.positionalUncertainty, /not an official, legal, cadastral or complete/i);
 });
 
 test("guideline import schema requires provenance, normalized values and location evidence", async () => {

@@ -46,12 +46,15 @@
     },
     "administrativeConflict": {
       "status": "preserved",
-      "note": "The live SIPCOT table labels the park's district as Kancheepuram, while MITO's current official registration crosswalk places Siruseri under Chengalpattu registration district. MITO preserves the source label and does not silently rewrite it."
+      "note": "The live SIPCOT land table labels the park's district as Kancheepuram, while SIPCOT's current GIS park index labels Siruseri as Chengalpattu and MITO's registration crosswalk places it under Chengalpattu registration district. MITO preserves the conflicting source labels and does not silently rewrite them."
     },
-    "geometryStatus": "unplotted",
-    "geometryType": "none",
-    "coordinatePrecision": "unavailable",
-    "positionalUncertainty": "Park location is named and corridor membership is corroborated, but an authorized or open park boundary has not been verified."
+    "geometryId": "osm-way-98358103",
+    "geometryStatus": "approximate",
+    "geometryType": "Polygon",
+    "coordinatePrecision": "partial_named_open_source_footprint",
+    "geometrySourceUrl": "https://www.openstreetmap.org/way/98358103",
+    "geometryLicence": "ODbL-1.0",
+    "positionalUncertainty": "The named OpenStreetMap footprint is publishable and its centroid falls inside SIPCOT's official GIS boundary, but it is about 11.6% smaller by computed area and differs materially in shape. It is not an official, legal, cadastral or complete park boundary."
   },
   "records": [
     {
@@ -72,7 +75,8 @@
       "verifiedAt": "2026-07-17",
       "sourceDisplayStatus": "current_as_displayed",
       "verificationStatus": "verified_source_transcription",
-      "geometryStatus": "unplotted",
+      "geometryId": "osm-way-98358103",
+      "geometryStatus": "approximate",
       "isGuidelineValue": false,
       "isRegisteredTransaction": false,
       "isAskingPrice": false,
@@ -97,7 +101,8 @@
       "verifiedAt": "2026-07-17",
       "sourceDisplayStatus": "current_as_displayed",
       "verificationStatus": "verified_source_transcription",
-      "geometryStatus": "unplotted",
+      "geometryId": "osm-way-98358103",
+      "geometryStatus": "approximate",
       "isGuidelineValue": false,
       "isRegisteredTransaction": false,
       "isAskingPrice": false,
@@ -117,7 +122,9 @@
     "registeredTransactions": 0,
     "askingPrices": 0,
     "marketEstimates": 0,
-    "plottedGeometries": 0,
-    "caveat": "The two normalized figures are published only as official government allotment plot costs. They do not satisfy MITO's guideline-value or market-transaction release gates."
+    "plottedGeometries": 1,
+    "officialGeometriesPublished": 0,
+    "exactGeometriesPublished": 0,
+    "caveat": "The two normalized figures are published only as official government allotment plot costs and share one approximate named OSM park footprint. The geometry does not identify either available parcel and the figures do not satisfy MITO's guideline-value or market-transaction release gates."
   }
 }
