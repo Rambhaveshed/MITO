@@ -3,9 +3,11 @@ import placeAliases from "./evidence/omr-place-aliases.json";
 import {
   archivedGuidelineRecordsForVillage,
   officialAllotmentRatesForVillage,
+  officialAuctionReservePricesForVillage,
   omrGuidelineOmrInventoryAudit,
   omrGuidelineSnapshotSummary,
   omrOfficialAllotmentRateSummary,
+  omrOfficialAuctionReservePriceSummary,
   omrPlanningSummary,
   omrTnhbHousingOfferLedger,
   omrTnhbHousingOfferSummary,
@@ -204,6 +206,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   const planningRecords = planningRecordsForVillage(unit.officialSroCode, unit.officialVillageCode);
   const archivedGuidelineRecords = archivedGuidelineRecordsForVillage(unit.officialSroCode, unit.officialVillageCode);
   const governmentAllotmentRates = officialAllotmentRatesForVillage(unit.officialSroCode, unit.officialVillageCode);
+  const officialAuctionReservePrices = officialAuctionReservePricesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const unresolvedHousingOffers = tnhbHousingOffersForCandidateVillage(unit.officialSroCode, unit.officialVillageCode);
   const tnhbPlaceMatched = omrTnhbHousingOfferLedger.omrScopeAudit.matchedCandidateVillageKeys.includes(key);
   const availableEvidenceTypes = ["current_guideline_inventory_metadata"];
@@ -211,6 +214,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   if (planningRecords.length) availableEvidenceTypes.push("official_planning_records");
   if (archivedGuidelineRecords.length) availableEvidenceTypes.push("archived_guideline_value");
   if (governmentAllotmentRates.length) availableEvidenceTypes.push("government_leasehold_allotment_rates");
+  if (officialAuctionReservePrices.length) availableEvidenceTypes.push("official_liquidation_auction_reserve_price");
   if (unresolvedHousingOffers.length) availableEvidenceTypes.push("unresolved_official_housing_prices");
   if (governmentAllotmentRates.length && omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount) {
     availableEvidenceTypes.push("approximate_open_data_geometry");
@@ -222,6 +226,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
     "No exact parcel, street-segment or cadastral geometry is published.",
   ];
   if (tnhbPlaceMatched) primaryBlockers.push("TNHB's Sholinganallur place label is unresolved between registration villages 1 and 2.");
+  if (officialAuctionReservePrices.length) primaryBlockers.push("The concluded liquidation auction's winning bid and registered transfer are not published.");
 
   return {
     key,
@@ -247,6 +252,15 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
     governmentAllotment: {
       status: governmentAllotmentRates.length ? "named_park_association" : "no_named_park_association",
       recordCount: governmentAllotmentRates.length,
+    },
+    officialAuctionReservePrices: {
+      status: officialAuctionReservePrices.length ? "direct_reserve_price_record_found" : "no_direct_record_in_ledger",
+      recordCount: officialAuctionReservePrices.length,
+      directRecordCount: officialAuctionReservePrices.length,
+      lifecycleStatus: officialAuctionReservePrices[0]?.lifecycleStatus ?? null,
+      derivedReservePriceRangeInrPerSqft: officialAuctionReservePrices[0]?.derivedReservePriceRangeInrPerSqft ?? null,
+      registeredTransactionCount: 0,
+      winningBidRecordCount: 0,
     },
     tnhbPublicSales: {
       status: tnhbPlaceMatched ? "unresolved_locality_match" : "no_normalized_place_name_match_in_snapshot",
@@ -290,6 +304,9 @@ export const omrCoverageSummary = {
   registeredTransactionRecordCount: units.reduce((sum, unit) => sum + unit.registeredTransactionRecords, 0),
   officialAllotmentRateCount: omrOfficialAllotmentRateSummary.recordCount,
   officialAllotmentRateVillageCount: omrOfficialAllotmentRateSummary.villageAssociationCount,
+  officialAuctionReservePriceCount: omrOfficialAuctionReservePriceSummary.recordCount,
+  officialAuctionReservePriceVillageCount: omrOfficialAuctionReservePriceSummary.directVillageLinkCount,
+  officialAuctionWinningBidRecordCount: omrOfficialAuctionReservePriceSummary.winningBidRecordCount,
   officialHousingOfferCount: omrTnhbHousingOfferSummary.recordCount,
   closedOfficialHousingOfferCount: omrTnhbHousingOfferSummary.closedOfferCount,
   directHousingOfferVillageCount: omrTnhbHousingOfferSummary.directVillageLinkCount,

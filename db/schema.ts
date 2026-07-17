@@ -48,7 +48,7 @@ export const priceEvidence = sqliteTable("price_evidence", {
   placeId: text("place_id").references(() => places.id),
   sourceId: text("source_id").notNull().references(() => sources.id),
   propertyType: text("property_type").notNull(),
-  evidenceType: text("evidence_type", { enum: ["guideline", "registered_transaction", "asking_price", "broker_reported", "model_estimate", "user_submitted"] }).notNull(),
+  evidenceType: text("evidence_type", { enum: ["guideline", "registered_transaction", "asking_price", "auction_reserve", "government_allotment", "broker_reported", "model_estimate", "user_submitted"] }).notNull(),
   priceInr: integer("price_inr"),
   areaSqft: real("area_sqft"),
   pricePerSqft: real("price_per_sqft"),

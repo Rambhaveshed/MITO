@@ -5,6 +5,7 @@ import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-0
 import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-corroboration-2026-07-16.json";
 import guidelineLiveRegisterAudit from "./evidence/tnreginet-live-register-audit-2026-07-16.json";
 import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit-2026-07-16.json";
+import ibbiSholinganallurLandAuction from "./evidence/ibbi-sholinganallur-land-auction-2025.json";
 import planningLedger from "./evidence/omr-planning-records.json";
 import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
@@ -28,6 +29,7 @@ export const omrGuidelineSecondaryCorroborationLedger = guidelineSecondaryCorrob
 export const omrGuidelineLiveRegisterAudit = guidelineLiveRegisterAudit;
 export const omrGuidelineOmrInventoryAudit = guidelineOmrInventoryAudit;
 export const omrOfficialAllotmentRateLedger = sipcotSiruseriLandRates;
+export const omrOfficialAuctionReservePriceLedger = ibbiSholinganallurLandAuction;
 export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
 export const omrSiruseriGeometryAudit = sipcotSiruseriGeometryAudit;
 export const omrSiruseriFootprint = sipcotSiruseriFootprint as FeatureCollection<Polygon>;
@@ -121,6 +123,19 @@ export const omrTnhbHousingOfferSummary = {
   verifiedAt: tnhbSholinganallurHousingOffers.auditedAt,
 };
 
+export const omrOfficialAuctionReservePriceSummary = {
+  recordCount: ibbiSholinganallurLandAuction.publication.recordCount,
+  directVillageLinkCount: ibbiSholinganallurLandAuction.publication.directVillageLinkCount,
+  landReservePriceRecordCount: ibbiSholinganallurLandAuction.publication.landReservePriceRecords,
+  registeredTransactionCount: ibbiSholinganallurLandAuction.publication.registeredTransactions,
+  winningBidRecordCount: ibbiSholinganallurLandAuction.publication.winningBidRecords,
+  plottedRecordCount: ibbiSholinganallurLandAuction.publication.plottedRecordCount,
+  lifecycleStatus: ibbiSholinganallurLandAuction.records[0].lifecycleStatus,
+  totalReservePriceInr: ibbiSholinganallurLandAuction.records[0].totalReservePriceInr,
+  derivedReservePriceRangeInrPerSqft: ibbiSholinganallurLandAuction.records[0].derivedReservePriceRangeInrPerSqft,
+  verifiedAt: ibbiSholinganallurLandAuction.auditedAt,
+};
+
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
@@ -137,6 +152,12 @@ export function officialAllotmentRatesForVillage(officialSroCode: string, offici
   const association = sipcotSiruseriLandRates.location.currentRegistrationAssociation;
   if (association.officialSroCode !== officialSroCode || association.officialVillageCode !== officialVillageCode) return [];
   return sipcotSiruseriLandRates.records;
+}
+
+export function officialAuctionReservePricesForVillage(officialSroCode: string, officialVillageCode: string) {
+  const location = ibbiSholinganallurLandAuction.location;
+  if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
+  return ibbiSholinganallurLandAuction.records;
 }
 
 export function tnhbHousingOffersForCandidateVillage(officialSroCode: string, officialVillageCode: string) {

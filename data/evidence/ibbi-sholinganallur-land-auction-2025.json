@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "ibbi-sholinganallur-land-auction-2025",
+  "scopeId": "omr-corridor-2026",
+  "auditedAt": "2026-07-17",
+  "sources": [
+    {
+      "id": "ibbi-landmark-auction-form-2025-07-09",
+      "organization": "Insolvency and Bankruptcy Board of India (IBBI)",
+      "title": "Liquidation auction notice form for Landmark Housing Projects Chennai Private Limited",
+      "url": "https://ibbi.gov.in/uploads/auction_notice_liquidation/digital_pdf/LiqAN1752026094_8384.pdf",
+      "sourceType": "official_insolvency_auction_notice",
+      "publicationDate": "2025-07-09",
+      "auctionDate": "2025-08-12",
+      "retrievedAt": "2026-07-17",
+      "verifiedAt": "2026-07-17",
+      "pagesInspected": [1],
+      "documentDigest": "sha256:9a8bfea2bc9f74548ae58f53fb4b92ef76db380713d4d21fabc2016d3b8cdd6d",
+      "captureMethod": "targeted_factual_excerpt_from_public_official_pdf",
+      "rightsStatus": "official_public_record_factual_excerpt_only_no_open_licence_found"
+    },
+    {
+      "id": "ibbi-landmark-detailed-auction-notice-2025-07-09",
+      "organization": "Insolvency and Bankruptcy Board of India (IBBI)",
+      "title": "Detailed e-auction sale notice and land schedules",
+      "url": "https://ibbi.gov.in/uploads/auction_notice_liquidation/b5e467b0e9616fe0b419dbc912bf2679.pdf",
+      "sourceType": "official_insolvency_auction_schedule",
+      "publicationDate": "2025-07-09",
+      "auctionDate": "2025-08-12",
+      "retrievedAt": "2026-07-17",
+      "verifiedAt": "2026-07-17",
+      "pagesInspected": [1],
+      "documentDigest": "sha256:56bd89ca1ff05c33e0b2cfd4c631f06e93739a6496d671f6bf8661c5cfae9f3f",
+      "captureMethod": "targeted_factual_excerpt_from_public_official_pdf",
+      "rightsStatus": "official_public_record_factual_excerpt_only_no_open_licence_found"
+    },
+    {
+      "id": "ibbi-nclt-landmark-order-2026-04-02",
+      "organization": "National Company Law Tribunal, Chennai Bench II, hosted by IBBI",
+      "title": "Order in IA(IBC)/1372/CHE/2025 in CP/IB/1423/CHE/2019",
+      "url": "https://ibbi.gov.in/uploads/order/af5fc5655408228ab6f3cd3946cbd7c5.pdf",
+      "sourceType": "judicial_order_hosted_on_official_portal",
+      "publicationDate": "2026-04-02",
+      "retrievedAt": "2026-07-17",
+      "verifiedAt": "2026-07-17",
+      "pagesInspected": [8, 9],
+      "documentDigest": "sha256:c19af73063f62763b28506e536016f7dc6e0e7882dd6ede3947be8deab1f1567",
+      "captureMethod": "targeted_factual_excerpt_from_public_official_pdf",
+      "rightsStatus": "official_public_record_factual_excerpt_only_no_open_licence_found",
+      "authenticationCaveat": "IBBI states that hosted judicial orders are provided for facilitation and are not certified or authenticated copies."
+    }
+  ],
+  "privacy": {
+    "publicationBasis": "Corporate insolvency public-record facts needed to interpret the asset, reserve price and lifecycle.",
+    "corporateDebtorPublished": true,
+    "personalDataFieldsStored": 0,
+    "excludedFields": [
+      "individual applicant names",
+      "insolvency-professional address and contact details",
+      "bidder identity and KYC information",
+      "personal signatures and identifiers"
+    ]
+  },
+  "location": {
+    "sourcePlaceName": "Sholinganallur – 1 Village",
+    "sourceTalukName": "Sholinganallur Taluk",
+    "sourceCurrentDistrictName": "Chennai District",
+    "sourceHistoricalDistrictName": "Kancheepuram District",
+    "sourceSubRegistrarOfficeName": "Neelangarai",
+    "sourceRegistrationDistrictName": "Chennai South",
+    "officialSroCode": "20066",
+    "officialVillageCode": "254",
+    "registrationVillageName": "Sholinganallur 1",
+    "mappingStatus": "exact_official_registration_village",
+    "directVillageLink": true,
+    "locationEvidence": "The official auction form explicitly identifies Sholinganallur – 1 Village and Neelangarai Sub-Registration District; MITO's verified registration crosswalk supplies the matching official SRO and village IDs.",
+    "geometryStatus": "unplotted",
+    "geometryType": null,
+    "coordinatePrecision": "none",
+    "positionalUncertainty": "The notices publish survey and document references but no reusable verified parcel geometry. MITO does not infer a polygon or coordinate.",
+    "surveyReferences": [
+      "329/3A",
+      "329/1B",
+      "329/2",
+      "329/3B1B",
+      "328/1B",
+      "328/1B1",
+      "328/3B",
+      "328/1A",
+      "328/3A",
+      "328/1B2"
+    ],
+    "pattaNumbers": ["4514", "1890", "4071", "1242", "1395", "5363"],
+    "sourceDocumentNumbers": ["7857/2014", "7953/2014", "7954/2014", "7955/2014"]
+  },
+  "asset": {
+    "corporateDebtor": "Landmark Housing Projects Chennai Private Limited",
+    "assetDescription": "Vacant land sold as one combined lot under Schedules A–D",
+    "propertyClass": "vacant_land",
+    "sourceLocalityNames": ["Savithri Garden", "Vishnu Garden"],
+    "documentAreaAcres": 9.8,
+    "documentAreaSqft": 426888,
+    "pattaAreaAcres": 9.7808,
+    "pattaAreaSqft": 426051.648,
+    "areaSchedules": [
+      {
+        "schedule": "A",
+        "documentAreaAcres": 4.5,
+        "documentAreaSqft": 196020,
+        "pattaAreaAcres": 4.48305
+      },
+      {
+        "schedule": "B",
+        "documentAreaAcres": 1.74,
+        "documentAreaSqft": 75794.4,
+        "pattaAreaAcres": 1.74135
+      },
+      {
+        "schedule": "C",
+        "documentAreaAcres": 2.56,
+        "documentAreaSqft": 111513.6,
+        "pattaAreaAcres": 2.5564
+      },
+      {
+        "schedule": "D",
+        "documentAreaAcres": 1,
+        "documentAreaSqft": 43560,
+        "pattaAreaAcres": 1
+      }
+    ]
+  },
+  "records": [
+    {
+      "id": "ibbi-landmark-sholinganallur-1-reserve-2025-08-12",
+      "sourceRecordId": "Liq.AN/U45400TN2013PTC090982/1/IP-11286/0725/00001",
+      "evidenceType": "insolvency_liquidation_auction_reserve_price",
+      "priceTypeLabel": "Official liquidation auction reserve price",
+      "propertyClass": "vacant_land",
+      "auctionDate": "2025-08-12",
+      "totalReservePriceInr": 1923300000,
+      "earnestMoneyDepositInr": 192330000,
+      "bidIncrementInr": 10000000,
+      "documentAreaAcres": 9.8,
+      "documentAreaSqft": 426888,
+      "pattaAreaAcres": 9.7808,
+      "pattaAreaSqft": 426051.648,
+      "derivedReservePriceInrPerDocumentSqft": 4505.4,
+      "derivedReservePriceInrPerPattaSqft": 4514.24,
+      "derivedReservePriceRangeInrPerSqft": {
+        "low": 4505.4,
+        "high": 4514.24
+      },
+      "calculationMethod": "INR 1,923,300,000 reserve divided separately by the notice's 426,888 document square feet and 426,051.648 summed patta square feet; rounded to two decimals.",
+      "lifecycleStatus": "auction_concluded_outcome_price_unpublished",
+      "lifecycleEvidence": "The 2 April 2026 NCLT order states that the 12 August 2025 auction was already concluded and the auction process completed, and declined to set it aside.",
+      "winningBidInr": null,
+      "saleCertificateVerified": false,
+      "registeredTransferVerified": false,
+      "currentOwnershipVerified": false,
+      "currentAvailabilityVerified": false,
+      "geometryStatus": "unplotted",
+      "directVillageLink": true,
+      "isLandReservePrice": true,
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "isWinningBid": false,
+      "scopeCaveat": "This is a 2025 liquidation-auction reserve price for one unplotted 9.80-acre asset. It is not the winning bid, registered consideration, guideline value, asking price, model estimate, current availability or a village-wide Sholinganallur land rate."
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "document-versus-patta-area",
+      "status": "preserved_as_range",
+      "note": "The detailed notice states 9.80 acres by documents and approximately 9.7808 acres by summed patta extents. MITO calculates both reserve-price denominators and publishes the resulting range."
+    },
+    {
+      "id": "current-versus-historical-district-label",
+      "status": "preserved",
+      "note": "The auction form identifies Chennai District while the detailed schedule uses historical Kancheepuram District. MITO preserves both source labels."
+    },
+    {
+      "id": "deed-count-source-ambiguity",
+      "status": "not_promoted_to_transaction_evidence",
+      "note": "The NCLT order discusses two registered sale deeds while the auction schedule lists four document references. The underlying deeds and deed-level consideration have not been independently verified, so no 2014 registered-transaction record is published."
+    }
+  ],
+  "publication": {
+    "recordCount": 1,
+    "directVillageLinkCount": 1,
+    "landReservePriceRecords": 1,
+    "registeredTransactions": 0,
+    "currentOfficialGuidelineValues": 0,
+    "askingPrices": 0,
+    "marketEstimates": 0,
+    "winningBidRecords": 0,
+    "plottedRecordCount": 0,
+    "personalDataFieldsStored": 0,
+    "caveat": "MITO publishes one exact-village official liquidation reserve-price record and its documented area denominator. The auction outcome price, bidder, sale certificate, registered transfer, current ownership and parcel geometry remain unverified or unpublished."
+  }
+}

@@ -15,11 +15,53 @@ const sipcotSiruseriLandRatesUrl = new URL("../data/evidence/sipcot-siruseri-lan
 const sipcotSiruseriGeometryAuditUrl = new URL("../data/evidence/sipcot-siruseri-geometry-audit-2026-07-17.json", import.meta.url);
 const sipcotSiruseriFootprintUrl = new URL("../data/geometry/sipcot-siruseri-osm-footprint-2026-07-17.json", import.meta.url);
 const tnhbSholinganallurHousingOffersUrl = new URL("../data/evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json", import.meta.url);
+const ibbiSholinganallurLandAuctionUrl = new URL("../data/evidence/ibbi-sholinganallur-land-auction-2025.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
 }
+
+test("IBBI Sholinganallur reserve evidence stays distinct from a completed sale or market price", async () => {
+  const ledger = await readJson(ibbiSholinganallurLandAuctionUrl);
+  const record = ledger.records[0];
+
+  assert.equal(ledger.sources.length, 3);
+  assert.deepEqual(ledger.sources.map((source) => source.documentDigest), [
+    "sha256:9a8bfea2bc9f74548ae58f53fb4b92ef76db380713d4d21fabc2016d3b8cdd6d",
+    "sha256:56bd89ca1ff05c33e0b2cfd4c631f06e93739a6496d671f6bf8661c5cfae9f3f",
+    "sha256:c19af73063f62763b28506e536016f7dc6e0e7882dd6ede3947be8deab1f1567",
+  ]);
+  assert.ok(ledger.sources.every((source) => source.rightsStatus === "official_public_record_factual_excerpt_only_no_open_licence_found"));
+  assert.equal(ledger.location.mappingStatus, "exact_official_registration_village");
+  assert.equal(ledger.location.officialSroCode, "20066");
+  assert.equal(ledger.location.officialVillageCode, "254");
+  assert.equal(ledger.location.directVillageLink, true);
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.location.geometryType, null);
+  assert.equal(ledger.asset.documentAreaSqft, 426888);
+  assert.equal(ledger.asset.pattaAreaSqft, 426051.648);
+  assert.equal(ledger.asset.areaSchedules.reduce((sum, schedule) => sum + schedule.documentAreaSqft, 0), 426888);
+  assert.equal(ledger.asset.areaSchedules.reduce((sum, schedule) => sum + schedule.pattaAreaAcres, 0), 9.7808);
+  assert.equal(record.totalReservePriceInr, 1923300000);
+  assert.equal(record.derivedReservePriceInrPerDocumentSqft, Math.round((record.totalReservePriceInr / record.documentAreaSqft) * 100) / 100);
+  assert.equal(record.derivedReservePriceInrPerPattaSqft, Math.round((record.totalReservePriceInr / record.pattaAreaSqft) * 100) / 100);
+  assert.deepEqual(record.derivedReservePriceRangeInrPerSqft, { low: 4505.4, high: 4514.24 });
+  assert.equal(record.lifecycleStatus, "auction_concluded_outcome_price_unpublished");
+  assert.equal(record.winningBidInr, null);
+  assert.equal(record.saleCertificateVerified, false);
+  assert.equal(record.registeredTransferVerified, false);
+  assert.equal(record.currentOwnershipVerified, false);
+  assert.equal(record.currentAvailabilityVerified, false);
+  assert.equal(record.isLandReservePrice, true);
+  assert.ok(!record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate && !record.isWinningBid);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.winningBidRecords, 0);
+  assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.privacy.personalDataFieldsStored, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
+  assert.equal(ledger.conflicts.find((conflict) => conflict.id === "deed-count-source-ambiguity").status, "not_promoted_to_transaction_evidence");
+});
 
 function pointInRing([x, y], ring) {
   let inside = false;

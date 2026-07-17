@@ -34,6 +34,8 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /2,715(?:<!-- -->)? items across/i);
   assert.match(html, /2(?:<!-- -->)? official SIPCOT allotment rates captured/i);
   assert.match(html, /8(?:<!-- -->)? official TNHB residential price records/i);
+  assert.match(html, /1(?:<!-- -->)? official liquidation reserve record/i);
+  assert.match(html, /reserve price, not sale/i);
   assert.match(html, /closed original apartment offers/i);
   assert.match(html, /combined price, not land price/i);
   assert.match(html, /1(?:<!-- -->)? approximate footprint published/i);
@@ -61,6 +63,7 @@ test("database schema separates sources, places, geometry, price and planning ev
   }
   assert.match(schema, /evidence_type/);
   assert.match(schema, /registered_transaction/);
+  assert.match(schema, /auction_reserve/);
   assert.match(schema, /positional_uncertainty_metres/);
 });
 
@@ -80,6 +83,9 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.pendingGuidelineRecheckCount, 1);
   assert.equal(payload.summary.officialAllotmentRateCount, 2);
   assert.equal(payload.summary.officialAllotmentRateVillageCount, 1);
+  assert.equal(payload.summary.officialAuctionReservePriceCount, 1);
+  assert.equal(payload.summary.officialAuctionReservePriceVillageCount, 1);
+  assert.equal(payload.summary.officialAuctionWinningBidRecordCount, 0);
   assert.equal(payload.summary.officialHousingOfferCount, 8);
   assert.equal(payload.summary.closedOfficialHousingOfferCount, 8);
   assert.equal(payload.summary.directHousingOfferVillageCount, 0);
@@ -95,6 +101,13 @@ test("coverage API publishes the honest OMR release gate", async () => {
   const siruseri = payload.evidenceMatrix.find((entry) => entry.key === "22604:800000275");
   assert.equal(siruseri.governmentAllotment.recordCount, 2);
   assert.equal(siruseri.geometry.publishableApproximateCount, 1);
+  const sholinganallur1 = payload.evidenceMatrix.find((entry) => entry.key === "20066:254");
+  assert.equal(sholinganallur1.officialAuctionReservePrices.status, "direct_reserve_price_record_found");
+  assert.equal(sholinganallur1.officialAuctionReservePrices.recordCount, 1);
+  assert.deepEqual(sholinganallur1.officialAuctionReservePrices.derivedReservePriceRangeInrPerSqft, { low: 4505.4, high: 4514.24 });
+  assert.equal(sholinganallur1.officialAuctionReservePrices.registeredTransactionCount, 0);
+  assert.equal(sholinganallur1.officialAuctionReservePrices.winningBidRecordCount, 0);
+  assert.equal(payload.evidenceMatrix.filter((entry) => entry.officialAuctionReservePrices.recordCount === 0).length, 23);
   for (const key of ["20066:254", "20066:20514"]) {
     const sholinganallur = payload.evidenceMatrix.find((entry) => entry.key === key);
     assert.equal(sholinganallur.tnhbPublicSales.status, "unresolved_locality_match");
@@ -151,6 +164,18 @@ test("evidence API publishes planning provenance, current register metadata and 
   assert.equal(payload.officialHousingOffers.publication.landPriceRecords, 0);
   assert.equal(payload.officialHousingOffers.publication.personalDataFieldsStored, 0);
   assert.match(payload.officialHousingOffers.publicationRule, /must never be relabelled as a land price/i);
+  assert.equal(payload.officialAuctionReservePrices.summary.recordCount, 1);
+  assert.equal(payload.officialAuctionReservePrices.summary.directVillageLinkCount, 1);
+  assert.equal(payload.officialAuctionReservePrices.summary.registeredTransactionCount, 0);
+  assert.equal(payload.officialAuctionReservePrices.summary.winningBidRecordCount, 0);
+  assert.deepEqual(payload.officialAuctionReservePrices.summary.derivedReservePriceRangeInrPerSqft, { low: 4505.4, high: 4514.24 });
+  assert.equal(payload.officialAuctionReservePrices.location.officialVillageCode, "254");
+  assert.equal(payload.officialAuctionReservePrices.location.geometryStatus, "unplotted");
+  assert.equal(payload.officialAuctionReservePrices.asset.documentAreaSqft, 426888);
+  assert.equal(payload.officialAuctionReservePrices.records[0].lifecycleStatus, "auction_concluded_outcome_price_unpublished");
+  assert.equal(payload.officialAuctionReservePrices.records[0].winningBidInr, null);
+  assert.equal(payload.officialAuctionReservePrices.publication.personalDataFieldsStored, 0);
+  assert.match(payload.officialAuctionReservePrices.publicationRule, /must never be relabelled as the winning bid/i);
   assert.equal(payload.geometryEvidence.summary.publishableGeometryCount, 1);
   assert.equal(payload.geometryEvidence.summary.approximateGeometryCount, 1);
   assert.equal(payload.geometryEvidence.summary.exactGeometryCount, 0);

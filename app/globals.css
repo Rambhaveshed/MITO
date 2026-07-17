@@ -418,8 +418,11 @@ button {
 .coverage-unit-card.has-planning-evidence .coverage-unit-state b { color: var(--green); }
 .coverage-unit-card.has-guideline-snapshot { border-color: #d7bf8c; background: #fffaf0; }
 .coverage-unit-card.has-guideline-snapshot .coverage-unit-state b { color: #875f12; }
+.coverage-unit-card.has-auction-reserve { border-color: #c9b69a; background: #fff9f1; }
+.coverage-unit-card.has-auction-reserve .coverage-unit-state b { color: #855a25; }
 .coverage-unit-card.has-planning-evidence.selected,
-.coverage-unit-card.has-guideline-snapshot.selected { border-color: #6fa797; background: #edf7f3; }
+.coverage-unit-card.has-guideline-snapshot.selected,
+.coverage-unit-card.has-auction-reserve.selected { border-color: #6fa797; background: #edf7f3; }
 .chennai-source-card { border-style: dashed; background: #fbfaf6; }
 .chennai-source-card .coverage-unit-index { color: #765d28; background: #f4ead0; font-size: 6px; }
 .chennai-source-card .coverage-unit-state i { background: #d09b36; }
@@ -541,8 +544,8 @@ button {
 .inspector-price span { color: var(--muted); font-size: 9px; font-weight: 650; }
 .price-type { gap: 6px; margin-top: 6px; color: #68736f; font-size: 8px; }
 
-.inspector-tabs { display: grid; grid-template-columns: repeat(3, 1fr); height: 42px; border-bottom: 1px solid var(--line); background: #fff; }
-.inspector-tabs button { position: relative; border: 0; background: none; color: #78817e; font-size: 9px; font-weight: 750; cursor: pointer; }
+.inspector-tabs { display: grid; grid-template-columns: repeat(3, 1fr); min-height: 44px; height: 44px; border-bottom: 1px solid var(--line); background: #fff; }
+.inspector-tabs button { position: relative; min-height: 44px; border: 0; background: none; color: #78817e; font-size: 9px; font-weight: 750; cursor: pointer; }
 .inspector-tabs button.active { color: var(--green); }
 .inspector-tabs button.active::after { content: ""; position: absolute; left: 24%; right: 24%; bottom: -1px; height: 2px; border-radius: 2px 2px 0 0; background: var(--green); }
 .inspector-scroll { min-height: 0; flex: 1; padding: 13px 16px 18px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #ccd4d0 transparent; }
@@ -657,6 +660,12 @@ button {
 .housing-evidence-card strong { display: block; font-size: 8px; }
 .housing-evidence-card span { display: block; margin-top: 3px; color: #7b6458; font-size: 6px; line-height: 1.45; }
 .housing-evidence-card em { padding: 4px 6px; border-radius: 5px; background: #f0dfd5; color: #80513a; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
+.auction-evidence-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; margin-top: 8px; padding: 11px; border: 1px solid #d4bd9e; border-radius: 10px; background: #fff9f1; }
+.auction-evidence-card > div { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #f1e2cc; color: #80582d; }
+.auction-evidence-card p { min-width: 0; margin: 0; }
+.auction-evidence-card strong { display: block; font-size: 8px; }
+.auction-evidence-card span { display: block; margin-top: 3px; color: #776754; font-size: 6px; line-height: 1.45; }
+.auction-evidence-card em { padding: 4px 6px; border-radius: 5px; background: #f0e0c8; color: #795126; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
 .geometry-evidence-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; margin-top: 8px; padding: 11px; border: 1px dashed #8fb2cf; border-radius: 10px; background: #f2f7fb; }
 .geometry-evidence-card > div { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #dceaf4; color: #326c9d; }
 .geometry-evidence-card p { min-width: 0; margin: 0; }
@@ -693,6 +702,16 @@ button {
 .housing-offer-card footer { margin-top: 9px; padding-top: 8px; border-top: 1px solid #eaded7; color: #927a6e; font-size: 6px; }
 .housing-offer-card footer b { color: #80533f; text-transform: uppercase; }
 .coverage-progress.housing i { background: #a56e55; }
+.coverage-progress.auction i { background: #9a7448; }
+.auction-source { border: 1px solid #ddc9ad; border-radius: 9px; background: #fffaf4; }
+.auction-reserve-card { min-width: 0; margin-top: 10px; padding: 11px; border: 1px solid #dbc5a7; border-radius: 10px; background: #fffaf4; }
+.auction-reserve-card > div, .auction-reserve-card footer { display: flex; align-items: center; justify-content: space-between; gap: 7px; }
+.auction-reserve-card > div span, .auction-reserve-card > div em { color: #81613c; font-size: 6px; font-style: normal; font-weight: 800; text-transform: uppercase; }
+.auction-reserve-card > strong { display: block; margin-top: 8px; color: #79501f; font-size: 16px; }
+.auction-reserve-card > strong small { margin-left: 3px; color: #967b5b; font-size: 7px; }
+.auction-reserve-card p { margin: 4px 0 0; color: #746757; font-size: 7px; line-height: 1.45; }
+.auction-reserve-card footer { margin-top: 9px; padding-top: 8px; border-top: 1px solid #eadfce; color: #8e7e6a; font-size: 6px; }
+.auction-reserve-card footer b { color: #795a36; text-transform: uppercase; }
 .guideline-snapshot-list { margin-top: 9px; }
 .guideline-snapshot-card { padding: 11px; border: 1px solid #e0c897; border-radius: 10px; background: #fffaf0; }
 .guideline-snapshot-card > div, .guideline-snapshot-card footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -728,7 +747,7 @@ button {
 .planning-evidence-summary strong { display: block; color: #435e91; font-size: 12px; }
 .planning-evidence-summary span { display: block; margin-top: 3px; color: #71809b; font-size: 6px; font-weight: 750; }
 .village-evidence-summary > div { background: #edf6f2; }
-.village-evidence-summary { grid-template-columns: repeat(4, 1fr); }
+.village-evidence-summary { grid-template-columns: repeat(5, 1fr); }
 .village-evidence-summary strong { color: var(--green); }
 .village-evidence-summary span { color: #648078; }
 .source-audit-list { margin-top: 10px; border-top: 1px solid #e8ecea; }
@@ -897,6 +916,8 @@ button {
   .allotment-evidence-card em { grid-column: 2; justify-self: start; }
   .housing-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
   .housing-evidence-card em { grid-column: 2; justify-self: start; }
+  .auction-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
+  .auction-evidence-card em { grid-column: 2; justify-self: start; }
   .geometry-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
   .geometry-evidence-card em { grid-column: 2; justify-self: start; }
   .allotment-rate-list { grid-template-columns: 1fr; }
