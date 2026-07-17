@@ -124,8 +124,8 @@ test("official planning records stay scoped, unplotted and source-backed", async
   const sourceIds = new Set(ledger.sources.map((source) => source.id));
   const recordIds = ledger.records.map((record) => record.id);
 
-  assert.equal(ledger.sources.length, 10);
-  assert.equal(ledger.records.length, 28);
+  assert.equal(ledger.sources.length, 11);
+  assert.equal(ledger.records.length, 29);
   assert.equal(new Set(recordIds).size, recordIds.length);
   assert.ok(ledger.records.every((record) => sourceIds.has(record.sourceId)));
   assert.ok(ledger.records.every((record) => record.scopeCaveat.length > 40));
@@ -187,6 +187,29 @@ test("Seevaram approval remains site-specific and does not imply title or buildi
   assert.match(record.planningConstraint, /local-body building permit is still required/i);
   assert.match(record.planningConstraint, /does not confirm ownership or title/i);
   assert.match(record.scopeCaveat, /site-specific/i);
+});
+
+test("Semmancheri approved-plan metrics preserve the local permit and geometry limits", async () => {
+  const ledger = await readJson(planningUrl);
+  const source = ledger.sources.find((candidate) => candidate.id === "cmda-pp-nhrb-s-0167-2025-approved-plan");
+  const record = ledger.records.find((candidate) => candidate.id === "cmda-pp-nhrb-s-0167-2025-semmancheri");
+
+  assert.equal(source.sha256, "eef29ec6815f9f05625c1c5ed379ea8321bb916acd02120019faf6521761d39c");
+  assert.equal(source.sourceDate, "2025-07-14");
+  assert.equal(record.officialSroCode, "20066");
+  assert.equal(record.officialVillageCode, "246");
+  assert.equal(record.decisionStatus, "planning_permission_approved_subject_to_local_building_permit");
+  assert.equal(record.siteMetrics.siteAreaAsPerPattaSqm, 1027.5);
+  assert.equal(record.siteMetrics.areaConsideredForFsiSqm, 1010.7);
+  assert.equal(record.siteMetrics.totalFsiAreaSqm, 1937.02);
+  assert.equal(record.siteMetrics.fsiFactor, 1.917);
+  assert.equal(record.siteMetrics.landLeftForRoadWideningSqm, 16.8);
+  assert.equal(record.siteMetrics.buildingHeightM, 17.97);
+  assert.equal(record.siteMetrics.localBodyBuildingPermitRequired, true);
+  assert.equal(record.geometryStatus, "unplotted");
+  assert.equal(record.privacy.personalDataFieldsStored, 0);
+  assert.match(record.locationEvidence, /not to scale/i);
+  assert.match(record.scopeCaveat, /not a local-body building permit/i);
 });
 
 test("CMDA's explicit Sholinganallur I index row links only registration village 1", async () => {

@@ -767,6 +767,11 @@ button {
 .planning-record-card p { margin: 5px 0 0; color: #596560; font-size: 7px; line-height: 1.5; }
 .planning-record-card small { display: block; margin-top: 5px; color: #536f67; font-size: 6px; font-weight: 750; text-transform: capitalize; }
 .planning-record-card em { display: block; margin-top: 5px; color: #8a928f; font-size: 6px; font-style: normal; line-height: 1.45; }
+.planning-site-evidence { margin-top: 8px; padding: 8px; border: 1px solid #d9e2ef; border-radius: 8px; background: #f6f8fc; }
+.planning-metric-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.planning-metric-strip span { color: #71809b; font-size: 6px; line-height: 1.35; }
+.planning-metric-strip strong { display: block; color: #435e91; font-size: 8px; }
+.planning-record-card .planning-permit-note { margin-top: 7px; color: #875f36; text-transform: none; }
 .geometry-note { align-items: flex-start; gap: 8px; margin-top: 12px; padding: 10px; border-radius: 9px; background: #f2f4f1; }
 .geometry-note strong { display: block; font-size: 8px; }
 .geometry-note p { margin: 4px 0 0; color: var(--muted); font-size: 7px; line-height: 1.5; }

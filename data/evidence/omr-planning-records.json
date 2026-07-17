@@ -114,6 +114,19 @@
       "lastUpdatedBySource": "2024-11-06",
       "retrievedAt": "2026-07-17",
       "verificationStatus": "verified"
+    },
+    {
+      "id": "cmda-pp-nhrb-s-0167-2025-approved-plan",
+      "organization": "Chennai Metropolitan Development Authority",
+      "title": "Approved plan — CMDA/PP/NHRB/S/0167/2025",
+      "category": "official_approved_plan",
+      "url": "https://www.cmdachennai.gov.in/pdfs/OnlinePPAApprovalDetails/PP-NHRB-S-0167-2025/ApprovedPlan.pdf",
+      "sourceDate": "2025-07-14",
+      "sourceDateBasis": "Digitally signed approval date printed on sheet 1",
+      "retrievedAt": "2026-07-17",
+      "sourcePages": [1, 2],
+      "sha256": "eef29ec6815f9f05625c1c5ed379ea8321bb916acd02120019faf6521761d39c",
+      "verificationStatus": "verified"
     }
   ],
   "indexAudits": [
@@ -855,6 +868,63 @@
       "scopeCaveat": "This is site-specific planning permission, not a building permit, title finding, village-wide approval or land-value observation.",
       "qualityFlags": ["site_specific_approval", "local_body_building_permit_required", "approved_plan_geometry_not_digitised"],
       "verifiedAt": "2026-07-16"
+    },
+    {
+      "id": "cmda-pp-nhrb-s-0167-2025-semmancheri",
+      "sourceId": "cmda-pp-nhrb-s-0167-2025-approved-plan",
+      "sourceRecordId": "CMDA/PP/NHRB/S/0167/2025 · OL-PP/NHRB/0267/2025",
+      "sourcePage": 1,
+      "recordType": "approved_plan_site_metrics",
+      "officialSroCode": "20066",
+      "officialVillageCode": "246",
+      "candidateVillageKeys": [],
+      "mappingStatus": "verified",
+      "sourceVillageName": "Semmancheri",
+      "decisionStatus": "planning_permission_approved_subject_to_local_building_permit",
+      "decisionDate": "2025-07-14",
+      "surveyReference": "S.No.127/16A1 (part), T.S.No.6, Block No.8, Ward D of Semmancheri Village",
+      "roadReferences": ["Rajiv Gandhi Salai (OMR)"],
+      "landUseBefore": null,
+      "landUseAfter": null,
+      "planningConstraint": "The approved plan records a site-specific stilt-plus-three-floor commercial office proposal. The drawing states that the approval is valid only after the concerned local body issues a building permit; it does not establish title, current construction, completion, occupancy or market value.",
+      "geometryStatus": "unplotted",
+      "locationEvidence": "The digitally signed CMDA drawing directly names Semmancheri Village, the survey and town-survey references, and Rajiv Gandhi Salai. Its key plan is labelled not to scale and taken from user inputs, so MITO does not digitise or geocode the site from the drawing.",
+      "summary": "CMDA approved a site-specific commercial-office plan on OMR with a 1,027.50 sq m patta area, FSI 1.917 and 16.80 sq m identified for road widening.",
+      "scopeCaveat": "These are site-specific approved-plan metrics, not a local-body building permit, title finding, construction-status finding, parcel geometry, transaction, guideline value or village-wide development entitlement.",
+      "siteMetrics": {
+        "proposal": "Stilt floor plus three floors commercial building — office",
+        "cmdaApprovalNumber": "OL-PP/NHRB/0267/2025",
+        "cmdaPermitNumber": "OL-01959",
+        "siteAreaAsPerPattaSqm": 1027.5,
+        "siteAreaAsPerDocumentSqm": 1072.46,
+        "areaConsideredForFsiSqm": 1010.7,
+        "landLeftForRoadWideningSqm": 16.8,
+        "osrAreaSqm": 0,
+        "totalFsiAreaSqm": 1937.02,
+        "fsiFactor": 1.917,
+        "buildingHeightM": 17.97,
+        "floorConfiguration": "stilt_plus_3",
+        "parking": {
+          "carsRequired": 17,
+          "carsProvided": 17,
+          "twoWheelersRequired": 64,
+          "twoWheelersProvided": 68
+        },
+        "localBodyBuildingPermitRequired": true
+      },
+      "privacy": {
+        "personalDataFieldsStored": 0,
+        "excludedFields": ["owner names", "signatures", "professional names", "QR payload"]
+      },
+      "qualityFlags": [
+        "site_specific_approval",
+        "local_body_building_permit_required",
+        "current_construction_status_unknown",
+        "title_not_inferred",
+        "approved_plan_geometry_not_digitised",
+        "key_plan_not_to_scale"
+      ],
+      "verifiedAt": "2026-07-17"
     }
   ]
 }

@@ -28,7 +28,7 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /Search village, Tamil name, SRO or ID/i);
   assert.match(html, /Expand to Chennai/i);
   assert.match(html, /24<!-- -->\/<!-- -->24/i);
-  assert.match(html, /28(?:<!-- -->)? official planning records captured/i);
+  assert.match(html, /29(?:<!-- -->)? official planning records captured/i);
   assert.match(html, /1(?:<!-- -->)? archived TNREGINET street row recovered/i);
   assert.match(html, /All current village inventories verified/i);
   assert.match(html, /2,715(?:<!-- -->)? items across/i);
@@ -99,6 +99,7 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.publishableApproximateGeometryCount, 1);
   assert.equal(payload.summary.exactEvidenceGeometryCount, 0);
   assert.equal(payload.summary.officialEvidenceGeometryPublishedCount, 0);
+  assert.equal(payload.summary.officialPlanningRecordCount, 29);
   assert.equal(payload.offices.length, 6);
   assert.equal(payload.evidenceMatrix.length, 24);
   assert.ok(payload.evidenceMatrix.every((entry) => entry.currentGuidelineRegister.status === "verified_metadata_only"));
@@ -134,6 +135,7 @@ test("coverage API publishes the honest OMR release gate", async () => {
   }
   assert.equal(payload.evidenceMatrix.find((entry) => entry.key === "20066:254").planning.directRecordCount, 1);
   assert.equal(payload.evidenceMatrix.find((entry) => entry.key === "20066:20514").planning.directRecordCount, 0);
+  assert.equal(payload.evidenceMatrix.find((entry) => entry.key === "20066:246").planning.directRecordCount, 4);
   assert.equal(payload.evidenceMatrix.filter((entry) => entry.planning.status === "no_direct_record_in_ledger").length, 2);
   assert.equal(payload.evidenceMatrix.filter((entry) => entry.tnhbPublicSales.status === "no_normalized_place_name_match_in_snapshot").length, 22);
 });
@@ -143,13 +145,19 @@ test("evidence API publishes planning provenance, current register metadata and 
   assert.equal(response.status, 200);
   const payload = await response.json();
   assert.equal(payload.scopeId, "omr-corridor-2026");
-  assert.equal(payload.planning.summary.recordCount, 28);
-  assert.equal(payload.planning.summary.linkedRecordCount, 25);
+  assert.equal(payload.planning.summary.recordCount, 29);
+  assert.equal(payload.planning.summary.linkedRecordCount, 26);
   assert.equal(payload.planning.summary.villageCount, 22);
   assert.equal(payload.planning.summary.unresolvedRecordCount, 3);
-  assert.equal(payload.planning.summary.sourceCount, 10);
-  assert.equal(payload.planning.records.length, 28);
+  assert.equal(payload.planning.summary.sourceCount, 11);
+  assert.equal(payload.planning.records.length, 29);
   assert.equal(payload.planning.indexAudits[0].indexPageCount, 30);
+  const semmancheriPlan = payload.planning.records.find((record) => record.id === "cmda-pp-nhrb-s-0167-2025-semmancheri");
+  assert.equal(semmancheriPlan.siteMetrics.fsiFactor, 1.917);
+  assert.equal(semmancheriPlan.siteMetrics.landLeftForRoadWideningSqm, 16.8);
+  assert.equal(semmancheriPlan.siteMetrics.localBodyBuildingPermitRequired, true);
+  assert.equal(semmancheriPlan.geometryStatus, "unplotted");
+  assert.equal(semmancheriPlan.privacy.personalDataFieldsStored, 0);
   assert.equal(payload.officialAllotmentRates.summary.recordCount, 2);
   assert.equal(payload.officialAllotmentRates.summary.villageAssociationCount, 1);
   assert.deepEqual(payload.officialAllotmentRates.summary.normalizedRateRangeInrPerSqft, { low: 1790.63, high: 3581.27 });

@@ -61,6 +61,7 @@ import {
   omrTnhbHousingOfferSummary,
   planningRecordsForVillage,
   tnhbHousingOffersForCandidateVillage,
+  type PlanningEvidenceRecord,
 } from "../data/evidence";
 import {
   aliasesForVillage,
@@ -99,6 +100,22 @@ function formatRate(value: number) {
 
 function formatAuditTimestamp(value: string) {
   return auditDateTime.format(new Date(value));
+}
+
+function PlanningSiteMetrics({ record }: { record: PlanningEvidenceRecord }) {
+  if (!("siteMetrics" in record)) return null;
+  const metrics = record.siteMetrics;
+  return (
+    <div className="planning-site-evidence">
+      <div className="planning-metric-strip">
+        <span><strong>{metrics.siteAreaAsPerPattaSqm.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</strong>m² patta area</span>
+        <span><strong>{metrics.fsiFactor}</strong>approved FSI</span>
+        <span><strong>{metrics.landLeftForRoadWideningSqm}</strong>m² road widening</span>
+        <span><strong>{metrics.buildingHeightM}</strong>m height</span>
+      </div>
+      <small className="planning-permit-note">Local-body building permit required · current construction unknown</small>
+    </div>
+  );
 }
 
 function resolverStatusLabel(status: ReturnType<typeof resolveOmrPlace>["status"]) {
@@ -1040,6 +1057,7 @@ export default function MitoApp() {
                           <a key={record.id} href={recordUrl} target="_blank" rel="noreferrer" className="planning-record-card">
                             <div className="planning-record-head"><strong>{record.sourceVillageName}</strong><span>{record.sourceRecordId}</span></div>
                             <p>{record.summary}</p>
+                            <PlanningSiteMetrics record={record} />
                             <small>{record.decisionStatus.replaceAll("_", " ")} · village linked</small>
                             <em>{record.scopeCaveat}</em>
                           </a>
@@ -1143,6 +1161,7 @@ export default function MitoApp() {
                       <a key={record.id} href={recordUrl} target="_blank" rel="noreferrer" className="planning-record-card">
                         <div className="planning-record-head"><strong>{record.sourceVillageName}</strong><span>{record.sourceRecordId}</span></div>
                         <p>{record.summary}</p>
+                        <PlanningSiteMetrics record={record} />
                         <small>{record.decisionStatus.replaceAll("_", " ")} · {record.mappingStatus === "verified" ? "village linked" : "crosswalk unresolved"}</small>
                         <em>{record.scopeCaveat}</em>
                       </a>
