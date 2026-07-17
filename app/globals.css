@@ -731,6 +731,11 @@ button {
 .village-evidence-summary { grid-template-columns: repeat(4, 1fr); }
 .village-evidence-summary strong { color: var(--green); }
 .village-evidence-summary span { color: #648078; }
+.source-audit-list { margin-top: 10px; border-top: 1px solid #e8ecea; }
+.source-audit-list > div { display: grid; grid-template-columns: minmax(92px, .8fr) minmax(0, 1.2fr); gap: 10px; padding: 8px 2px; border-bottom: 1px solid #edf0ed; }
+.source-audit-list span { color: #77827e; font-size: 7px; font-weight: 700; }
+.source-audit-list strong { color: #315e51; font-size: 7px; line-height: 1.4; text-align: right; }
+.source-audit-list .blocked strong { color: #8a6224; }
 .empty-evidence-state { display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; margin-top: 10px; padding: 11px; border: 1px solid #ead9bc; border-radius: 9px; background: #fff9ec; color: #806124; }
 .empty-evidence-state svg { grid-row: 1 / 3; margin-top: 1px; }
 .empty-evidence-state strong { font-size: 8px; }
@@ -897,6 +902,8 @@ button {
   .allotment-rate-list { grid-template-columns: 1fr; }
   .housing-offer-list { grid-template-columns: 1fr; }
   .village-evidence-summary { grid-template-columns: repeat(2, 1fr); }
+  .source-audit-list > div { grid-template-columns: 1fr; gap: 3px; }
+  .source-audit-list strong { text-align: left; }
   .mobile-nav {
     position: absolute;
     z-index: 21;

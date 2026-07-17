@@ -87,6 +87,21 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.exactEvidenceGeometryCount, 0);
   assert.equal(payload.summary.officialEvidenceGeometryPublishedCount, 0);
   assert.equal(payload.offices.length, 6);
+  assert.equal(payload.evidenceMatrix.length, 24);
+  assert.ok(payload.evidenceMatrix.every((entry) => entry.currentGuidelineRegister.status === "verified_metadata_only"));
+  assert.ok(payload.evidenceMatrix.every((entry) => entry.currentGuidelineRegister.currentPublishedValueCount === 0));
+  assert.ok(payload.evidenceMatrix.every((entry) => entry.registeredTransactions.recordCount === 0));
+  assert.ok(payload.evidenceMatrix.every((entry) => entry.publishedLandMarketValue.published === false));
+  const siruseri = payload.evidenceMatrix.find((entry) => entry.key === "22604:800000275");
+  assert.equal(siruseri.governmentAllotment.recordCount, 2);
+  assert.equal(siruseri.geometry.publishableApproximateCount, 1);
+  for (const key of ["20066:254", "20066:20514"]) {
+    const sholinganallur = payload.evidenceMatrix.find((entry) => entry.key === key);
+    assert.equal(sholinganallur.tnhbPublicSales.status, "unresolved_locality_match");
+    assert.equal(sholinganallur.tnhbPublicSales.unresolvedRecordCount, 8);
+    assert.equal(sholinganallur.tnhbPublicSales.directRecordCount, 0);
+  }
+  assert.equal(payload.evidenceMatrix.filter((entry) => entry.tnhbPublicSales.status === "no_normalized_place_name_match_in_snapshot").length, 22);
 });
 
 test("evidence API publishes planning provenance, current register metadata and the rights gate", async () => {

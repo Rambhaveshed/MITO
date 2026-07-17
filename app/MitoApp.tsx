@@ -63,6 +63,7 @@ import {
   omrCoveragePercent,
   omrCoverageSummary,
   omrReleaseReady,
+  omrVillageEvidenceMatrix,
   resolveOmrPlace,
 } from "../data/omr";
 import { marketAreas, sourceById, type MarketArea } from "../data/pilot";
@@ -185,6 +186,9 @@ export default function MitoApp() {
 
   const selectedCoverageUnit = selectedCoverageKey
     ? omrCoverage.units.find((unit) => `${unit.officialSroCode}:${unit.officialVillageCode}` === selectedCoverageKey) ?? null
+    : null;
+  const selectedCoverageEvidenceMatrix = selectedCoverageKey
+    ? omrVillageEvidenceMatrix.find((entry) => entry.key === selectedCoverageKey) ?? null
     : null;
   const selectedCoverageOffice = selectedCoverageUnit
     ? omrCoverage.registrationOffices.find((office) => office.officialSroCode === selectedCoverageUnit.officialSroCode) ?? null
@@ -687,6 +691,21 @@ export default function MitoApp() {
                   </div>
                   <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
                 </section>
+
+                {selectedCoverageEvidenceMatrix && (
+                  <section className="inspector-section source-audit-section">
+                    <div className="section-heading"><div><span>Area evidence matrix</span><h2>Source-by-source audit</h2></div><Database size={17} /></div>
+                    <div className="source-audit-list">
+                      <div><span>Current official register</span><strong>{inr.format(selectedCoverageEvidenceMatrix.currentGuidelineRegister.displayedItemCount)} inventory items · values withheld</strong></div>
+                      <div><span>TNHB public sales</span><strong>{selectedCoverageEvidenceMatrix.tnhbPublicSales.status === "unresolved_locality_match" ? `${selectedCoverageEvidenceMatrix.tnhbPublicSales.unresolvedRecordCount} unresolved locality records` : "No normalized place-name match in 17 Jul snapshot"}</strong></div>
+                      <div><span>SIPCOT land schedule</span><strong>{selectedCoverageEvidenceMatrix.governmentAllotment.recordCount ? `${selectedCoverageEvidenceMatrix.governmentAllotment.recordCount} named park rates` : "No named park association"}</strong></div>
+                      <div><span>CMDA planning</span><strong>{selectedCoverageEvidenceMatrix.planning.directRecordCount ? `${selectedCoverageEvidenceMatrix.planning.directRecordCount} direct ${selectedCoverageEvidenceMatrix.planning.directRecordCount === 1 ? "record" : "records"}` : "No direct record in current ledger"}</strong></div>
+                      <div className="blocked"><span>Registered land transactions</span><strong>0 verified records</strong></div>
+                      <div className="blocked"><span>Market land value</span><strong>Not released · insufficient evidence</strong></div>
+                    </div>
+                    <p className="coverage-method">A source non-match is a dated audit result, not evidence that no property, approval or scheme exists. Every missing source stays visible until MITO obtains direct, reusable evidence.</p>
+                  </section>
+                )}
 
                 {selectedCoverageAllotmentRates.length > 0 && (
                   <section className="inspector-section">

@@ -49,6 +49,50 @@
     ],
     "reuseCaveat": "MITO stores only the eight Sholinganallur factual records needed for evidence-backed price interpretation. No explicit reuse policy or open-data licence was found during this audit, so the full response, contact details, media and geotags are not committed or republished."
   },
+  "omrScopeAudit": {
+    "sourceRecordCountScanned": 183,
+    "sourceFieldsScanned": [
+      "schemePlace",
+      "village",
+      "taluk"
+    ],
+    "matchingMethod": "NFKC normalization, case folding and punctuation stripping followed by exact comparison with MITO's source-backed OMR English and TNREGINET place aliases. Generic ambiguous terms retain every candidate registration village.",
+    "matchedSourcePlaceNames": [
+      "Sholinganallur"
+    ],
+    "matchedSourceRecordCount": 8,
+    "matchedCandidateVillageKeys": [
+      "20066:254",
+      "20066:20514"
+    ],
+    "unmatchedVillageKeys": [
+      "20051:1",
+      "20051:2",
+      "20051:7",
+      "20066:252",
+      "20066:250",
+      "20066:248",
+      "20066:253",
+      "20066:246",
+      "22604:800000277",
+      "22604:800000278",
+      "22604:800000279",
+      "22604:800000275",
+      "22604:800000276",
+      "22605:800000287",
+      "22605:800000289",
+      "22605:800000290",
+      "20096:1308",
+      "20096:1318",
+      "20096:1365",
+      "20096:1353",
+      "20095:1261",
+      "20095:1220"
+    ],
+    "schemeNameUsedForPlaceMatching": false,
+    "falsePositiveGuard": "Scheme names are not used for place matching because project numbers such as 117 or 1500 can collide with normalized registration-subdivision labels such as Sholinganallur 1.",
+    "interpretation": "This proves only that the 17 July 2026 TNHB public response was audited against all 24 OMR registration-village names. A non-match does not prove that TNHB owns no property or has never operated a scheme in that village."
+  },
   "location": {
     "sourcePlaceName": "Sholinganallur",
     "sourceDistrictName": "Kancheepuram",

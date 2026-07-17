@@ -274,6 +274,18 @@ test("TNHB Sholinganallur records stay closed, unplotted and separate from land-
   assert.equal(ledger.source.sourceResponseRecordCount, 183);
   assert.equal(ledger.source.targetRecordCount, 8);
   assert.equal(ledger.source.sourceResponseDigest, "sha256:420e26ac48203bd7a969ae309ffbd12656007e927ea32e049255505f40446d08");
+  assert.equal(ledger.omrScopeAudit.sourceRecordCountScanned, 183);
+  assert.equal(ledger.omrScopeAudit.matchedSourceRecordCount, 8);
+  assert.deepEqual(ledger.omrScopeAudit.matchedSourcePlaceNames, ["Sholinganallur"]);
+  assert.deepEqual(ledger.omrScopeAudit.matchedCandidateVillageKeys, ["20066:254", "20066:20514"]);
+  assert.equal(ledger.omrScopeAudit.unmatchedVillageKeys.length, 22);
+  assert.equal(ledger.omrScopeAudit.schemeNameUsedForPlaceMatching, false);
+  assert.match(ledger.omrScopeAudit.falsePositiveGuard, /project numbers/i);
+  assert.match(ledger.omrScopeAudit.interpretation, /does not prove/i);
+  const auditedVillageKeys = [...ledger.omrScopeAudit.matchedCandidateVillageKeys, ...ledger.omrScopeAudit.unmatchedVillageKeys];
+  assert.equal(new Set(auditedVillageKeys).size, 24);
+  const coverage = await readJson(coverageUrl);
+  assert.deepEqual(new Set(auditedVillageKeys), new Set(coverage.units.map((unit) => `${unit.officialSroCode}:${unit.officialVillageCode}`)));
   assert.equal(ledger.location.mappingStatus, "unresolved_registration_subdivision");
   assert.deepEqual(ledger.location.candidateVillageKeys, ["20066:254", "20066:20514"]);
   assert.equal(ledger.location.officialVillageCode, null);

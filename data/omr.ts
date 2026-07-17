@@ -1,6 +1,17 @@
 import coverage from "./coverage/omr-corridor.json";
 import placeAliases from "./evidence/omr-place-aliases.json";
-import { omrGuidelineOmrInventoryAudit, omrGuidelineSnapshotSummary, omrOfficialAllotmentRateSummary, omrPlanningSummary, omrTnhbHousingOfferSummary } from "./evidence";
+import {
+  archivedGuidelineRecordsForVillage,
+  officialAllotmentRatesForVillage,
+  omrGuidelineOmrInventoryAudit,
+  omrGuidelineSnapshotSummary,
+  omrOfficialAllotmentRateSummary,
+  omrPlanningSummary,
+  omrTnhbHousingOfferLedger,
+  omrTnhbHousingOfferSummary,
+  planningRecordsForVillage,
+  tnhbHousingOffersForCandidateVillage,
+} from "./evidence";
 
 export type OmrCoverageStatus = "not_started" | "collecting" | "captured" | "verified" | "blocked";
 
@@ -186,6 +197,83 @@ export function aliasesForVillage(officialSroCode: string, officialVillageCode: 
 export const omrPlaceAliasLedger = placeAliases;
 
 export const omrCoverage = coverage;
+
+export const omrVillageEvidenceMatrix = units.map((unit) => {
+  const key = `${unit.officialSroCode}:${unit.officialVillageCode}`;
+  const inventory = inventoryByKey.get(key) ?? null;
+  const planningRecords = planningRecordsForVillage(unit.officialSroCode, unit.officialVillageCode);
+  const archivedGuidelineRecords = archivedGuidelineRecordsForVillage(unit.officialSroCode, unit.officialVillageCode);
+  const governmentAllotmentRates = officialAllotmentRatesForVillage(unit.officialSroCode, unit.officialVillageCode);
+  const unresolvedHousingOffers = tnhbHousingOffersForCandidateVillage(unit.officialSroCode, unit.officialVillageCode);
+  const tnhbPlaceMatched = omrTnhbHousingOfferLedger.omrScopeAudit.matchedCandidateVillageKeys.includes(key);
+  const availableEvidenceTypes = ["current_guideline_inventory_metadata"];
+
+  if (planningRecords.length) availableEvidenceTypes.push("official_planning_records");
+  if (archivedGuidelineRecords.length) availableEvidenceTypes.push("archived_guideline_value");
+  if (governmentAllotmentRates.length) availableEvidenceTypes.push("government_leasehold_allotment_rates");
+  if (unresolvedHousingOffers.length) availableEvidenceTypes.push("unresolved_official_housing_prices");
+  if (governmentAllotmentRates.length && omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount) {
+    availableEvidenceTypes.push("approximate_open_data_geometry");
+  }
+
+  const primaryBlockers = [
+    "Authorized current row-level guideline values are not captured.",
+    "No verified registered land transactions are published.",
+    "No exact parcel, street-segment or cadastral geometry is published.",
+  ];
+  if (tnhbPlaceMatched) primaryBlockers.push("TNHB's Sholinganallur place label is unresolved between registration villages 1 and 2.");
+
+  return {
+    key,
+    nameEn: unit.nameEn,
+    nameTa: unit.nameTa,
+    officialSroCode: unit.officialSroCode,
+    officialVillageCode: unit.officialVillageCode,
+    currentGuidelineRegister: {
+      status: inventory ? "verified_metadata_only" : "not_audited",
+      displayedItemCount: inventory?.displayedItemCount ?? 0,
+      currentPublishedValueCount: unit.officialGuidelineRecords,
+      blocker: "REDISTRIBUTION_PERMISSION_REQUIRED",
+    },
+    planning: {
+      status: planningRecords.length ? "direct_records_found" : "no_direct_record_in_ledger",
+      directRecordCount: planningRecords.length,
+    },
+    archivedGuideline: {
+      status: archivedGuidelineRecords.length ? "historical_record_found" : "no_archived_record_in_ledger",
+      recordCount: archivedGuidelineRecords.length,
+      currentVerifiedCount: 0,
+    },
+    governmentAllotment: {
+      status: governmentAllotmentRates.length ? "named_park_association" : "no_named_park_association",
+      recordCount: governmentAllotmentRates.length,
+    },
+    tnhbPublicSales: {
+      status: tnhbPlaceMatched ? "unresolved_locality_match" : "no_normalized_place_name_match_in_snapshot",
+      sourceSnapshotRecordCount: omrTnhbHousingOfferLedger.omrScopeAudit.sourceRecordCountScanned,
+      unresolvedRecordCount: unresolvedHousingOffers.length,
+      directRecordCount: 0,
+      auditedAt: omrTnhbHousingOfferLedger.auditedAt,
+      caveat: tnhbPlaceMatched
+        ? "The source label does not identify which Sholinganallur registration subdivision applies."
+        : "No normalized place-name match is an audited source result, not proof that TNHB owns no property or never operated a scheme here.",
+    },
+    registeredTransactions: {
+      status: "no_records_in_mito",
+      recordCount: unit.registeredTransactionRecords,
+    },
+    geometry: {
+      publishableApproximateCount: governmentAllotmentRates.length ? omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount : 0,
+      exactCount: 0,
+    },
+    publishedLandMarketValue: {
+      status: "insufficient_evidence",
+      published: false,
+    },
+    availableEvidenceTypes,
+    primaryBlockers,
+  };
+});
 
 export const omrCoverageSummary = {
   unitCount: units.length,

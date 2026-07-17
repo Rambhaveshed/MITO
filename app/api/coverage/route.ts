@@ -1,4 +1,4 @@
-import { omrCoverage, omrCoverageByOffice, omrCoverageSummary, omrReleaseReady } from "../../../data/omr";
+import { omrCoverage, omrCoverageByOffice, omrCoverageSummary, omrReleaseReady, omrVillageEvidenceMatrix } from "../../../data/omr";
 
 export async function GET() {
   return Response.json({
@@ -15,5 +15,6 @@ export async function GET() {
     releaseGate: omrCoverage.releaseGate,
     source: omrCoverage.source,
     offices: omrCoverageByOffice,
+    evidenceMatrix: omrVillageEvidenceMatrix,
   });
 }
