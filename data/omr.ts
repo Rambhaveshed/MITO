@@ -1,6 +1,6 @@
 import coverage from "./coverage/omr-corridor.json";
 import placeAliases from "./evidence/omr-place-aliases.json";
-import { omrGuidelineOmrInventoryAudit, omrGuidelineSnapshotSummary, omrOfficialAllotmentRateSummary, omrPlanningSummary } from "./evidence";
+import { omrGuidelineOmrInventoryAudit, omrGuidelineSnapshotSummary, omrOfficialAllotmentRateSummary, omrPlanningSummary, omrTnhbHousingOfferSummary } from "./evidence";
 
 export type OmrCoverageStatus = "not_started" | "collecting" | "captured" | "verified" | "blocked";
 
@@ -202,6 +202,9 @@ export const omrCoverageSummary = {
   registeredTransactionRecordCount: units.reduce((sum, unit) => sum + unit.registeredTransactionRecords, 0),
   officialAllotmentRateCount: omrOfficialAllotmentRateSummary.recordCount,
   officialAllotmentRateVillageCount: omrOfficialAllotmentRateSummary.villageAssociationCount,
+  officialHousingOfferCount: omrTnhbHousingOfferSummary.recordCount,
+  closedOfficialHousingOfferCount: omrTnhbHousingOfferSummary.closedOfferCount,
+  directHousingOfferVillageCount: omrTnhbHousingOfferSummary.directVillageLinkCount,
   publishableApproximateGeometryCount: omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount,
   exactEvidenceGeometryCount: omrOfficialAllotmentRateSummary.exactGeometryCount,
   officialEvidenceGeometryPublishedCount: omrOfficialAllotmentRateSummary.officialGeometryPublishedCount,

@@ -14,6 +14,7 @@ const omrInventoryAuditUrl = new URL("../data/evidence/tnreginet-omr-inventory-a
 const sipcotSiruseriLandRatesUrl = new URL("../data/evidence/sipcot-siruseri-land-rates-2026-07-17.json", import.meta.url);
 const sipcotSiruseriGeometryAuditUrl = new URL("../data/evidence/sipcot-siruseri-geometry-audit-2026-07-17.json", import.meta.url);
 const sipcotSiruseriFootprintUrl = new URL("../data/geometry/sipcot-siruseri-osm-footprint-2026-07-17.json", import.meta.url);
+const tnhbSholinganallurHousingOffersUrl = new URL("../data/evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
@@ -252,6 +253,59 @@ test("Siruseri publishes one attributed approximate footprint without republishi
   assert.equal(audit.publication.officialGeometryPublishedCount, 0);
   assert.equal(rates.location.geometryId, feature.id);
   assert.match(rates.location.positionalUncertainty, /not an official, legal, cadastral or complete/i);
+});
+
+test("TNHB Sholinganallur records stay closed, unplotted and separate from land-price evidence", async () => {
+  const ledger = await readJson(tnhbSholinganallurHousingOffersUrl);
+  const records = ledger.records;
+  const allKeys = [];
+  const collectKeys = (value) => {
+    if (!value || typeof value !== "object") return;
+    for (const [key, child] of Object.entries(value)) {
+      allKeys.push(key.toLowerCase());
+      collectKeys(child);
+    }
+  };
+  collectKeys(ledger);
+
+  assert.equal(ledger.source.organization, "Tamil Nadu Housing Board (TNHB)");
+  assert.equal(ledger.source.sourceType, "official_government_housing_sales_portal");
+  assert.equal(ledger.source.rightsStatus, "no_explicit_reuse_policy_found");
+  assert.equal(ledger.source.sourceResponseRecordCount, 183);
+  assert.equal(ledger.source.targetRecordCount, 8);
+  assert.equal(ledger.source.sourceResponseDigest, "sha256:420e26ac48203bd7a969ae309ffbd12656007e927ea32e049255505f40446d08");
+  assert.equal(ledger.location.mappingStatus, "unresolved_registration_subdivision");
+  assert.deepEqual(ledger.location.candidateVillageKeys, ["20066:254", "20066:20514"]);
+  assert.equal(ledger.location.officialVillageCode, null);
+  assert.equal(ledger.location.directVillageLink, false);
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.priceInterpretation.landPriceDerivationPermitted, false);
+  assert.equal(ledger.priceInterpretation.undividedSharePriceDerivationPermitted, false);
+  assert.equal(records.length, 8);
+  assert.equal(new Set(records.map((record) => record.id)).size, 8);
+  assert.equal(new Set(records.map((record) => record.websiteDataId)).size, 8);
+  assert.equal(new Set(records.map((record) => record.schemeDataId)).size, 8);
+  assert.equal(new Set(records.map((record) => record.schemeCode)).size, 8);
+  assert.deepEqual(records.map((record) => record.schemeCode), ["157001", "159001", "159102", "159103", "159104", "159105", "159107", "159201"]);
+  assert.ok(records.every((record) => record.offerStatusAtAudit === "closed"));
+  assert.ok(records.every((record) => record.portalPublishedStatus === "No"));
+  assert.ok(records.every((record) => record.bookingWindowEnd <= ledger.auditedAt));
+  assert.ok(records.every((record) => record.geometryStatus === "unplotted" && record.directVillageLink === false));
+  assert.ok(records.every((record) => !record.isLandPrice && !record.isGuidelineValue && !record.isRegisteredTransaction && !record.isCurrentAskingPrice && !record.isMarketEstimate));
+  assert.ok(records.every((record) => Math.abs(record.originalSellingPriceInr / record.plinthAreaSqft - record.derivedCombinedPriceInrPerPlinthSqft) < 0.01));
+  assert.deepEqual(records.map((record) => record.derivedCombinedPriceInrPerPlinthSqft), [2349.1, 3240, 5443.92, 5440.29, 5376.88, 5378.64, 6110.59, 5759.31]);
+  assert.equal(ledger.publication.currentOfferCount, 0);
+  assert.equal(ledger.publication.closedOfferCount, 8);
+  assert.equal(ledger.publication.currentOfficialGuidelineValues, 0);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.landPriceRecords, 0);
+  assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.publication.directVillageLinkCount, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
+  for (const forbidden of ["phone", "mobile", "email", "contact", "latitude", "longitude", "coordinates", "geometry"]) {
+    if (forbidden === "geometry") continue;
+    assert.ok(!allKeys.some((key) => key.includes(forbidden)), `forbidden published field: ${forbidden}`);
+  }
 });
 
 test("guideline import schema requires provenance, normalized values and location evidence", async () => {

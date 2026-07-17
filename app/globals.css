@@ -651,6 +651,12 @@ button {
 .allotment-evidence-card strong { display: block; font-size: 8px; }
 .allotment-evidence-card span { display: block; margin-top: 3px; color: #5d7287; font-size: 6px; line-height: 1.45; }
 .allotment-evidence-card em { padding: 4px 6px; border-radius: 5px; background: #e3edf7; color: #3f668a; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
+.housing-evidence-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; margin-top: 8px; padding: 11px; border: 1px solid #dfc8b9; border-radius: 10px; background: #fff8f3; }
+.housing-evidence-card > div { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #f3e1d5; color: #8b5136; }
+.housing-evidence-card p { min-width: 0; margin: 0; }
+.housing-evidence-card strong { display: block; font-size: 8px; }
+.housing-evidence-card span { display: block; margin-top: 3px; color: #7b6458; font-size: 6px; line-height: 1.45; }
+.housing-evidence-card em { padding: 4px 6px; border-radius: 5px; background: #f0dfd5; color: #80513a; font-size: 6px; font-style: normal; font-weight: 850; text-transform: uppercase; }
 .geometry-evidence-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; margin-top: 8px; padding: 11px; border: 1px dashed #8fb2cf; border-radius: 10px; background: #f2f7fb; }
 .geometry-evidence-card > div { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #dceaf4; color: #326c9d; }
 .geometry-evidence-card p { min-width: 0; margin: 0; }
@@ -671,6 +677,22 @@ button {
 .allotment-rate-card footer { margin-top: 9px; padding-top: 8px; border-top: 1px solid #d9e4ee; color: #71869a; font-size: 6px; }
 .allotment-rate-card footer b { color: #496d8e; text-transform: uppercase; }
 .allotment-rate-card.detailed { grid-column: 1 / -1; }
+.housing-source { border: 1px solid #e2cfc2; border-radius: 9px; background: #fffaf7; }
+.housing-offer-warning { display: flex; align-items: flex-start; gap: 8px; margin-top: 9px; padding: 10px; border: 1px solid #e4d0bf; border-radius: 9px; background: #fff8f1; color: #8a5a3b; }
+.housing-offer-warning > svg { flex: 0 0 auto; margin-top: 1px; }
+.housing-offer-warning strong { display: block; color: #654330; font-size: 8px; }
+.housing-offer-warning p { margin: 3px 0 0; color: #7d675a; font-size: 7px; line-height: 1.5; }
+.housing-offer-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+.housing-offer-card { min-width: 0; padding: 11px; border: 1px solid #e3d0c5; border-radius: 10px; background: #fffaf7; }
+.housing-offer-card > div, .housing-offer-card footer { display: flex; align-items: center; justify-content: space-between; gap: 7px; }
+.housing-offer-card > div span, .housing-offer-card > div em { color: #8a604a; font-size: 6px; font-style: normal; font-weight: 800; text-transform: uppercase; }
+.housing-offer-card h3 { margin: 8px 0 0; font-size: 9px; }
+.housing-offer-card > strong { display: block; margin-top: 6px; color: #875038; font-size: 15px; }
+.housing-offer-card > strong small { margin-left: 3px; color: #9b7767; font-size: 7px; }
+.housing-offer-card p { margin: 4px 0 0; color: #74655d; font-size: 7px; line-height: 1.45; }
+.housing-offer-card footer { margin-top: 9px; padding-top: 8px; border-top: 1px solid #eaded7; color: #927a6e; font-size: 6px; }
+.housing-offer-card footer b { color: #80533f; text-transform: uppercase; }
+.coverage-progress.housing i { background: #a56e55; }
 .guideline-snapshot-list { margin-top: 9px; }
 .guideline-snapshot-card { padding: 11px; border: 1px solid #e0c897; border-radius: 10px; background: #fffaf0; }
 .guideline-snapshot-card > div, .guideline-snapshot-card footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -706,6 +728,7 @@ button {
 .planning-evidence-summary strong { display: block; color: #435e91; font-size: 12px; }
 .planning-evidence-summary span { display: block; margin-top: 3px; color: #71809b; font-size: 6px; font-weight: 750; }
 .village-evidence-summary > div { background: #edf6f2; }
+.village-evidence-summary { grid-template-columns: repeat(4, 1fr); }
 .village-evidence-summary strong { color: var(--green); }
 .village-evidence-summary span { color: #648078; }
 .empty-evidence-state { display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; margin-top: 10px; padding: 11px; border: 1px solid #ead9bc; border-radius: 9px; background: #fff9ec; color: #806124; }
@@ -867,9 +890,13 @@ button {
   .inspector-section, .gap-card { margin-top: 8px; }
   .allotment-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
   .allotment-evidence-card em { grid-column: 2; justify-self: start; }
+  .housing-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
+  .housing-evidence-card em { grid-column: 2; justify-self: start; }
   .geometry-evidence-card { grid-template-columns: auto 1fr; padding: 9px; }
   .geometry-evidence-card em { grid-column: 2; justify-self: start; }
   .allotment-rate-list { grid-template-columns: 1fr; }
+  .housing-offer-list { grid-template-columns: 1fr; }
+  .village-evidence-summary { grid-template-columns: repeat(2, 1fr); }
   .mobile-nav {
     position: absolute;
     z-index: 21;

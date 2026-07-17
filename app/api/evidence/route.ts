@@ -14,6 +14,8 @@ import {
   omrPlanningSummary,
   omrSiruseriFootprint,
   omrSiruseriGeometryAudit,
+  omrTnhbHousingOfferLedger,
+  omrTnhbHousingOfferSummary,
   unresolvedPlanningRecords,
 } from "../../../data/evidence";
 
@@ -38,6 +40,15 @@ export async function GET() {
       records: omrOfficialAllotmentRateLedger.records,
       publication: omrOfficialAllotmentRateLedger.publication,
       publicationRule: "These rows are SIPCOT leasehold allotment plot costs. They must never be relabelled as guideline values, registered transactions, asking prices, market estimates or a village-wide Siruseri rate.",
+    },
+    officialHousingOffers: {
+      summary: omrTnhbHousingOfferSummary,
+      source: omrTnhbHousingOfferLedger.source,
+      location: omrTnhbHousingOfferLedger.location,
+      priceInterpretation: omrTnhbHousingOfferLedger.priceInterpretation,
+      records: omrTnhbHousingOfferLedger.records,
+      publication: omrTnhbHousingOfferLedger.publication,
+      publicationRule: "These are closed historical TNHB original combined apartment selling prices. The derived per-square-foot metric uses plinth area only; it must never be relabelled as a land price, guideline value, registered transaction, current asking price, market estimate or village-wide Sholinganallur rate. The unresolved Sholinganallur 1/2 crosswalk prevents direct village attribution.",
     },
     geometryEvidence: {
       summary: omrSiruseriGeometryAudit.publication,

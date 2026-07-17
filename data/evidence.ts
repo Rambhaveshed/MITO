@@ -8,6 +8,7 @@ import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit
 import planningLedger from "./evidence/omr-planning-records.json";
 import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
+import tnhbSholinganallurHousingOffers from "./evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json";
 import sipcotSiruseriFootprint from "./geometry/sipcot-siruseri-osm-footprint-2026-07-17.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
@@ -27,6 +28,7 @@ export const omrGuidelineSecondaryCorroborationLedger = guidelineSecondaryCorrob
 export const omrGuidelineLiveRegisterAudit = guidelineLiveRegisterAudit;
 export const omrGuidelineOmrInventoryAudit = guidelineOmrInventoryAudit;
 export const omrOfficialAllotmentRateLedger = sipcotSiruseriLandRates;
+export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
 export const omrSiruseriGeometryAudit = sipcotSiruseriGeometryAudit;
 export const omrSiruseriFootprint = sipcotSiruseriFootprint as FeatureCollection<Polygon>;
 export const omrSiruseriFootprintCenter = sipcotSiruseriGeometryAudit.openSource.centroid as [number, number];
@@ -100,6 +102,25 @@ export const omrOfficialAllotmentRateSummary = {
   verifiedAt: sipcotSiruseriLandRates.auditedAt,
 };
 
+export const omrTnhbHousingOfferSummary = {
+  recordCount: tnhbSholinganallurHousingOffers.records.length,
+  currentOfferCount: tnhbSholinganallurHousingOffers.publication.currentOfferCount,
+  closedOfferCount: tnhbSholinganallurHousingOffers.publication.closedOfferCount,
+  directVillageLinkCount: tnhbSholinganallurHousingOffers.publication.directVillageLinkCount,
+  candidateVillageCount: tnhbSholinganallurHousingOffers.location.candidateVillageKeys.length,
+  originalSellingPriceRangeInr: {
+    low: Math.min(...tnhbSholinganallurHousingOffers.records.map((record) => record.originalSellingPriceInr)),
+    high: Math.max(...tnhbSholinganallurHousingOffers.records.map((record) => record.originalSellingPriceInr)),
+  },
+  derivedCombinedPriceRangeInrPerPlinthSqft: {
+    low: Math.min(...tnhbSholinganallurHousingOffers.records.map((record) => record.derivedCombinedPriceInrPerPlinthSqft)),
+    high: Math.max(...tnhbSholinganallurHousingOffers.records.map((record) => record.derivedCombinedPriceInrPerPlinthSqft)),
+  },
+  plottedRecordCount: tnhbSholinganallurHousingOffers.publication.plottedRecordCount,
+  landPriceRecordCount: tnhbSholinganallurHousingOffers.publication.landPriceRecords,
+  verifiedAt: tnhbSholinganallurHousingOffers.auditedAt,
+};
+
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
@@ -116,6 +137,12 @@ export function officialAllotmentRatesForVillage(officialSroCode: string, offici
   const association = sipcotSiruseriLandRates.location.currentRegistrationAssociation;
   if (association.officialSroCode !== officialSroCode || association.officialVillageCode !== officialVillageCode) return [];
   return sipcotSiruseriLandRates.records;
+}
+
+export function tnhbHousingOffersForCandidateVillage(officialSroCode: string, officialVillageCode: string) {
+  const key = `${officialSroCode}:${officialVillageCode}`;
+  if (!tnhbSholinganallurHousingOffers.location.candidateVillageKeys.includes(key)) return [];
+  return tnhbSholinganallurHousingOffers.records;
 }
 
 export const unresolvedPlanningRecords = planningLedger.records.filter(

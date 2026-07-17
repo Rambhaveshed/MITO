@@ -51,7 +51,10 @@ import {
   omrSiruseriFootprint,
   omrSiruseriFootprintCenter,
   omrSiruseriGeometryAudit,
+  omrTnhbHousingOfferLedger,
+  omrTnhbHousingOfferSummary,
   planningRecordsForVillage,
+  tnhbHousingOffersForCandidateVillage,
 } from "../data/evidence";
 import {
   aliasesForVillage,
@@ -194,6 +197,9 @@ export default function MitoApp() {
     : [];
   const selectedCoverageAllotmentRates = selectedCoverageUnit
     ? officialAllotmentRatesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
+  const selectedCoverageHousingOffers = selectedCoverageUnit
+    ? tnhbHousingOffersForCandidateVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
     : [];
   const selectedCoverageInventory = selectedCoverageUnit
     ? omrGuidelineOmrInventoryAudit.queries.find(
@@ -601,7 +607,9 @@ export default function MitoApp() {
               ? selectedCoverageUnit
                 ? selectedCoverageAllotmentRates.length
                   ? `${selectedCoverageAllotmentRates.length} official leasehold allotment rates · not market prices`
-                  : "0 current values published · row access pending"
+                  : selectedCoverageHousingOffers.length
+                    ? `${selectedCoverageHousingOffers.length} closed TNHB apartment price records · locality crosswalk unresolved`
+                    : "0 current values published · row access pending"
                 : "Jurisdictions are mapped; price evidence is not complete"
               : selectedChennaiUnit
                 ? selectedChennaiUnit.registrationCrosswalkStatus === "verified"
@@ -643,6 +651,14 @@ export default function MitoApp() {
                   </section>
                 )}
 
+                {selectedCoverageHousingOffers.length > 0 && (
+                  <section className="housing-evidence-card">
+                    <div><Building2 size={17} /></div>
+                    <p><strong>{selectedCoverageHousingOffers.length} official TNHB residential price records</strong><span>Closed original apartment offers · unresolved between Sholinganallur 1 and 2</span></p>
+                    <em>Not land price</em>
+                  </section>
+                )}
+
                 {selectedCoverageAllotmentRates.length > 0 && (
                   <section className="geometry-evidence-card">
                     <div><Layers3 size={17} /></div>
@@ -666,9 +682,10 @@ export default function MitoApp() {
                   <div className="planning-evidence-summary village-evidence-summary">
                     <div><strong>{selectedCoveragePlanningRecords.length}</strong><span>planning records</span></div>
                     <div><strong>{selectedCoverageArchivedRecords.length}</strong><span>archived values</span></div>
+                    <div><strong>{selectedCoverageHousingOffers.length}</strong><span>unresolved housing prices</span></div>
                     <div><strong>0</strong><span>current values</span></div>
                   </div>
-                  <p className="coverage-method">The official inventory size and jurisdiction are verified. Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished.</p>
+                  <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
                 </section>
 
                 {selectedCoverageAllotmentRates.length > 0 && (
@@ -693,6 +710,8 @@ export default function MitoApp() {
                   <div className="gate-row passed"><Check size={14} /><span>Current official inventory total verified</span></div>
                   {selectedCoverageAllotmentRates.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Two official SIPCOT leasehold allotment rates captured separately</span></div>}
                   {selectedCoverageAllotmentRates.length > 0 && <div className="gate-row passed"><Check size={14} /><span>One ODbL approximate park footprint published with attribution</span></div>}
+                  {selectedCoverageHousingOffers.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Eight official TNHB historical apartment prices captured separately</span></div>}
+                  {selectedCoverageHousingOffers.length > 0 && <div className="gate-row"><X size={14} /><span>TNHB locality not resolved to Sholinganallur registration village 1 or 2</span></div>}
                   <div className="gate-row"><X size={14} /><span>Authorized row-level guideline values not captured</span></div>
                   <div className="gate-row"><X size={14} /><span>No verified registered transactions in MITO yet</span></div>
                 </section>
@@ -725,6 +744,12 @@ export default function MitoApp() {
                 <em>Not market price</em>
               </section>
 
+              <section className="housing-evidence-card">
+                <div><Building2 size={17} /></div>
+                <p><strong>{omrTnhbHousingOfferSummary.recordCount} official TNHB residential price records</strong><span>Sholinganallur · closed original apartment offers · combined price, not land price</span></p>
+                <em>Crosswalk unresolved</em>
+              </section>
+
               <section className="geometry-evidence-card">
                 <div><Layers3 size={17} /></div>
                 <p><strong>{omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount} approximate footprint published</strong><span>SIPCOT Siruseri · OpenStreetMap ODbL · official GIS used for comparison only</span></p>
@@ -738,6 +763,7 @@ export default function MitoApp() {
                 <div className="coverage-progress-row"><div><span>Captured street registers</span><strong>{omrCoveragePercent.streetRegister}%</strong></div><div className="coverage-progress"><i style={{ width: `${omrCoveragePercent.streetRegister}%` }} /></div><small>{inr.format(omrGuidelineLiveRegisterSummary.currentInventoryCount)} current items are inventoried, but zero row-level values are captured or republished</small></div>
                 <div className="coverage-progress-row"><div><span>Current verified values</span><strong>{omrCoverageSummary.officialGuidelineRecordCount}</strong></div><div className="coverage-progress"><i style={{ width: "0%" }} /></div><small>{omrGuidelineSnapshotSummary.recordCount} archived row is shown separately and excluded from this total</small></div>
                 <div className="coverage-progress-row"><div><span>Official allotment rates</span><strong>{omrCoverageSummary.officialAllotmentRateCount}</strong></div><div className="coverage-progress allotment"><i style={{ width: `${Math.round((omrCoverageSummary.officialAllotmentRateVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named park association; these leasehold plot costs do not count as guideline or transaction coverage</small></div>
+                <div className="coverage-progress-row"><div><span>Official housing price records</span><strong>{omrCoverageSummary.officialHousingOfferCount}</strong></div><div className="coverage-progress housing"><i style={{ width: "0%" }} /></div><small>{omrCoverageSummary.closedOfficialHousingOfferCount} closed TNHB apartment offers · zero direct village links and zero land-price records</small></div>
                 <div className="coverage-progress-row"><div><span>Publishable approximate geometries</span><strong>{omrCoverageSummary.publishableApproximateGeometryCount}</strong></div><div className="coverage-progress geometry"><i style={{ width: `${Math.round((omrCoverageSummary.publishableApproximateGeometryCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named OSM park footprint · zero exact, official or cadastral geometries published</small></div>
                 <div className="coverage-progress-row"><div><span>Planning evidence</span><strong>{omrCoveragePercent.planning}%</strong></div><div className="coverage-progress planning"><i style={{ width: `${omrCoveragePercent.planning}%` }} /></div><small>{omrPlanningSummary.villageCount} of {omrCoverageSummary.unitCount} villages have directly linked CMDA records</small></div>
               </section>
@@ -787,6 +813,30 @@ export default function MitoApp() {
                       ))}
                     </div>
                     <p className="coverage-method">{omrOfficialAllotmentRateLedger.publication.caveat}</p>
+                  </section>
+                )}
+
+                {selectedCoverageHousingOffers.length > 0 && (
+                  <section className="inspector-section evidence-section housing-offer-section">
+                    <div className="section-heading"><div><span>Unresolved locality evidence</span><h2>TNHB Sholinganallur offers</h2></div><Building2 size={17} /></div>
+                    <a href={omrTnhbHousingOfferLedger.source.url} target="_blank" rel="noreferrer" className="source-card housing-source">
+                      <span className="source-kind official">official</span>
+                      <div><strong>{omrTnhbHousingOfferLedger.source.title}</strong><p>{omrTnhbHousingOfferLedger.source.organization}</p><small>{omrTnhbHousingOfferSummary.recordCount} targeted factual records from a {omrTnhbHousingOfferLedger.source.sourceResponseRecordCount}-record public response · contacts, media and geotags excluded</small></div>
+                      <ExternalLink size={15} />
+                    </a>
+                    <div className="housing-offer-warning"><AlertTriangle size={16} /><div><strong>Not assigned to this village</strong><p>TNHB names Sholinganallur but does not distinguish registration village 1 from 2. MITO shows the same unresolved evidence to both candidates and excludes it from direct village totals.</p></div></div>
+                    <div className="housing-offer-list">
+                      {selectedCoverageHousingOffers.map((record) => (
+                        <article key={record.id} className="housing-offer-card">
+                          <div><span>{record.schemeType} · {record.unitType}</span><em>{record.offerStatusAtAudit}</em></div>
+                          <h3>{record.schemeName}</h3>
+                          <strong>{formatRate(record.derivedCombinedPriceInrPerPlinthSqft)}<small>/plinth sq ft</small></strong>
+                          <p>₹{inr.format(record.originalSellingPriceInr)} combined original price · {inr.format(record.plinthAreaSqft)} sq ft plinth · {inr.format(record.undividedShareAreaSqft)} sq ft UDS</p>
+                          <footer><span>Price date {record.priceDate}</span><b>Code {record.schemeCode}</b></footer>
+                        </article>
+                      ))}
+                    </div>
+                    <p className="coverage-method">The per-square-foot figure is total original apartment price divided by plinth area. MITO does not divide by UDS because that would falsely present the building component as land value. Every booking window is closed and the portal marks each record unpublished.</p>
                   </section>
                 )}
 
@@ -968,6 +1018,22 @@ export default function MitoApp() {
                     <p className="coverage-method">The OSM polygon is a named partial footprint, not an official or legal boundary. It covers about {omrSiruseriGeometryAudit.comparison.openAreaAsPercentOfOfficialComputedArea.toFixed(1)}% of SIPCOT&apos;s computed GIS area and differs materially in outline. SIPCOT&apos;s land table says Kancheepuram while its current GIS index and MITO&apos;s registration crosswalk say Chengalpattu; the conflict is preserved. The potential 10% backend subsidy is not deducted because eligibility is project-specific.</p>
                     <a className="resolver-api-link" href={omrSiruseriGeometryAudit.openSource.sourceUrl} target="_blank" rel="noreferrer">Open the attributed OSM footprint <ArrowUpRight size={13} /></a>
                     <a className="resolver-api-link" href={omrOfficialAllotmentRateLedger.tenureEvidence.url} target="_blank" rel="noreferrer">Open the official standard lease evidence <ArrowUpRight size={13} /></a>
+                  </section>
+                )}
+
+                {selectedCoverageHousingOffers.length > 0 && (
+                  <section className="inspector-section context-section">
+                    <div className="section-heading"><div><span>Price interpretation</span><h2>What the TNHB figures mean</h2></div><CircleHelp size={17} /></div>
+                    <dl className="detail-grid">
+                      <div><dt>Evidence</dt><dd>Original apartment selling price</dd></div>
+                      <div><dt>Status</dt><dd>Closed historical offer</dd></div>
+                      <div><dt>Displayed rate</dt><dd>Total ÷ plinth area</dd></div>
+                      <div><dt>Location</dt><dd>Sholinganallur split unresolved</dd></div>
+                      <div><dt>Geometry</dt><dd>Unplotted</dd></div>
+                      <div><dt>Land rate</dt><dd>Not derived</dd></div>
+                    </dl>
+                    <p className="coverage-method">These records strengthen residential price provenance, but they do not prove current availability, a completed transaction, land value or a rate for either Sholinganallur registration village. TNHB project costs from policy documents are also excluded because a project budget is not a property price.</p>
+                    <a className="resolver-api-link" href={omrTnhbHousingOfferLedger.source.url} target="_blank" rel="noreferrer">Open the official TNHB property portal <ArrowUpRight size={13} /></a>
                   </section>
                 )}
 
