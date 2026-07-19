@@ -1,4 +1,4 @@
-import type { FeatureCollection, Polygon } from "geojson";
+import type { FeatureCollection, Point, Polygon } from "geojson";
 import captureRun from "./capture-runs/omr-guideline-2026-07-16.json";
 import guidelineImportSchema from "./evidence/guideline-value-import.schema.json";
 import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-07-16.json";
@@ -11,6 +11,7 @@ import planningLedger from "./evidence/omr-planning-records.json";
 import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
 import tnhbSholinganallurHousingOffers from "./evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json";
+import tmbSemmancheriIndustrialLandAuctions from "./evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json";
 import sipcotSiruseriFootprint from "./geometry/sipcot-siruseri-osm-footprint-2026-07-17.json";
 
 export type PlanningEvidenceRecord = (typeof planningLedger.records)[number];
@@ -32,10 +33,29 @@ export const omrGuidelineOmrInventoryAudit = guidelineOmrInventoryAudit;
 export const omrOfficialAllotmentRateLedger = sipcotSiruseriLandRates;
 export const omrOfficialAuctionReservePriceLedger = ibbiSholinganallurLandAuction;
 export const omrOfficialCommercialAuctionReserveLedger = ibbiTecproSiruseriCommercialAuctions;
+export const omrOfficialSecuredCreditorLandReserveLedger = tmbSemmancheriIndustrialLandAuctions;
 export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
 export const omrSiruseriGeometryAudit = sipcotSiruseriGeometryAudit;
 export const omrSiruseriFootprint = sipcotSiruseriFootprint as FeatureCollection<Polygon>;
 export const omrSiruseriFootprintCenter = sipcotSiruseriGeometryAudit.openSource.centroid as [number, number];
+export const omrSemmancheriAuctionPointCenter = tmbSemmancheriIndustrialLandAuctions.location.geometry.coordinates as [number, number];
+export const omrSemmancheriAuctionPoint = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      id: tmbSemmancheriIndustrialLandAuctions.id,
+      properties: {
+        evidenceType: "secured_creditor_land_auction_reserve_history",
+        sourceOrganization: tmbSemmancheriIndustrialLandAuctions.sources[0].organization,
+        registrationVillageName: tmbSemmancheriIndustrialLandAuctions.location.registrationVillageName,
+        propertyClass: tmbSemmancheriIndustrialLandAuctions.asset.propertyClass,
+        recordCount: tmbSemmancheriIndustrialLandAuctions.records.length,
+      },
+      geometry: tmbSemmancheriIndustrialLandAuctions.location.geometry,
+    },
+  ],
+} as FeatureCollection<Point>;
 export const guidelineValueImportSchema = guidelineImportSchema;
 
 const snapshotVillageKeys = new Set(
@@ -160,6 +180,33 @@ export const omrOfficialCommercialAuctionReserveSummary = {
   verifiedAt: ibbiTecproSiruseriCommercialAuctions.auditedAt,
 };
 
+const latestSemmancheriReserve = tmbSemmancheriIndustrialLandAuctions.records[tmbSemmancheriIndustrialLandAuctions.records.length - 1];
+
+export const omrOfficialSecuredCreditorLandReserveSummary = {
+  recordCount: tmbSemmancheriIndustrialLandAuctions.publication.recordCount,
+  assetCount: tmbSemmancheriIndustrialLandAuctions.publication.assetCount,
+  directVillageLinkCount: tmbSemmancheriIndustrialLandAuctions.publication.directVillageLinkCount,
+  landReservePriceRecordCount: tmbSemmancheriIndustrialLandAuctions.publication.landReservePriceRecords,
+  registeredTransactionCount: tmbSemmancheriIndustrialLandAuctions.publication.registeredTransactions,
+  winningBidRecordCount: tmbSemmancheriIndustrialLandAuctions.publication.winningBidRecords,
+  sourcePublishedPointCount: tmbSemmancheriIndustrialLandAuctions.publication.sourcePublishedPointCount,
+  exactParcelGeometryCount: tmbSemmancheriIndustrialLandAuctions.publication.exactParcelGeometryCount,
+  reservePriceRangeInr: {
+    low: Math.min(...tmbSemmancheriIndustrialLandAuctions.records.map((record) => record.totalReservePriceInr)),
+    high: Math.max(...tmbSemmancheriIndustrialLandAuctions.records.map((record) => record.totalReservePriceInr)),
+  },
+  derivedLandReserveRangeInrPerSqft: {
+    low: Math.min(...tmbSemmancheriIndustrialLandAuctions.records.map((record) => record.derivedReservePriceInrPerSqft)),
+    high: Math.max(...tmbSemmancheriIndustrialLandAuctions.records.map((record) => record.derivedReservePriceInrPerSqft)),
+  },
+  latestVerifiedReservePriceInr: latestSemmancheriReserve.totalReservePriceInr,
+  latestDerivedReservePriceInrPerSqft: latestSemmancheriReserve.derivedReservePriceInrPerSqft,
+  reserveReductionPercent: tmbSemmancheriIndustrialLandAuctions.reconciliation.reserveReductionPercent,
+  currentLifecycleStatus: tmbSemmancheriIndustrialLandAuctions.asset.currentLifecycleStatus,
+  currentLifecycleAsOf: tmbSemmancheriIndustrialLandAuctions.asset.currentLifecycleAsOf,
+  verifiedAt: tmbSemmancheriIndustrialLandAuctions.auditedAt,
+};
+
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
@@ -188,6 +235,12 @@ export function officialCommercialAuctionReservesForVillage(officialSroCode: str
   const location = ibbiTecproSiruseriCommercialAuctions.location;
   if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
   return ibbiTecproSiruseriCommercialAuctions.records;
+}
+
+export function officialSecuredCreditorLandReservesForVillage(officialSroCode: string, officialVillageCode: string) {
+  const location = tmbSemmancheriIndustrialLandAuctions.location;
+  if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
+  return tmbSemmancheriIndustrialLandAuctions.records;
 }
 
 export function tnhbHousingOffersForCandidateVillage(officialSroCode: string, officialVillageCode: string) {

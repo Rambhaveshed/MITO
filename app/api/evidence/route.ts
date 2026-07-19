@@ -14,6 +14,8 @@ import {
   omrOfficialAuctionReservePriceSummary,
   omrOfficialCommercialAuctionReserveLedger,
   omrOfficialCommercialAuctionReserveSummary,
+  omrOfficialSecuredCreditorLandReserveLedger,
+  omrOfficialSecuredCreditorLandReserveSummary,
   omrPlanningLedger,
   omrPlanningSummary,
   omrSiruseriFootprint,
@@ -25,7 +27,7 @@ import {
 
 export async function GET() {
   return Response.json({
-    generatedAt: "2026-07-17",
+    generatedAt: "2026-07-19",
     scopeId: omrPlanningLedger.scopeId,
     planning: {
       summary: omrPlanningSummary,
@@ -76,6 +78,17 @@ export async function GET() {
       reconciliation: omrOfficialCommercialAuctionReserveLedger.reconciliation,
       publication: omrOfficialCommercialAuctionReserveLedger.publication,
       publicationRule: "These are liquidation-auction floors for one combined Siruseri land-and-building asset. The per-square-foot normalization divides by building area only and must never be relabelled as a land rate, building-only value, winning bid, registered sale consideration, guideline value, asking price, market estimate, current availability or village-wide Siruseri rate.",
+    },
+    officialSecuredCreditorLandReserves: {
+      summary: omrOfficialSecuredCreditorLandReserveSummary,
+      sources: omrOfficialSecuredCreditorLandReserveLedger.sources,
+      privacy: omrOfficialSecuredCreditorLandReserveLedger.privacy,
+      location: omrOfficialSecuredCreditorLandReserveLedger.location,
+      asset: omrOfficialSecuredCreditorLandReserveLedger.asset,
+      records: omrOfficialSecuredCreditorLandReserveLedger.records,
+      reconciliation: omrOfficialSecuredCreditorLandReserveLedger.reconciliation,
+      publication: omrOfficialSecuredCreditorLandReserveLedger.publication,
+      publicationRule: "These are secured-creditor auction floors for one 8,017 sq-ft industrial-land asset. They must never be relabelled as winning bids, registered consideration, guideline values, asking prices, market estimates, current availability or a village-wide Semmancheri rate. The source point is not a parcel boundary.",
     },
     geometryEvidence: {
       summary: omrSiruseriGeometryAudit.publication,

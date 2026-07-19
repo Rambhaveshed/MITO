@@ -17,6 +17,7 @@ const sipcotSiruseriFootprintUrl = new URL("../data/geometry/sipcot-siruseri-osm
 const tnhbSholinganallurHousingOffersUrl = new URL("../data/evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json", import.meta.url);
 const ibbiSholinganallurLandAuctionUrl = new URL("../data/evidence/ibbi-sholinganallur-land-auction-2025.json", import.meta.url);
 const ibbiTecproSiruseriCommercialAuctionsUrl = new URL("../data/evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json", import.meta.url);
+const tmbSemmancheriIndustrialLandAuctionsUrl = new URL("../data/evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
@@ -105,6 +106,59 @@ test("IBBI Siruseri commercial reserve history stays combined, unplotted and out
   assert.equal(ledger.publication.registeredTransactions, 0);
   assert.equal(ledger.publication.winningBidRecords, 0);
   assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.privacy.personalDataFieldsStored, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
+});
+
+test("TMB Semmancheri reserve history stays land-only, source-pointed and outcome-unknown", async () => {
+  const ledger = await readJson(tmbSemmancheriIndustrialLandAuctionsUrl);
+  const records = ledger.records;
+
+  assert.equal(ledger.sources.length, 6);
+  assert.deepEqual(ledger.sources.map((source) => source.documentDigest), [
+    "sha256:9fdde69a080ae070053161cf055c869a497a9ff7a3e869adb2b5d8b7575e6da8",
+    "sha256:8be102832ccc2c88f8b7f9866459cccb43d3bedd74f74b2221f2d27873657489",
+    "sha256:5dfaee1ea8e408edab7ef3ce99fb2844f7d18fb7c605db583c8798446a03eac9",
+    "sha256:c6bec7861e6e1e83f2734350a08e89da066c4ba170c3d58542ae26dedaeca596",
+    "sha256:3934556f6799701c1b6679b86666a9375afee8947e7095a97c82abd2d9b3349a",
+    "sha256:74c9f2a7dbe9079e6c8dcc21f798c11201d68e81dc15cbd4fa73da89c073de25",
+  ]);
+  assert.ok(ledger.sources.every((source) => source.rightsStatus === "official_public_record_factual_excerpt_only_no_open_licence_found"));
+  assert.equal(ledger.location.mappingStatus, "exact_official_registration_village");
+  assert.equal(ledger.location.officialSroCode, "20066");
+  assert.equal(ledger.location.officialVillageCode, "246");
+  assert.equal(ledger.location.directVillageLink, true);
+  assert.equal(ledger.location.geometryStatus, "source_published_point");
+  assert.equal(ledger.location.geometryType, "Point");
+  assert.deepEqual(ledger.location.geometry.coordinates, [80.229881, 12.874384]);
+  assert.equal(ledger.location.coordinateSourceObservationCount, 5);
+  assert.match(ledger.location.positionalUncertainty, /not a parcel corner, centroid, cadastral boundary/i);
+  assert.equal(ledger.asset.propertyClass, "industrial_land");
+  assert.equal(ledger.asset.landAreaSqft, 8017);
+  assert.equal(ledger.asset.buildingAreaSqft, null);
+  assert.equal(ledger.asset.areaSchedules.reduce((sum, schedule) => sum + schedule.landAreaSqft, 0), 8017);
+  assert.deepEqual(records.map((record) => record.totalReservePriceInr), [19600000, 19600000, 18900000, 17955000, 17955000]);
+  assert.deepEqual(records.map((record) => record.derivedReservePriceInrPerSqft), [2444.8, 2444.8, 2357.49, 2239.62, 2239.62]);
+  assert.ok(records.every((record) => record.derivedReservePriceInrPerSqft === Math.round((record.totalReservePriceInr / record.landAreaSqft) * 100) / 100));
+  assert.equal(ledger.reconciliation.reserveReductionInr, 1645000);
+  assert.equal(ledger.reconciliation.reserveReductionPercent, 8.39);
+  assert.equal(ledger.reconciliation.assetMatchStatus, "same_asset_verified");
+  assert.equal(ledger.asset.currentLifecycleStatus, "secured_asset_possession_listed_sale_outcome_unpublished");
+  assert.equal(ledger.asset.currentLifecycleAsOf, "2026-06-30");
+  assert.equal(ledger.sources.at(-1).effectiveDate, "2026-06-30");
+  assert.equal(ledger.asset.currentAvailabilityVerified, false);
+  assert.equal(ledger.asset.saleOutcomeVerified, false);
+  assert.ok(records.every((record) => record.evidenceType === "secured_creditor_land_auction_reserve_price" && record.isLandReservePrice));
+  assert.ok(records.every((record) => record.winningBidInr === null && !record.saleCertificateVerified && !record.registeredTransferVerified));
+  assert.ok(records.every((record) => record.geometryStatus === "source_published_point" && record.directVillageLink));
+  assert.ok(records.every((record) => !record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate && !record.isWinningBid));
+  assert.equal(ledger.publication.recordCount, 5);
+  assert.equal(ledger.publication.assetCount, 1);
+  assert.equal(ledger.publication.directVillageLinkCount, 1);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.winningBidRecords, 0);
+  assert.equal(ledger.publication.sourcePublishedPointCount, 1);
+  assert.equal(ledger.publication.exactParcelGeometryCount, 0);
   assert.equal(ledger.privacy.personalDataFieldsStored, 0);
   assert.equal(ledger.publication.personalDataFieldsStored, 0);
 });
