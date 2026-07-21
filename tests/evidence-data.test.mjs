@@ -18,11 +18,49 @@ const tnhbSholinganallurHousingOffersUrl = new URL("../data/evidence/tnhb-sholin
 const ibbiSholinganallurLandAuctionUrl = new URL("../data/evidence/ibbi-sholinganallur-land-auction-2025.json", import.meta.url);
 const ibbiTecproSiruseriCommercialAuctionsUrl = new URL("../data/evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json", import.meta.url);
 const tmbSemmancheriIndustrialLandAuctionsUrl = new URL("../data/evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json", import.meta.url);
+const repcoThaiyurLandAuctionUrl = new URL("../data/evidence/repco-thaiyur-land-auction-2026.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
   return JSON.parse(await readFile(url, "utf8"));
 }
+
+test("Repco Thaiyur reserve stays one privacy-safe unresolved land record", async () => {
+  const ledger = await readJson(repcoThaiyurLandAuctionUrl);
+  const record = ledger.records[0];
+
+  assert.equal(ledger.sources[1].documentDigest, "sha256:171ff6727d7fe72b43207846df79537a082234c7b83d801b569e963456a058d1");
+  assert.ok(ledger.sources.every((source) => source.url.startsWith("https://") && source.organization === "Repco Home Finance Limited"));
+  assert.equal(ledger.location.mappingStatus, "unresolved_registration_subdivision");
+  assert.deepEqual(ledger.location.candidateVillageKeys, ["22605:800000289", "22605:800000290"]);
+  assert.equal(ledger.location.sourceSubRegistrationDistrictName, "Thiruporur");
+  assert.equal(ledger.location.currentCandidateSroCode, "22605");
+  assert.equal(ledger.location.historicalCurrentJurisdictionConflict, true);
+  assert.equal(ledger.location.directVillageLink, false);
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.location.geometryType, null);
+  assert.equal(ledger.asset.landAreaSqft, 693);
+  assert.equal(ledger.asset.plotNumber, "15");
+  assert.equal(ledger.asset.surveyNumber, "522/2");
+  assert.deepEqual(ledger.asset.dimensionsFeet, { north: 21.3, south: 30.9, east: 26.9, west: 28.6 });
+  assert.equal(record.totalReservePriceInr, 1123000);
+  assert.equal(record.derivedReservePriceInrPerSqft, Math.round((record.totalReservePriceInr / record.landAreaSqft) * 100) / 100);
+  assert.equal(record.lifecycleStatus, "auction_offered_outcome_unpublished");
+  assert.equal(record.winningBidInr, null);
+  assert.equal(record.saleCertificateVerified, false);
+  assert.equal(record.registeredTransferVerified, false);
+  assert.equal(record.directVillageLink, false);
+  assert.ok(record.isLandReservePrice);
+  assert.ok(!record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate && !record.isWinningBid);
+  assert.equal(ledger.publication.recordCount, 1);
+  assert.equal(ledger.publication.candidateDisplayAssociationCount, 2);
+  assert.equal(ledger.publication.directVillageLinkCount, 0);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.winningBidRecords, 0);
+  assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.privacy.personalDataFieldsStored, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
+});
 
 test("IBBI Sholinganallur reserve evidence stays distinct from a completed sale or market price", async () => {
   const ledger = await readJson(ibbiSholinganallurLandAuctionUrl);

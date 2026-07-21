@@ -2,7 +2,7 @@ import { omrCoverage, omrCoverageByOffice, omrCoverageSummary, omrReleaseReady, 
 
 export async function GET() {
   return Response.json({
-    generatedAt: "2026-07-17",
+    generatedAt: "2026-07-21",
     programme: {
       id: omrCoverage.id,
       name: omrCoverage.name,

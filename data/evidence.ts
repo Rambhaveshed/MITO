@@ -8,6 +8,7 @@ import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit
 import ibbiSholinganallurLandAuction from "./evidence/ibbi-sholinganallur-land-auction-2025.json";
 import ibbiTecproSiruseriCommercialAuctions from "./evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json";
 import planningLedger from "./evidence/omr-planning-records.json";
+import repcoThaiyurLandAuction from "./evidence/repco-thaiyur-land-auction-2026.json";
 import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
 import tnhbSholinganallurHousingOffers from "./evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json";
@@ -34,6 +35,7 @@ export const omrOfficialAllotmentRateLedger = sipcotSiruseriLandRates;
 export const omrOfficialAuctionReservePriceLedger = ibbiSholinganallurLandAuction;
 export const omrOfficialCommercialAuctionReserveLedger = ibbiTecproSiruseriCommercialAuctions;
 export const omrOfficialSecuredCreditorLandReserveLedger = tmbSemmancheriIndustrialLandAuctions;
+export const omrOfficialUnresolvedThaiyurLandReserveLedger = repcoThaiyurLandAuction;
 export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
 export const omrSiruseriGeometryAudit = sipcotSiruseriGeometryAudit;
 export const omrSiruseriFootprint = sipcotSiruseriFootprint as FeatureCollection<Polygon>;
@@ -207,6 +209,22 @@ export const omrOfficialSecuredCreditorLandReserveSummary = {
   verifiedAt: tmbSemmancheriIndustrialLandAuctions.auditedAt,
 };
 
+export const omrOfficialUnresolvedThaiyurLandReserveSummary = {
+  recordCount: repcoThaiyurLandAuction.publication.recordCount,
+  assetCount: repcoThaiyurLandAuction.publication.assetCount,
+  candidateVillageCount: repcoThaiyurLandAuction.publication.candidateVillageCount,
+  candidateDisplayAssociationCount: repcoThaiyurLandAuction.publication.candidateDisplayAssociationCount,
+  directVillageLinkCount: repcoThaiyurLandAuction.publication.directVillageLinkCount,
+  landReservePriceRecordCount: repcoThaiyurLandAuction.publication.landReservePriceRecords,
+  registeredTransactionCount: repcoThaiyurLandAuction.publication.registeredTransactions,
+  winningBidRecordCount: repcoThaiyurLandAuction.publication.winningBidRecords,
+  plottedRecordCount: repcoThaiyurLandAuction.publication.plottedRecordCount,
+  totalReservePriceInr: repcoThaiyurLandAuction.records[0].totalReservePriceInr,
+  derivedReservePriceInrPerSqft: repcoThaiyurLandAuction.records[0].derivedReservePriceInrPerSqft,
+  lifecycleStatus: repcoThaiyurLandAuction.records[0].lifecycleStatus,
+  verifiedAt: repcoThaiyurLandAuction.auditedAt,
+};
+
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
@@ -241,6 +259,12 @@ export function officialSecuredCreditorLandReservesForVillage(officialSroCode: s
   const location = tmbSemmancheriIndustrialLandAuctions.location;
   if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
   return tmbSemmancheriIndustrialLandAuctions.records;
+}
+
+export function unresolvedThaiyurLandReservesForCandidateVillage(officialSroCode: string, officialVillageCode: string) {
+  const key = `${officialSroCode}:${officialVillageCode}`;
+  if (!repcoThaiyurLandAuction.location.candidateVillageKeys.includes(key)) return [];
+  return repcoThaiyurLandAuction.records;
 }
 
 export function tnhbHousingOffersForCandidateVillage(officialSroCode: string, officialVillageCode: string) {

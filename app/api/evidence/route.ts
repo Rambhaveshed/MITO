@@ -16,6 +16,8 @@ import {
   omrOfficialCommercialAuctionReserveSummary,
   omrOfficialSecuredCreditorLandReserveLedger,
   omrOfficialSecuredCreditorLandReserveSummary,
+  omrOfficialUnresolvedThaiyurLandReserveLedger,
+  omrOfficialUnresolvedThaiyurLandReserveSummary,
   omrPlanningLedger,
   omrPlanningSummary,
   omrSiruseriFootprint,
@@ -27,7 +29,7 @@ import {
 
 export async function GET() {
   return Response.json({
-    generatedAt: "2026-07-19",
+    generatedAt: "2026-07-21",
     scopeId: omrPlanningLedger.scopeId,
     planning: {
       summary: omrPlanningSummary,
@@ -89,6 +91,16 @@ export async function GET() {
       reconciliation: omrOfficialSecuredCreditorLandReserveLedger.reconciliation,
       publication: omrOfficialSecuredCreditorLandReserveLedger.publication,
       publicationRule: "These are secured-creditor auction floors for one 8,017 sq-ft industrial-land asset. They must never be relabelled as winning bids, registered consideration, guideline values, asking prices, market estimates, current availability or a village-wide Semmancheri rate. The source point is not a parcel boundary.",
+    },
+    officialUnresolvedThaiyurLandReserve: {
+      summary: omrOfficialUnresolvedThaiyurLandReserveSummary,
+      sources: omrOfficialUnresolvedThaiyurLandReserveLedger.sources,
+      privacy: omrOfficialUnresolvedThaiyurLandReserveLedger.privacy,
+      location: omrOfficialUnresolvedThaiyurLandReserveLedger.location,
+      asset: omrOfficialUnresolvedThaiyurLandReserveLedger.asset,
+      records: omrOfficialUnresolvedThaiyurLandReserveLedger.records,
+      publication: omrOfficialUnresolvedThaiyurLandReserveLedger.publication,
+      publicationRule: omrOfficialUnresolvedThaiyurLandReserveLedger.publicationRule,
     },
     geometryEvidence: {
       summary: omrSiruseriGeometryAudit.publication,

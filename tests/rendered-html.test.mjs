@@ -37,6 +37,8 @@ test("server-renders the MITO product shell", async () => {
   assert.match(html, /1(?:<!-- -->)? official liquidation reserve record/i);
   assert.match(html, /2(?:<!-- -->)? Siruseri commercial reserve events/i);
   assert.match(html, /5(?:<!-- -->)? Semmancheri industrial-land reserve events/i);
+  assert.match(html, /1(?:<!-- -->)? Thaiyur land-auction reserve/i);
+  assert.match(html, /unresolved between Thaiyur A and B/i);
   assert.match(html, /8,017 sq-ft asset/i);
   assert.match(html, /land \+ building, not land rate/i);
   assert.match(html, /reserve price, not sale/i);
@@ -99,6 +101,11 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.summary.officialSecuredCreditorLandReserveAssetCount, 1);
   assert.equal(payload.summary.officialSecuredCreditorLandReserveVillageCount, 1);
   assert.equal(payload.summary.officialSecuredCreditorLandReserveWinningBidRecordCount, 0);
+  assert.equal(payload.summary.officialUnresolvedThaiyurLandReserveCount, 1);
+  assert.equal(payload.summary.officialUnresolvedThaiyurLandReserveAssetCount, 1);
+  assert.equal(payload.summary.officialUnresolvedThaiyurCandidateVillageCount, 2);
+  assert.equal(payload.summary.officialUnresolvedThaiyurDirectVillageLinkCount, 0);
+  assert.equal(payload.summary.officialUnresolvedThaiyurWinningBidRecordCount, 0);
   assert.equal(payload.summary.sourcePublishedAssetPointCount, 1);
   assert.equal(payload.summary.officialHousingOfferCount, 8);
   assert.equal(payload.summary.closedOfficialHousingOfferCount, 8);
@@ -145,6 +152,17 @@ test("coverage API publishes the honest OMR release gate", async () => {
   assert.equal(payload.evidenceMatrix.filter((entry) => entry.officialAuctionReservePrices.recordCount === 0).length, 23);
   assert.equal(payload.evidenceMatrix.filter((entry) => entry.officialCommercialAuctionReserves.recordCount === 0).length, 23);
   assert.equal(payload.evidenceMatrix.filter((entry) => entry.officialSecuredCreditorLandReserves.recordCount === 0).length, 23);
+  for (const key of ["22605:800000289", "22605:800000290"]) {
+    const thaiyur = payload.evidenceMatrix.find((entry) => entry.key === key);
+    assert.equal(thaiyur.officialUnresolvedThaiyurLandReserve.status, "unresolved_registration_subdivision");
+    assert.equal(thaiyur.officialUnresolvedThaiyurLandReserve.recordCount, 1);
+    assert.equal(thaiyur.officialUnresolvedThaiyurLandReserve.directRecordCount, 0);
+    assert.equal(thaiyur.officialUnresolvedThaiyurLandReserve.candidateAssociationCount, 1);
+    assert.equal(thaiyur.officialUnresolvedThaiyurLandReserve.derivedReservePriceInrPerSqft, 1620.49);
+    assert.equal(thaiyur.officialUnresolvedThaiyurLandReserve.registeredTransactionCount, 0);
+    assert.equal(thaiyur.officialUnresolvedThaiyurLandReserve.winningBidRecordCount, 0);
+  }
+  assert.equal(payload.evidenceMatrix.filter((entry) => entry.officialUnresolvedThaiyurLandReserve.recordCount === 0).length, 22);
   for (const key of ["20066:254", "20066:20514"]) {
     const sholinganallur = payload.evidenceMatrix.find((entry) => entry.key === key);
     assert.equal(sholinganallur.tnhbPublicSales.status, "unresolved_locality_match");
@@ -266,6 +284,18 @@ test("evidence API publishes planning provenance, current register metadata and 
   assert.equal(payload.officialSecuredCreditorLandReserves.records.at(-1).winningBidInr, null);
   assert.equal(payload.officialSecuredCreditorLandReserves.publication.personalDataFieldsStored, 0);
   assert.match(payload.officialSecuredCreditorLandReserves.publicationRule, /source point is not a parcel boundary/i);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.summary.recordCount, 1);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.summary.directVillageLinkCount, 0);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.summary.registeredTransactionCount, 0);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.summary.winningBidRecordCount, 0);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.summary.derivedReservePriceInrPerSqft, 1620.49);
+  assert.deepEqual(payload.officialUnresolvedThaiyurLandReserve.location.candidateVillageKeys, ["22605:800000289", "22605:800000290"]);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.location.directVillageLink, false);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.location.geometryStatus, "unplotted");
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.asset.landAreaSqft, 693);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.records[0].winningBidInr, null);
+  assert.equal(payload.officialUnresolvedThaiyurLandReserve.publication.personalDataFieldsStored, 0);
+  assert.match(payload.officialUnresolvedThaiyurLandReserve.publicationRule, /must never be relabelled as a winning bid/i);
   assert.equal(payload.geometryEvidence.summary.publishableGeometryCount, 1);
   assert.equal(payload.geometryEvidence.summary.approximateGeometryCount, 1);
   assert.equal(payload.geometryEvidence.summary.exactGeometryCount, 0);
