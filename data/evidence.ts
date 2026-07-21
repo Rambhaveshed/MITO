@@ -5,6 +5,7 @@ import guidelineSnapshot from "./evidence/omr-guideline-archived-snapshot-2026-0
 import guidelineSecondaryCorroboration from "./evidence/omr-guideline-secondary-corroboration-2026-07-16.json";
 import guidelineLiveRegisterAudit from "./evidence/tnreginet-live-register-audit-2026-07-16.json";
 import guidelineOmrInventoryAudit from "./evidence/tnreginet-omr-inventory-audit-2026-07-16.json";
+import drtSemmancheriResidentialLandBidOutcome from "./evidence/drt-semmancheri-residential-land-bid-outcome-2024-2026.json";
 import ibbiSholinganallurLandAuction from "./evidence/ibbi-sholinganallur-land-auction-2025.json";
 import ibbiTecproSiruseriCommercialAuctions from "./evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json";
 import planningLedger from "./evidence/omr-planning-records.json";
@@ -36,6 +37,7 @@ export const omrOfficialAuctionReservePriceLedger = ibbiSholinganallurLandAuctio
 export const omrOfficialCommercialAuctionReserveLedger = ibbiTecproSiruseriCommercialAuctions;
 export const omrOfficialSecuredCreditorLandReserveLedger = tmbSemmancheriIndustrialLandAuctions;
 export const omrOfficialUnresolvedThaiyurLandReserveLedger = repcoThaiyurLandAuction;
+export const omrSemmancheriAcceptedLandBidOutcomeLedger = drtSemmancheriResidentialLandBidOutcome;
 export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
 export const omrSiruseriGeometryAudit = sipcotSiruseriGeometryAudit;
 export const omrSiruseriFootprint = sipcotSiruseriFootprint as FeatureCollection<Polygon>;
@@ -225,6 +227,28 @@ export const omrOfficialUnresolvedThaiyurLandReserveSummary = {
   verifiedAt: repcoThaiyurLandAuction.auditedAt,
 };
 
+const semmancheriAcceptedBid = drtSemmancheriResidentialLandBidOutcome.priceObservations.find(
+  (record) => record.evidenceType === "accepted_secured_creditor_auction_bid",
+)!;
+
+export const omrSemmancheriAcceptedLandBidOutcomeSummary = {
+  priceObservationCount: drtSemmancheriResidentialLandBidOutcome.publication.priceObservationCount,
+  assetCount: drtSemmancheriResidentialLandBidOutcome.publication.assetCount,
+  directVillageLinkCount: drtSemmancheriResidentialLandBidOutcome.publication.directVillageLinkCount,
+  landReservePriceRecordCount: drtSemmancheriResidentialLandBidOutcome.publication.landReservePriceRecords,
+  acceptedBidRecordCount: drtSemmancheriResidentialLandBidOutcome.publication.acceptedBidRecords,
+  winningBidPriceObservationCount: drtSemmancheriResidentialLandBidOutcome.publication.winningBidPriceObservations,
+  completedSaleRecordCount: drtSemmancheriResidentialLandBidOutcome.publication.completedSaleRecords,
+  registeredTransactionCount: drtSemmancheriResidentialLandBidOutcome.publication.registeredTransactions,
+  plottedRecordCount: drtSemmancheriResidentialLandBidOutcome.publication.plottedRecordCount,
+  reservePriceInr: drtSemmancheriResidentialLandBidOutcome.reconciliation.reservePriceInr,
+  acceptedBidInr: drtSemmancheriResidentialLandBidOutcome.reconciliation.acceptedBidInr,
+  acceptedBidDerivedInrPerSqft: semmancheriAcceptedBid.derivedPriceInrPerSqft,
+  acceptedBidPremiumPercent: drtSemmancheriResidentialLandBidOutcome.reconciliation.acceptedBidPremiumPercent,
+  outcomeStatus: drtSemmancheriResidentialLandBidOutcome.reconciliation.acceptedBidOutcomeStatus,
+  verifiedAt: drtSemmancheriResidentialLandBidOutcome.auditedAt,
+};
+
 export function planningRecordsForVillage(officialSroCode: string, officialVillageCode: string) {
   return linkedPlanningRecords.filter(
     (record) => record.officialSroCode === officialSroCode && record.officialVillageCode === officialVillageCode,
@@ -265,6 +289,12 @@ export function unresolvedThaiyurLandReservesForCandidateVillage(officialSroCode
   const key = `${officialSroCode}:${officialVillageCode}`;
   if (!repcoThaiyurLandAuction.location.candidateVillageKeys.includes(key)) return [];
   return repcoThaiyurLandAuction.records;
+}
+
+export function semmancheriAcceptedLandBidPricesForVillage(officialSroCode: string, officialVillageCode: string) {
+  const location = drtSemmancheriResidentialLandBidOutcome.location;
+  if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
+  return drtSemmancheriResidentialLandBidOutcome.priceObservations;
 }
 
 export function tnhbHousingOffersForCandidateVillage(officialSroCode: string, officialVillageCode: string) {

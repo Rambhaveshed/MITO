@@ -13,10 +13,12 @@ import {
   omrOfficialCommercialAuctionReserveSummary,
   omrOfficialSecuredCreditorLandReserveSummary,
   omrOfficialUnresolvedThaiyurLandReserveSummary,
+  omrSemmancheriAcceptedLandBidOutcomeSummary,
   omrPlanningSummary,
   omrTnhbHousingOfferLedger,
   omrTnhbHousingOfferSummary,
   planningRecordsForVillage,
+  semmancheriAcceptedLandBidPricesForVillage,
   tnhbHousingOffersForCandidateVillage,
   unresolvedThaiyurLandReservesForCandidateVillage,
 } from "./evidence";
@@ -216,6 +218,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   const officialCommercialAuctionReserves = officialCommercialAuctionReservesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const officialSecuredCreditorLandReserves = officialSecuredCreditorLandReservesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const unresolvedThaiyurLandReserves = unresolvedThaiyurLandReservesForCandidateVillage(unit.officialSroCode, unit.officialVillageCode);
+  const acceptedLandBidPrices = semmancheriAcceptedLandBidPricesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const unresolvedHousingOffers = tnhbHousingOffersForCandidateVillage(unit.officialSroCode, unit.officialVillageCode);
   const tnhbPlaceMatched = omrTnhbHousingOfferLedger.omrScopeAudit.matchedCandidateVillageKeys.includes(key);
   const availableEvidenceTypes = ["current_guideline_inventory_metadata"];
@@ -227,6 +230,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   if (officialCommercialAuctionReserves.length) availableEvidenceTypes.push("official_liquidation_combined_asset_reserve_history");
   if (officialSecuredCreditorLandReserves.length) availableEvidenceTypes.push("official_secured_creditor_land_reserve_history");
   if (unresolvedThaiyurLandReserves.length) availableEvidenceTypes.push("unresolved_official_land_auction_reserve_price");
+  if (acceptedLandBidPrices.length) availableEvidenceTypes.push("tribunal_verified_auction_reserve_and_accepted_bid_outcome");
   if (unresolvedHousingOffers.length) availableEvidenceTypes.push("unresolved_official_housing_prices");
   if (governmentAllotmentRates.length && omrOfficialAllotmentRateSummary.sharedPublishableGeometryCount) {
     availableEvidenceTypes.push("approximate_open_data_geometry");
@@ -242,6 +246,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   if (officialCommercialAuctionReserves.length) primaryBlockers.push("The Siruseri auction outcome and asset-to-registration-polygon crosswalk are not published.");
   if (officialSecuredCreditorLandReserves.length) primaryBlockers.push("The Semmancheri auction outcome, registered transfer and parcel boundary are not published.");
   if (unresolvedThaiyurLandReserves.length) primaryBlockers.push("The Repco notice does not resolve Thaiyur A versus B, and its auction outcome and transfer are unpublished.");
+  if (acceptedLandBidPrices.length) primaryBlockers.push("The Semmancheri accepted bid was cancelled after the unpaid balance and did not become a completed or registered sale.");
 
   return {
     key,
@@ -321,6 +326,21 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
       winningBidRecordCount: 0,
       plottedRecordCount: 0,
     },
+    officialAcceptedLandBidOutcome: {
+      status: acceptedLandBidPrices.length ? "accepted_bid_cancelled_no_completed_sale" : "no_record_in_ledger",
+      priceObservationCount: acceptedLandBidPrices.length,
+      assetCount: acceptedLandBidPrices.length ? 1 : 0,
+      directRecordCount: acceptedLandBidPrices.length,
+      landReservePriceRecordCount: acceptedLandBidPrices.filter((record) => record.isLandReservePrice).length,
+      acceptedBidRecordCount: acceptedLandBidPrices.filter((record) => record.isAcceptedBid).length,
+      completedSaleRecordCount: 0,
+      registeredTransactionCount: 0,
+      reservePriceInr: acceptedLandBidPrices.length ? omrSemmancheriAcceptedLandBidOutcomeSummary.reservePriceInr : null,
+      acceptedBidInr: acceptedLandBidPrices.length ? omrSemmancheriAcceptedLandBidOutcomeSummary.acceptedBidInr : null,
+      acceptedBidDerivedInrPerSqft: acceptedLandBidPrices.length ? omrSemmancheriAcceptedLandBidOutcomeSummary.acceptedBidDerivedInrPerSqft : null,
+      lifecycleStatus: acceptedLandBidPrices.length ? omrSemmancheriAcceptedLandBidOutcomeSummary.outcomeStatus : null,
+      plottedRecordCount: 0,
+    },
     tnhbPublicSales: {
       status: tnhbPlaceMatched ? "unresolved_locality_match" : "no_normalized_place_name_match_in_snapshot",
       sourceSnapshotRecordCount: omrTnhbHousingOfferLedger.omrScopeAudit.sourceRecordCountScanned,
@@ -381,6 +401,12 @@ export const omrCoverageSummary = {
   officialUnresolvedThaiyurCandidateVillageCount: omrOfficialUnresolvedThaiyurLandReserveSummary.candidateVillageCount,
   officialUnresolvedThaiyurDirectVillageLinkCount: omrOfficialUnresolvedThaiyurLandReserveSummary.directVillageLinkCount,
   officialUnresolvedThaiyurWinningBidRecordCount: omrOfficialUnresolvedThaiyurLandReserveSummary.winningBidRecordCount,
+  officialAcceptedLandBidPriceObservationCount: omrSemmancheriAcceptedLandBidOutcomeSummary.priceObservationCount,
+  officialAcceptedLandBidAssetCount: omrSemmancheriAcceptedLandBidOutcomeSummary.assetCount,
+  officialAcceptedLandBidVillageCount: omrSemmancheriAcceptedLandBidOutcomeSummary.directVillageLinkCount,
+  officialAcceptedLandBidRecordCount: omrSemmancheriAcceptedLandBidOutcomeSummary.acceptedBidRecordCount,
+  officialAcceptedLandBidCompletedSaleCount: omrSemmancheriAcceptedLandBidOutcomeSummary.completedSaleRecordCount,
+  officialAcceptedLandBidRegisteredTransactionCount: omrSemmancheriAcceptedLandBidOutcomeSummary.registeredTransactionCount,
   sourcePublishedAssetPointCount: omrOfficialSecuredCreditorLandReserveSummary.sourcePublishedPointCount,
   officialHousingOfferCount: omrTnhbHousingOfferSummary.recordCount,
   closedOfficialHousingOfferCount: omrTnhbHousingOfferSummary.closedOfferCount,

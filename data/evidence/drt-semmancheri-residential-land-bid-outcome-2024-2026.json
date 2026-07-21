@@ -1,0 +1,210 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "drt-semmancheri-residential-land-bid-outcome-2024-2026",
+  "title": "Semmancheri residential-land auction reserve and accepted-bid outcome",
+  "auditedAt": "2026-07-21T16:00:00+05:30",
+  "scope": "One 2,108 sq-ft vacant-land auction and its accepted-then-forfeited bid lifecycle, as stated in a DRT-III Chennai order",
+  "sources": [
+    {
+      "id": "drt3-chennai-sa-137-2025-causelist",
+      "organization": "Debts Recovery Tribunal-III, Chennai",
+      "title": "Official DRT-III cause list — SA 137/2025",
+      "url": "https://cis.drt.gov.in/drtlive/order/Hgenerate_causelist_save1.php?filing_no=NC8xNC8wOC8yMDI1LTItY2hlbm5haTM%3D&id=2131147455",
+      "sourceType": "official_tribunal_docket_causelist",
+      "causeListDate": "2025-08-14",
+      "retrievedAt": "2026-07-21T15:30:00+05:30",
+      "verifiedAt": "2026-07-21T16:00:00+05:30",
+      "documentDigest": "sha256:a35be20e9a4468e3fb85ee813a15937ed2a12e33fda41e5da15e69dee19716f2",
+      "rightsStatus": "official_public_record_factual_excerpt_only_no_open_licence_found",
+      "factScope": "Confirms DRT-III Chennai case SA 137/2025, Union Bank of India as respondent, and the presence of IA 447/2025, IA 448/2025 and IA 714/2026."
+    },
+    {
+      "id": "drt3-chennai-sa-137-2025-order-mirror",
+      "organization": "CaseMine",
+      "upstreamOrganization": "Debts Recovery Tribunal-III, Chennai",
+      "title": "Public mirror of DRT-III order in SA 137/2025",
+      "url": "https://www.casemine.com/judgement/in/6a0776fad3cf1a20e44f7724",
+      "sourceType": "nonofficial_full_text_mirror_of_tribunal_order",
+      "orderDate": "2026-05-15",
+      "retrievedAt": "2026-07-21T15:30:00+05:30",
+      "verifiedAt": "2026-07-21T16:00:00+05:30",
+      "documentDigest": null,
+      "rightsStatus": "public_judgment_mirror_factual_excerpt_only_no_open_licence_found",
+      "factScope": "Provides the order text used for the auction reserve, accepted bid, payment, forfeiture, property schedule and final procedural disposition."
+    }
+  ],
+  "sourceAuthority": {
+    "officialOrderUrlLocated": false,
+    "officialDocketCorroborationAvailable": true,
+    "mirrorPromotedAsOfficialSource": false,
+    "publicationDecision": "Publish the judgment-stated facts with a secondary-mirror warning and link the official DRT docket separately. Do not describe the mirror as the official order host.",
+    "knownDocketConflict": "The official cause list labels IA 447/2025 as an application for stay, while the mirrored final order identifies IA 447/2025 as the delay-condonation application. MITO preserves the mismatch and does not resolve it."
+  },
+  "privacy": {
+    "personalDataFieldsStored": 0,
+    "excludedFields": [
+      "applicant_name",
+      "applicant_address",
+      "borrower_name",
+      "owner_name",
+      "advocate_names",
+      "bank_officer_contacts",
+      "loan_account_details",
+      "email_addresses",
+      "telephone_numbers",
+      "signatures"
+    ],
+    "publicationDecision": "Publish only case identifiers, asset facts, price observations, lifecycle dates, source provenance and uncertainty."
+  },
+  "location": {
+    "sourcePlaceName": "Chenmancherry Village",
+    "registrationVillageName": "Semmancheri",
+    "guidelineVillageName": "Chemmancheri",
+    "sourceHistoricalTalukName": "Tambaram Taluk",
+    "sourceCurrentTalukName": "Sholinganallur Taluk",
+    "sourceHistoricalDistrictName": "Kancheepuram District",
+    "sourceRegistrationDistrictName": "South Chennai",
+    "sourceSubRegistrationDistrictName": "Neelangarai",
+    "officialSroCode": "20066",
+    "officialVillageCode": "246",
+    "mappingStatus": "exact_official_registration_village",
+    "mappingMethod": "verified_registration_name_variant_and_sro_crosswalk",
+    "directVillageLink": true,
+    "locationEvidence": "The judgment schedule names Chenmancherry Village within Neelangarai sub-registration district. MITO preserves that spelling and links it to the existing verified Semmancheri/Chemmancheri registration-village crosswalk 20066:246.",
+    "geometryStatus": "unplotted",
+    "geometryType": null,
+    "coordinateSource": null,
+    "coordinatePrecision": null,
+    "positionalUncertainty": "The judgment publishes survey, plot, dimensions and boundaries but no verified coordinate or cadastral polygon."
+  },
+  "asset": {
+    "propertyClass": "vacant_residential_land",
+    "assetDescription": "Plot No. 18, Sri Balaji Nagar",
+    "plotNumber": "18",
+    "layoutName": "Sri Balaji Nagar",
+    "landAreaSqft": 2108,
+    "buildingAreaSqft": null,
+    "surveyReferences": [
+      "408/1",
+      "408/1C1F"
+    ],
+    "pattaNumber": "1700",
+    "saleDeedReference": "1696/2009",
+    "roadReference": "20 Feet Road",
+    "dimensionsFeet": {
+      "north": 68,
+      "south": 68,
+      "east": 31,
+      "west": 31
+    },
+    "boundaries": {
+      "north": "Plot No. 17",
+      "south": "Plot No. 19",
+      "east": "20 Feet Road",
+      "west": "Survey No. 408/1 part"
+    },
+    "currentOwnershipVerified": false,
+    "currentAvailabilityVerified": false
+  },
+  "priceObservations": [
+    {
+      "id": "unionbank-semmancheri-plot-18-reserve-2024-03-27",
+      "sourceId": "drt3-chennai-sa-137-2025-order-mirror",
+      "evidenceType": "secured_creditor_land_auction_reserve_price",
+      "noticeDate": "2024-03-07",
+      "auctionDate": "2024-03-27",
+      "totalPriceInr": 6800000,
+      "landAreaSqft": 2108,
+      "derivedPriceInrPerSqft": 3225.81,
+      "derivation": "6800000 / 2108, rounded to two decimals",
+      "isLandReservePrice": true,
+      "isAcceptedBid": false,
+      "isWinningBid": false,
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "isCompletedSale": false,
+      "geometryStatus": "unplotted",
+      "scopeCaveat": "This is the upset or reserve price stated in the tribunal order for one land parcel, not a sale price, registered consideration, guideline value, asking price, market estimate or village-wide Semmancheri rate."
+    },
+    {
+      "id": "unionbank-semmancheri-plot-18-accepted-bid-2024-03-27",
+      "sourceId": "drt3-chennai-sa-137-2025-order-mirror",
+      "evidenceType": "accepted_secured_creditor_auction_bid",
+      "noticeDate": "2024-03-07",
+      "auctionDate": "2024-03-27",
+      "acceptedDate": "2024-03-27",
+      "totalPriceInr": 6870000,
+      "landAreaSqft": 2108,
+      "derivedPriceInrPerSqft": 3259.01,
+      "derivation": "6870000 / 2108, rounded to two decimals",
+      "premiumToReservePercent": 1.03,
+      "depositPaidInr": 1717500,
+      "depositSharePercent": 25,
+      "balanceCalledInr": 5152500,
+      "balanceSharePercent": 75,
+      "isLandReservePrice": false,
+      "isAcceptedBid": true,
+      "isWinningBid": true,
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "isCompletedSale": false,
+      "paymentCompletionVerified": false,
+      "saleCertificateVerified": false,
+      "registeredTransferVerified": false,
+      "geometryStatus": "unplotted",
+      "scopeCaveat": "The bank accepted and confirmed this bid, but the balance was not paid and the bank later cancelled the sale and forfeited the deposit. It is accepted-bid evidence, not a completed or registered transaction."
+    }
+  ],
+  "lifecycleEvents": [
+    {
+      "date": "2024-03-07",
+      "eventType": "auction_notice_issued",
+      "status": "verified_from_judgment_text"
+    },
+    {
+      "date": "2024-03-27",
+      "eventType": "bid_accepted_and_confirmed",
+      "status": "verified_from_judgment_text"
+    },
+    {
+      "date": "2024-08-31",
+      "eventType": "sale_cancelled_and_deposit_forfeited",
+      "status": "verified_from_judgment_text"
+    },
+    {
+      "date": "2026-05-15",
+      "eventType": "delay_application_and_main_sa_dismissed",
+      "status": "verified_from_judgment_text",
+      "legalCaveat": "The tribunal dismissed the delay application and consequently the main SA; MITO does not generalize that procedural result into title certification."
+    }
+  ],
+  "reconciliation": {
+    "reservePriceInr": 6800000,
+    "acceptedBidInr": 6870000,
+    "acceptedBidPremiumPercent": 1.03,
+    "acceptedBidOutcomeStatus": "accepted_then_cancelled_deposit_forfeited_no_completed_sale",
+    "currentOutcomeStatus": "historical_bid_outcome_verified_current_asset_status_unknown",
+    "currentAvailabilityVerified": false,
+    "currentOwnershipVerified": false,
+    "titleCertified": false
+  },
+  "publication": {
+    "priceObservationCount": 2,
+    "assetCount": 1,
+    "directVillageLinkCount": 1,
+    "landReservePriceRecords": 1,
+    "acceptedBidRecords": 1,
+    "winningBidPriceObservations": 1,
+    "completedSaleRecords": 0,
+    "registeredTransactions": 0,
+    "saleCertificateRecords": 0,
+    "plottedRecordCount": 0,
+    "exactParcelGeometryCount": 0,
+    "personalDataFieldsStored": 0
+  },
+  "publicationRule": "Publish the ₹68 lakh reserve and ₹68.70 lakh accepted bid as two distinct historical auction observations for one 2,108 sq-ft Semmancheri plot. The accepted bid must always carry its cancelled-and-forfeited lifecycle and must never be relabelled as a completed sale, registered transaction, guideline value, asking price, market estimate, current availability or village-wide rate."
+}

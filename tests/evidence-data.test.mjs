@@ -19,6 +19,7 @@ const ibbiSholinganallurLandAuctionUrl = new URL("../data/evidence/ibbi-sholinga
 const ibbiTecproSiruseriCommercialAuctionsUrl = new URL("../data/evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json", import.meta.url);
 const tmbSemmancheriIndustrialLandAuctionsUrl = new URL("../data/evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json", import.meta.url);
 const repcoThaiyurLandAuctionUrl = new URL("../data/evidence/repco-thaiyur-land-auction-2026.json", import.meta.url);
+const drtSemmancheriLandBidOutcomeUrl = new URL("../data/evidence/drt-semmancheri-residential-land-bid-outcome-2024-2026.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
 
 async function readJson(url) {
@@ -57,6 +58,48 @@ test("Repco Thaiyur reserve stays one privacy-safe unresolved land record", asyn
   assert.equal(ledger.publication.directVillageLinkCount, 0);
   assert.equal(ledger.publication.registeredTransactions, 0);
   assert.equal(ledger.publication.winningBidRecords, 0);
+  assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.privacy.personalDataFieldsStored, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
+});
+
+test("DRT-stated Semmancheri accepted bid stays distinct from a completed sale", async () => {
+  const ledger = await readJson(drtSemmancheriLandBidOutcomeUrl);
+  const [reserve, acceptedBid] = ledger.priceObservations;
+
+  assert.equal(ledger.sources[0].documentDigest, "sha256:a35be20e9a4468e3fb85ee813a15937ed2a12e33fda41e5da15e69dee19716f2");
+  assert.equal(ledger.sources[0].organization, "Debts Recovery Tribunal-III, Chennai");
+  assert.equal(ledger.sources[1].sourceType, "nonofficial_full_text_mirror_of_tribunal_order");
+  assert.equal(ledger.sourceAuthority.officialOrderUrlLocated, false);
+  assert.equal(ledger.sourceAuthority.officialDocketCorroborationAvailable, true);
+  assert.equal(ledger.sourceAuthority.mirrorPromotedAsOfficialSource, false);
+  assert.match(ledger.sourceAuthority.knownDocketConflict, /IA 447\/2025/i);
+  assert.equal(ledger.location.mappingStatus, "exact_official_registration_village");
+  assert.equal(ledger.location.officialSroCode, "20066");
+  assert.equal(ledger.location.officialVillageCode, "246");
+  assert.equal(ledger.location.directVillageLink, true);
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.location.geometryType, null);
+  assert.equal(ledger.asset.landAreaSqft, 2108);
+  assert.equal(ledger.asset.buildingAreaSqft, null);
+  assert.equal(ledger.asset.plotNumber, "18");
+  assert.deepEqual(ledger.asset.dimensionsFeet, { north: 68, south: 68, east: 31, west: 31 });
+  assert.equal(reserve.totalPriceInr, 6800000);
+  assert.equal(reserve.derivedPriceInrPerSqft, Math.round((reserve.totalPriceInr / reserve.landAreaSqft) * 100) / 100);
+  assert.ok(reserve.isLandReservePrice && !reserve.isAcceptedBid && !reserve.isCompletedSale);
+  assert.equal(acceptedBid.totalPriceInr, 6870000);
+  assert.equal(acceptedBid.derivedPriceInrPerSqft, Math.round((acceptedBid.totalPriceInr / acceptedBid.landAreaSqft) * 100) / 100);
+  assert.equal(acceptedBid.premiumToReservePercent, 1.03);
+  assert.equal(acceptedBid.depositPaidInr, 1717500);
+  assert.equal(acceptedBid.balanceCalledInr, 5152500);
+  assert.ok(acceptedBid.isAcceptedBid && acceptedBid.isWinningBid);
+  assert.ok(!acceptedBid.isCompletedSale && !acceptedBid.isRegisteredTransaction && !acceptedBid.isGuidelineValue && !acceptedBid.isAskingPrice && !acceptedBid.isMarketEstimate);
+  assert.equal(acceptedBid.saleCertificateVerified, false);
+  assert.equal(acceptedBid.registeredTransferVerified, false);
+  assert.equal(ledger.reconciliation.acceptedBidOutcomeStatus, "accepted_then_cancelled_deposit_forfeited_no_completed_sale");
+  assert.equal(ledger.publication.acceptedBidRecords, 1);
+  assert.equal(ledger.publication.completedSaleRecords, 0);
+  assert.equal(ledger.publication.registeredTransactions, 0);
   assert.equal(ledger.publication.plottedRecordCount, 0);
   assert.equal(ledger.privacy.personalDataFieldsStored, 0);
   assert.equal(ledger.publication.personalDataFieldsStored, 0);
