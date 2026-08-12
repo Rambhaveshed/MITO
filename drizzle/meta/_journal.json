@@ -15,6 +15,13 @@
       "when": 1784111583278,
       "tag": "0001_new_gladiator",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784192090813,
+      "tag": "0002_flashy_jazinda",
+      "breakpoints": true
     }
   ]
 }

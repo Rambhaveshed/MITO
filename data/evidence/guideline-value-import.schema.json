@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mito.local/schemas/guideline-value-import-1.1.0.json",
+  "title": "MITO guideline value import",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "scopeId", "source", "rows"],
+  "properties": {
+    "schemaVersion": { "const": "1.1.0" },
+    "scopeId": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "organization", "url", "retrievedAt", "captureMethod", "snapshotHash"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "organization": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" },
+        "retrievedAt": { "type": "string", "format": "date" },
+        "sourceUpdatedAt": { "type": ["string", "null"], "format": "date" },
+        "captureMethod": { "enum": ["official_export", "manual_official_snapshot", "official_api", "archived_official_snapshot"] },
+        "snapshotHash": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "officialSourceUrl": { "type": ["string", "null"], "format": "uri" },
+        "archivedBy": { "type": ["string", "null"] },
+        "snapshotAsOf": { "type": ["string", "null"], "format": "date-time" },
+        "evidenceForm": { "enum": ["official_data_file", "portal_screenshot", "portal_screenshot_in_project_file", null] },
+        "streetInventoryCountAtSnapshot": { "type": ["integer", "null"], "minimum": 1 },
+        "visibleUnredactedRowCount": { "type": ["integer", "null"], "minimum": 0 },
+        "redactedRowsOnCapturedPage": { "type": ["integer", "null"], "minimum": 0 },
+        "sourcePages": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "uniqueItems": true },
+        "notes": { "type": ["string", "null"] }
+      }
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceRecordId", "officialSroCode", "officialVillageCode", "officialStreetCode", "sourceStreetName", "classification", "rawValueInr", "rawValueUnit", "valueInrPerSqft", "effectiveFrom", "verificationStatus", "geometryStatus", "locationEvidence"],
+        "properties": {
+          "sourceRecordId": { "type": "string", "minLength": 1 },
+          "officialSroCode": { "type": "string", "pattern": "^[0-9]+$" },
+          "officialVillageCode": { "type": "string", "pattern": "^[0-9]+$" },
+          "officialStreetCode": { "type": ["string", "null"], "minLength": 1 },
+          "sourceStreetName": { "type": "string", "minLength": 1 },
+          "sourceStreetNameTa": { "type": ["string", "null"] },
+          "classification": { "type": "string", "minLength": 1 },
+          "rawValueInr": { "type": "number", "exclusiveMinimum": 0 },
+          "rawValueUnit": { "enum": ["sqft", "sqm", "cent", "ground", "acre"] },
+          "valueInrPerSqft": { "type": "number", "exclusiveMinimum": 0 },
+          "sourceMetricValueInrPerSqm": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+          "conversionMethod": { "type": ["string", "null"] },
+          "effectiveFrom": { "type": "string", "format": "date" },
+          "effectiveTo": { "type": ["string", "null"], "format": "date" },
+          "verificationStatus": { "enum": ["pending", "verified", "rejected", "conflicted"] },
+          "verifiedAt": { "type": ["string", "null"], "format": "date" },
+          "geometryStatus": { "enum": ["exact", "approximate", "unplotted"] },
+          "geometryEvidence": { "type": ["string", "null"] },
+          "locationEvidence": { "type": "string", "minLength": 1 },
+          "sourcePage": { "type": ["integer", "null"], "minimum": 1 },
+          "snapshotRowNumber": { "type": ["integer", "null"], "minimum": 1 },
+          "qualityFlags": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+        }
+      }
+    }
+  }
+}

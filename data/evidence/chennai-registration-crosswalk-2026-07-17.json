@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "chennai-registration-crosswalk-2026-07-17",
+  "scopeId": "chennai-district-revenue-2026",
+  "title": "Verified Chennai District to registration-village overlap",
+  "compiledAt": "2026-07-17",
+  "methodology": "A Chennai revenue source row is linked only when it has one explicit, independently verified OMR registration-village counterpart. Exact names and documented spelling variants are accepted. Roman numeral suffixes are reconciled only when the ordinal and source taluk are both explicit. Similar names, source subdivisions and many-to-one candidates remain unresolved.",
+  "sourceIds": [
+    "chennai-district-revenue-administration-2026-07-16",
+    "tnreginet-omr-current-village-inventory-2026-07-16"
+  ],
+  "summary": {
+    "sourceVillageCount": 144,
+    "verifiedCrosswalkCount": 9,
+    "ambiguousCrosswalkCount": 3,
+    "taluksWithVerifiedCrosswalks": 2,
+    "currentInventoryMetadataCount": 9,
+    "currentInventoryItemCount": 2117,
+    "currentOfficialRowsStored": 0,
+    "currentOfficialValuesPublished": 0
+  },
+  "records": [
+    { "chennaiSourceKey": "8:3", "chennaiSourceName": "Taramani", "chennaiTalukName": "Velachery", "matchStatus": "verified", "matchMethod": "exact_unique_name", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20051", "officialSroName": "Adyar", "officialVillageCode": "7", "registrationVillageName": "Taramani", "registrationVillageNameTa": "தரமணி", "guidelineVillageName": "Tharamani", "currentInventoryItemCount": 80, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "8:4", "chennaiSourceName": "Kanagam", "chennaiTalukName": "Velachery", "matchStatus": "verified", "matchMethod": "exact_unique_name", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20051", "officialSroName": "Adyar", "officialVillageCode": "2", "registrationVillageName": "Kanagam", "registrationVillageNameTa": "கானகம்", "guidelineVillageName": "Kanagam", "currentInventoryItemCount": 16, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "10:1", "chennaiSourceName": "Sholinganallur-I", "chennaiTalukName": "Sholinganallur", "matchStatus": "verified", "matchMethod": "explicit_ordinal_equivalence", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20066", "officialSroName": "Neelangarai", "officialVillageCode": "254", "registrationVillageName": "Sholinganallur 1", "registrationVillageNameTa": "சோழிங்கநல்லூர் - 1", "guidelineVillageName": "SHOLINGANALLUR - 1", "currentInventoryItemCount": 758, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "10:2", "chennaiSourceName": "Sholinganallur-II", "chennaiTalukName": "Sholinganallur", "matchStatus": "verified", "matchMethod": "explicit_ordinal_equivalence", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20066", "officialSroName": "Neelangarai", "officialVillageCode": "20514", "registrationVillageName": "Sholinganallur 2", "registrationVillageNameTa": "சோழிங்கநல்லூர் - 2", "guidelineVillageName": "SHOLINGANALLUR - 2", "currentInventoryItemCount": 40, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "10:7", "chennaiSourceName": "Semmancheri", "chennaiTalukName": "Sholinganallur", "matchStatus": "verified", "matchMethod": "verified_selector_variant", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20066", "officialSroName": "Neelangarai", "officialVillageCode": "246", "registrationVillageName": "Semmancheri", "registrationVillageNameTa": "செம்மஞ்சேரி", "guidelineVillageName": "Chemmancheri", "currentInventoryItemCount": 195, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "10:10", "chennaiSourceName": "Perungudi", "chennaiTalukName": "Sholinganallur", "matchStatus": "verified", "matchMethod": "exact_unique_name", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20066", "officialSroName": "Neelangarai", "officialVillageCode": "252", "registrationVillageName": "Perungudi", "registrationVillageNameTa": "பெருங்குடி", "guidelineVillageName": "Perungudi", "currentInventoryItemCount": 250, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "10:12", "chennaiSourceName": "Karapakkam", "chennaiTalukName": "Sholinganallur", "matchStatus": "verified", "matchMethod": "exact_unique_name", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20066", "officialSroName": "Neelangarai", "officialVillageCode": "248", "registrationVillageName": "Karapakkam", "registrationVillageNameTa": "காரப்பாக்கம்", "guidelineVillageName": "Karapakkam", "currentInventoryItemCount": 187, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "10:13", "chennaiSourceName": "Okkiyam Thoraipakkam", "chennaiTalukName": "Sholinganallur", "matchStatus": "verified", "matchMethod": "verified_selector_variant", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20066", "officialSroName": "Neelangarai", "officialVillageCode": "250", "registrationVillageName": "Okkiyam Thoraipakkam", "registrationVillageNameTa": "ஒக்கியம் துரைபாக்கம்", "guidelineVillageName": "Okkiyamthuraipakkam", "currentInventoryItemCount": 507, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 },
+    { "chennaiSourceKey": "10:18", "chennaiSourceName": "Seevaram", "chennaiTalukName": "Sholinganallur", "matchStatus": "verified", "matchMethod": "exact_unique_name", "officialDistrictCode": "2", "officialDistrictName": "Chennai", "officialSroCode": "20066", "officialSroName": "Neelangarai", "officialVillageCode": "253", "registrationVillageName": "Seevaram", "registrationVillageNameTa": "சீவரம்", "guidelineVillageName": "Seevaram", "currentInventoryItemCount": 84, "currentInventoryAsOf": "2026-07-16", "verifiedAt": "2026-07-16", "evidenceSourceId": "tnreginet-omr-current-village-inventory-2026-07-16", "currentOfficialRowsStored": 0, "currentOfficialValuesPublished": 0 }
+  ],
+  "ambiguities": [
+    { "chennaiSourceKey": "7:3", "chennaiSourceName": "Adayar Part I", "chennaiTalukName": "Guindy", "status": "unresolved_source_split", "candidateOfficialSroCode": "20051", "candidateOfficialVillageCode": "1", "candidateRegistrationVillageName": "Adyar", "reason": "The revenue source divides Adayar into multiple rows while the verified OMR registration evidence has one Adayar registration village. A name overlap cannot prove which subdivision is covered." },
+    { "chennaiSourceKey": "7:5", "chennaiSourceName": "Adayar Government Farm", "chennaiTalukName": "Guindy", "status": "unresolved_source_split", "candidateOfficialSroCode": "20051", "candidateOfficialVillageCode": "1", "candidateRegistrationVillageName": "Adyar", "reason": "The revenue source divides Adayar into multiple rows while the verified OMR registration evidence has one Adayar registration village. A name overlap cannot prove which subdivision is covered." },
+    { "chennaiSourceKey": "7:7", "chennaiSourceName": "Adayar Part II", "chennaiTalukName": "Guindy", "status": "unresolved_source_split", "candidateOfficialSroCode": "20051", "candidateOfficialVillageCode": "1", "candidateRegistrationVillageName": "Adyar", "reason": "The revenue source divides Adayar into multiple rows while the verified OMR registration evidence has one Adayar registration village. A name overlap cannot prove which subdivision is covered." }
+  ],
+  "publication": {
+    "status": "verified_metadata_only",
+    "rowLevelRegisterDataStored": false,
+    "currentOfficialGuidelineValuesPublished": 0,
+    "registeredTransactionsPublished": 0,
+    "geometryStatus": "unplotted",
+    "blockerCode": "REDISTRIBUTION_PERMISSION_REQUIRED",
+    "caveat": "A verified registration identifier and inventory count do not establish a parcel, street geometry, guideline value, transaction price or market value."
+  },
+  "limitations": [
+    "Only overlaps already verified within the OMR evidence programme are eligible for this release.",
+    "Nine crosswalks do not imply Chennai-wide registration or price completeness.",
+    "The official Chennai source-count conflict remains unresolved.",
+    "No live row content is copied or republished from the Registration Department register."
+  ]
+}

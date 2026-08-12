@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "chennai-district-revenue-2026",
+  "name": "Chennai District revenue-village expansion inventory",
+  "status": "source_inventory",
+  "scopeDefinition": "The 426 sq km Chennai District and Greater Chennai Corporation area. This is narrower than the Chennai Metropolitan Area and is not a registration, parcel, street or price-completeness claim.",
+  "retrievedAt": "2026-07-17",
+  "verifiedAt": "2026-07-17",
+  "sources": [
+    {
+      "id": "chennai-district-revenue-administration-2026-07-16",
+      "organization": "Chennai District Administration",
+      "title": "Revenue Administration — taluk-wise, firka-wise villages",
+      "url": "https://chennai.nic.in/about-district/administrative-setup/revenue-administration/",
+      "sourceLastUpdatedAt": "2026-07-16",
+      "role": "preferred_detailed_inventory"
+    },
+    {
+      "id": "chennai-district-home-2026-07-16",
+      "organization": "Chennai District Administration",
+      "title": "Chennai District — District Admin Units",
+      "url": "https://chennai.nic.in/",
+      "sourceLastUpdatedAt": "2026-07-16",
+      "role": "conflicting_summary"
+    },
+    {
+      "id": "chennai-district-village-page-2026-07-14",
+      "organization": "Chennai District Administration",
+      "title": "Village — Chennai District",
+      "url": "https://chennai.nic.in/village-panchayats/",
+      "sourceLastUpdatedAt": "2026-07-14",
+      "role": "partial_conflicting_inventory"
+    },
+    {
+      "id": "greater-chennai-corporation-about-council",
+      "organization": "Greater Chennai Corporation",
+      "title": "About Council",
+      "url": "https://chennaicorporation.gov.in/gcc/council/about-council/",
+      "sourceLastUpdatedAt": null,
+      "role": "municipal_scope"
+    }
+  ],
+  "officialClaims": {
+    "districtHomepage": { "revenueDivisions": 3, "taluks": 16, "villages": 122, "areaSqKm": 426 },
+    "revenueAdministrationPage": { "unitSummaryTaluks": 17, "sectionHeadingTaluks": 16, "listedTalukGroups": 17, "totalFirkas": 49, "totalVillages": 144 },
+    "villagePage": { "listedTalukGroups": 10, "listedVillages": 68 },
+    "greaterChennaiCorporation": { "regions": 3, "zones": 15, "wards": 200, "areaSqKm": 426 }
+  },
+  "conflicts": [
+    {
+      "id": "chennai-revenue-unit-count-conflict-2026-07-17",
+      "status": "unresolved",
+      "summary": "Current official Chennai District pages disagree on the number of taluks and villages.",
+      "details": "The homepage reports 16 taluks and 122 villages. The Revenue Administration page says 17 taluks in its unit summary, labels a section as 16 taluks, lists 17 taluk groups and totals 144 villages. The separate Village page lists only 10 taluk groups and 68 village rows.",
+      "preferredInterpretation": "Use the 17-group, 144-row Revenue Administration table as a source inventory only because it is the most detailed current official list. Do not call it a reconciled or complete registration universe.",
+      "blocks": ["chennai_complete", "registration_crosswalk_complete", "price_coverage_complete"]
+    }
+  ],
+  "publication": {
+    "geometryStatus": "unplotted",
+    "registrationCrosswalkStatus": "partial_verified",
+    "verifiedRegistrationCrosswalks": 9,
+    "ambiguousRegistrationCrosswalks": 3,
+    "officialGuidelineValuesPublished": 0,
+    "registeredTransactionsPublished": 0,
+    "marketEstimatesPublished": 0,
+    "caveat": "Nine rows have independently verified registration identities from the existing OMR evidence programme. Every other revenue-village name still does not establish a registration village, ward, parcel, survey boundary, street or price. No coordinates are assigned from this inventory."
+  },
+  "taluks": [
+    { "sequence": 1, "sourceName": "Tondiarpet", "firkaCount": 4, "villageCount": 4, "villages": ["Tondiarpet Part I", "Tondiarpet Part II", "Tondiarpet Part III", "Tondiarpet Part IV"] },
+    { "sequence": 2, "sourceName": "Purasaiwalkkam", "firkaCount": 4, "villageCount": 4, "villages": ["Purasaiwalkkam Part I", "Purasaiwalkkam Part II", "Vepery", "VOC Nagar"] },
+    { "sequence": 3, "sourceName": "Perambur", "firkaCount": 4, "villageCount": 8, "villages": ["Jambuli", "Selavoyal", "Kodungaiyur", "Erukancherry", "Perambur Part I", "Sembium", "Perambur Part II", "Perambur Part III"] },
+    { "sequence": 4, "sourceName": "Tiruvotriyur", "firkaCount": 2, "villageCount": 16, "villages": ["Kathivakkam", "Tiruvotriyur-1", "Tiruvotriyur-2", "Ernavoor", "Edayanchavadi-I", "Edayanchavadi-II", "Theyambakkam", "Aamullaivayal", "Vaikkadu", "Manali", "Sadayankuppam", "Chinna Sekkadu", "Kadapakkam", "Ariyalur", "Sathangadu", "Elandancherry"] },
+    { "sequence": 5, "sourceName": "Madhavaram", "firkaCount": 1, "villageCount": 12, "villages": ["Madhavaram-1", "Madhavaram-2", "Puzhal", "Vadaperumbakkam", "Surapet", "Kadhirvedu", "Puthagaram", "Mathur", "Chettimedu", "Villakupattu", "Kosapur", "Manchambakkam"] },
+    { "sequence": 6, "sourceName": "Mylapore", "firkaCount": 4, "villageCount": 5, "villages": ["Chindadripet", "Triplicane Part I", "Triplicane Part II", "Mylapore Part I", "Mylapore Part II"] },
+    { "sequence": 7, "sourceName": "Guindy", "firkaCount": 4, "villageCount": 9, "villages": ["Ekkatuthangal", "Alandur", "Adayar Part I", "Thiyagaraya Nagar", "Adayar Government Farm", "Venkatapuram", "Adayar Part II", "Guindy Park", "Kottur"] },
+    { "sequence": 8, "sourceName": "Velachery", "firkaCount": 4, "villageCount": 8, "villages": ["Velachery Part I", "Velachery Part II", "Taramani", "Kanagam", "Pallipattu", "Kalikundram", "Urur", "Tiruvanmiyur"] },
+    { "sequence": 9, "sourceName": "Alandur", "firkaCount": 1, "villageCount": 10, "villages": ["Alandur", "Nandambakkam", "Meenambakkam", "Mugalivakkam", "Manapakkam", "Adambakkam", "Pazhavanthangal", "Nanganallur", "Thalakanacheri", "Madanandapuram"] },
+    { "sequence": 10, "sourceName": "Sholinganallur", "firkaCount": 2, "villageCount": 18, "villages": ["Sholinganallur-I", "Sholinganallur-II", "Kottivakkam", "Palavakkam", "Neelangarai", "Enjambakkam", "Semmancheri", "Uthandi", "Ullagaram", "Perungudi", "Pallikaranai", "Karapakkam", "Okkiyam Thoraipakkam", "Madipakkam-I", "Madipakkam-II", "S.Kolathur", "Jaladampet", "Seevaram"] },
+    { "sequence": 11, "sourceName": "Ayanavaram", "firkaCount": 2, "villageCount": 5, "villages": ["Konnur", "Malligaicherri", "Ayanavaram Part-I", "Ayanavaram Part-II", "Chinna Sembarambakkam"] },
+    { "sequence": 12, "sourceName": "Kolathur", "firkaCount": 2, "villageCount": 3, "villages": ["Kolathur", "Peravallur", "Siruvallur"] },
+    { "sequence": 13, "sourceName": "Aminjikarai", "firkaCount": 4, "villageCount": 11, "villages": ["Villivakkam", "Mullam", "Periakudal", "Chinnakudal", "Tirumangalam", "Naduvankarai", "Koyambedu", "Sencherri", "Aminjikarai", "Vada Agaram", "Arumbakkam"] },
+    { "sequence": 14, "sourceName": "Egmore", "firkaCount": 4, "villageCount": 4, "villages": ["Egmore Part I", "Egmore Part II", "Puliyur", "Nungambakkam"] },
+    { "sequence": 15, "sourceName": "Mambalam", "firkaCount": 4, "villageCount": 7, "villages": ["Saligramam", "Kodambakkam Part I", "Virugambakkam", "Nesapakkam", "Kodambakkam Part II", "Mambalam", "Saidapet"] },
+    { "sequence": 16, "sourceName": "Maduravoyal", "firkaCount": 1, "villageCount": 10, "villages": ["Maduravoyal", "Valasaravakkam", "Porur", "Nolambur", "Karambakkam", "Nerkundram", "Ramapuram", "Sivabootham", "Chettiyar Agaram", "Thundalam"] },
+    { "sequence": 17, "sourceName": "Ambattur", "firkaCount": 2, "villageCount": 10, "villages": ["Ambattur", "Athipet", "Mannurpet", "Kakkapallam", "Mogappair", "Padi", "Korattur", "Oragadam", "Menambedu", "Patravakkam"] }
+  ]
+}

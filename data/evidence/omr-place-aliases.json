@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "scopeId": "omr-corridor-2026",
+  "verifiedAt": "2026-07-16",
+  "methodology": "Aliases are limited to MITO coverage names, Tamil coverage names, and labels observed in the normal public TNREGINET current-register selectors. Exact unit aliases take precedence over office aliases. Ambiguous and unresolved names never resolve silently.",
+  "sourceIds": [
+    "tnreginet-omr-current-village-inventory-2026-07-16",
+    "tnreginet-guideline-search-2026-07-15"
+  ],
+  "unitAliases": [
+    { "officialSroCode": "20051", "officialVillageCode": "1", "aliases": [{ "value": "Adyar", "type": "coverage_english" }, { "value": "Adayar", "type": "tnreginet_label" }, { "value": "அடையார்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20051", "officialVillageCode": "2", "aliases": [{ "value": "Kanagam", "type": "coverage_english" }, { "value": "கானகம்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20051", "officialVillageCode": "7", "aliases": [{ "value": "Taramani", "type": "coverage_english" }, { "value": "Tharamani", "type": "tnreginet_label" }, { "value": "தரமணி", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20066", "officialVillageCode": "252", "aliases": [{ "value": "Perungudi", "type": "coverage_english" }, { "value": "பெருங்குடி", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20066", "officialVillageCode": "250", "aliases": [{ "value": "Okkiyam Thoraipakkam", "type": "coverage_english" }, { "value": "Okkiyamthuraipakkam", "type": "tnreginet_label" }, { "value": "ஒக்கியம் துரைபாக்கம்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20066", "officialVillageCode": "248", "aliases": [{ "value": "Karapakkam", "type": "coverage_english" }, { "value": "காரப்பாக்கம்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20066", "officialVillageCode": "253", "aliases": [{ "value": "Seevaram", "type": "coverage_english" }, { "value": "சீவரம்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20066", "officialVillageCode": "254", "aliases": [{ "value": "Sholinganallur 1", "type": "coverage_english" }, { "value": "SHOLINGANALLUR - 1", "type": "tnreginet_label" }, { "value": "சோழிங்கநல்லூர் - 1", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20066", "officialVillageCode": "20514", "aliases": [{ "value": "Sholinganallur 2", "type": "coverage_english" }, { "value": "SHOLINGANALLUR - 2", "type": "tnreginet_label" }, { "value": "சோழிங்கநல்லூர் - 2", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20066", "officialVillageCode": "246", "aliases": [{ "value": "Semmancheri", "type": "coverage_english" }, { "value": "Chemmancheri", "type": "tnreginet_label" }, { "value": "செம்மஞ்சேரி", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22604", "officialVillageCode": "800000277", "aliases": [{ "value": "Navalur", "type": "coverage_english" }, { "value": "Navaloor", "type": "tnreginet_label" }, { "value": "நாவலூர்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22604", "officialVillageCode": "800000278", "aliases": [{ "value": "Egattur", "type": "coverage_english" }, { "value": "Yegatoor", "type": "tnreginet_label" }, { "value": "ஏகாட்டூர்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22604", "officialVillageCode": "800000279", "aliases": [{ "value": "Kazhipattur", "type": "coverage_english" }, { "value": "Kazhipatoor", "type": "tnreginet_label" }, { "value": "கழிபட்டூர்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22604", "officialVillageCode": "800000275", "aliases": [{ "value": "Siruseri", "type": "coverage_english" }, { "value": "Sirucheri", "type": "tnreginet_label" }, { "value": "சிறுசேரி", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22604", "officialVillageCode": "800000276", "aliases": [{ "value": "Padur", "type": "coverage_english" }, { "value": "படூர்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22605", "officialVillageCode": "800000287", "aliases": [{ "value": "Kelambakkam", "type": "coverage_english" }, { "value": "கேளம்பாக்கம்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22605", "officialVillageCode": "800000289", "aliases": [{ "value": "Thaiyur A", "type": "coverage_english" }, { "value": "THAIYUR-A", "type": "tnreginet_label" }, { "value": "தையூர் - A", "type": "coverage_tamil" }] },
+    { "officialSroCode": "22605", "officialVillageCode": "800000290", "aliases": [{ "value": "Thaiyur B", "type": "coverage_english" }, { "value": "THAIYUR - B", "type": "tnreginet_label" }, { "value": "தையூர் - B", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20096", "officialVillageCode": "1308", "aliases": [{ "value": "Alathur", "type": "coverage_english" }, { "value": "Alathoor", "type": "tnreginet_label" }, { "value": "ஆலத்தூர்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20096", "officialVillageCode": "1318", "aliases": [{ "value": "Kalavakkam", "type": "coverage_english" }, { "value": "காலவாக்கம்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20096", "officialVillageCode": "1365", "aliases": [{ "value": "Tiruporur", "type": "coverage_english" }, { "value": "Thiruporur", "type": "tnreginet_label" }, { "value": "திருப்போரூர்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20096", "officialVillageCode": "1353", "aliases": [{ "value": "Paiyanur", "type": "coverage_english" }, { "value": "Pyanoor", "type": "tnreginet_label" }, { "value": "பையனூர்", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20095", "officialVillageCode": "1261", "aliases": [{ "value": "Poonjeri", "type": "coverage_english" }, { "value": "Pooncheri", "type": "tnreginet_label" }, { "value": "பூஞ்சேரி", "type": "coverage_tamil" }] },
+    { "officialSroCode": "20095", "officialVillageCode": "1220", "aliases": [{ "value": "Mamallapuram", "type": "coverage_english" }, { "value": "மாமல்லபுரம்", "type": "coverage_tamil" }] }
+  ],
+  "officeAliases": [
+    { "officialSroCode": "20051", "aliases": ["Adyar", "Adayar", "அடையார்"] },
+    { "officialSroCode": "20066", "aliases": ["Neelangarai", "Neelankarai", "நீலாங்கரை"] },
+    { "officialSroCode": "22604", "aliases": ["Navalur", "நாவலூர்"] },
+    { "officialSroCode": "22605", "aliases": ["Kelambakkam", "Kelampakkam", "கேளம்பாக்கம்"] },
+    { "officialSroCode": "20096", "aliases": ["Tiruporur", "Thiruporur", "திருப்போரூர்"] },
+    { "officialSroCode": "20095", "aliases": ["Thirukazhukundram", "திருக்கழுக்குன்றம்"] }
+  ],
+  "ambiguousTerms": [
+    { "value": "Sholinganallur", "candidateVillageKeys": ["20066:254", "20066:20514"], "reason": "The current register has separate Sholinganallur 1 and Sholinganallur 2 registration villages." },
+    { "value": "சோழிங்கநல்லூர்", "candidateVillageKeys": ["20066:254", "20066:20514"], "reason": "The current register has separate Sholinganallur 1 and Sholinganallur 2 registration villages." },
+    { "value": "Thaiyur", "candidateVillageKeys": ["22605:800000289", "22605:800000290"], "reason": "The current register has separate Thaiyur A and Thaiyur B registration villages." },
+    { "value": "தையூர்", "candidateVillageKeys": ["22605:800000289", "22605:800000290"], "reason": "The current register has separate Thaiyur A and Thaiyur B registration villages." }
+  ],
+  "excludedTerms": [
+    { "value": "Kalipattur", "reason": "An official planning source uses Kalipattur while the current registration selector uses Kazhipatoor. MITO does not merge them without an authoritative crosswalk.", "candidateVillageKeys": ["22604:800000279"] }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.0.0",
+  "scopeId": "omr-corridor-2026",
+  "source": {
+    "id": "tnreginet-omr-current-village-inventory-2026-07-16",
+    "sourceType": "official_public_register",
+    "organization": "Tamil Nadu Registration Department",
+    "title": "TNREGINET current guideline-value village register",
+    "url": "https://tnreginet.gov.in/portal/",
+    "termsUrl": "https://tnreginet.gov.in/portal/",
+    "copyrightPolicyUrl": "https://tnreginet.gov.in/portal/",
+    "sourceLastUpdatedAt": "2026-01-22",
+    "ratesEffectiveFrom": "2024-07-01",
+    "auditedAt": "2026-07-16",
+    "captureMethod": "manual_public_interface_audit",
+    "hashInput": "tnreginet|current-village-register|2024-07-01|2026-07-16|20051:1:96|20051:2:16|20051:7:80|20066:252:250|20066:250:507|20066:248:187|20066:253:84|20066:254:758|20066:20514:40|20066:246:195|22604:800000277:49|22604:800000278:15|22604:800000279:14|22604:800000275:20|22604:800000276:22|22605:800000287:25|22605:800000289:100|22605:800000290:44|20096:1308:4|20096:1318:26|20096:1365:31|20096:1353:5|20095:1261:1|20095:1220:146|copyright-permission-required",
+    "metadataDigest": "sha256:5a14a095355f4b97e2986022f2bfbf3f93bf0f0f35f5b6b28038d7d0364c436b",
+    "reproductionPolicy": "permission_required",
+    "attributionRequired": true,
+    "policyFinding": "The official copyright policy says site contents may not be reproduced partially or fully without Registration Department permission. MITO therefore stores and publishes only query metadata, derived coverage status and retrieval instructions from these live queries."
+  },
+  "retrievalPath": [
+    "Open the TNREGINET public portal and select English if needed.",
+    "Open Guideline value search from 2002.",
+    "Choose the current register: From 1-7-2024.",
+    "Keep Street and Village Wise selected.",
+    "Choose the listed Zone, Sub Registrar Office and Registration Village for one query at a time.",
+    "Run Search and record only the displayed result timestamp, item count, page size and official jurisdiction identifiers."
+  ],
+  "summary": {
+    "auditedVillageCount": 24,
+    "targetVillageCount": 24,
+    "displayedItemCountTotal": 2715,
+    "currentOfficialRowsStored": 0,
+    "currentOfficialGuidelineValuesPublished": 0,
+    "officialStreetCodesPublished": 0,
+    "rowDataStored": false,
+    "rowDataRepublished": false
+  },
+  "queries": [
+    { "sequence": 1, "coverageUnitName": "Adyar", "zoneName": "Chennai", "sroName": "Adayar", "officialSroCode": "20051", "guidelineVillageName": "Adayar", "officialVillageCode": "1", "displayedResultTimestamp": "2026-07-16T22:14:00+05:30", "displayedItemCount": 96, "displayedPageSize": 10, "impliedPageCount": 10, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 2, "coverageUnitName": "Kanagam", "zoneName": "Chennai", "sroName": "Adayar", "officialSroCode": "20051", "guidelineVillageName": "Kanagam", "officialVillageCode": "2", "displayedResultTimestamp": "2026-07-16T22:21:00+05:30", "displayedItemCount": 16, "displayedPageSize": 10, "impliedPageCount": 2, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 3, "coverageUnitName": "Taramani", "zoneName": "Chennai", "sroName": "Adayar", "officialSroCode": "20051", "guidelineVillageName": "Tharamani", "officialVillageCode": "7", "displayedResultTimestamp": "2026-07-16T22:22:00+05:30", "displayedItemCount": 80, "displayedPageSize": 10, "impliedPageCount": 8, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 4, "coverageUnitName": "Perungudi", "zoneName": "Chennai", "sroName": "Neelankarai", "officialSroCode": "20066", "guidelineVillageName": "Perungudi", "officialVillageCode": "252", "displayedResultTimestamp": "2026-07-16T22:24:00+05:30", "displayedItemCount": 250, "displayedPageSize": 10, "impliedPageCount": 25, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 5, "coverageUnitName": "Okkiyam Thoraipakkam", "zoneName": "Chennai", "sroName": "Neelankarai", "officialSroCode": "20066", "guidelineVillageName": "Okkiyamthuraipakkam", "officialVillageCode": "250", "displayedResultTimestamp": "2026-07-16T22:30:00+05:30", "displayedItemCount": 507, "displayedPageSize": 10, "impliedPageCount": 51, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 6, "coverageUnitName": "Karapakkam", "zoneName": "Chennai", "sroName": "Neelankarai", "officialSroCode": "20066", "guidelineVillageName": "Karapakkam", "officialVillageCode": "248", "displayedResultTimestamp": "2026-07-16T22:30:00+05:30", "displayedItemCount": 187, "displayedPageSize": 10, "impliedPageCount": 19, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 7, "coverageUnitName": "Seevaram", "zoneName": "Chennai", "sroName": "Neelankarai", "officialSroCode": "20066", "guidelineVillageName": "Seevaram", "officialVillageCode": "253", "displayedResultTimestamp": "2026-07-16T22:31:00+05:30", "displayedItemCount": 84, "displayedPageSize": 10, "impliedPageCount": 9, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 8, "coverageUnitName": "Sholinganallur 1", "zoneName": "Chennai", "sroName": "Neelankarai", "officialSroCode": "20066", "guidelineVillageName": "SHOLINGANALLUR - 1", "officialVillageCode": "254", "displayedResultTimestamp": "2026-07-16T21:52:00+05:30", "displayedItemCount": 758, "displayedPageSize": 10, "impliedPageCount": 76, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 9, "coverageUnitName": "Sholinganallur 2", "zoneName": "Chennai", "sroName": "Neelankarai", "officialSroCode": "20066", "guidelineVillageName": "SHOLINGANALLUR - 2", "officialVillageCode": "20514", "displayedResultTimestamp": "2026-07-16T22:31:00+05:30", "displayedItemCount": 40, "displayedPageSize": 10, "impliedPageCount": 4, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 10, "coverageUnitName": "Semmancheri", "zoneName": "Chennai", "sroName": "Neelankarai", "officialSroCode": "20066", "guidelineVillageName": "Chemmancheri", "officialVillageCode": "246", "displayedResultTimestamp": "2026-07-16T22:31:00+05:30", "displayedItemCount": 195, "displayedPageSize": 10, "impliedPageCount": 20, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 11, "coverageUnitName": "Navalur", "zoneName": "Chengalpattu", "sroName": "Navalur", "officialSroCode": "22604", "guidelineVillageName": "Navaloor", "officialVillageCode": "800000277", "displayedResultTimestamp": "2026-07-16T22:31:00+05:30", "displayedItemCount": 49, "displayedPageSize": 10, "impliedPageCount": 5, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 12, "coverageUnitName": "Egattur", "zoneName": "Chengalpattu", "sroName": "Navalur", "officialSroCode": "22604", "guidelineVillageName": "Yegatoor", "officialVillageCode": "800000278", "displayedResultTimestamp": "2026-07-16T22:31:00+05:30", "displayedItemCount": 15, "displayedPageSize": 10, "impliedPageCount": 2, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 13, "coverageUnitName": "Kazhipattur", "zoneName": "Chengalpattu", "sroName": "Navalur", "officialSroCode": "22604", "guidelineVillageName": "Kazhipatoor", "officialVillageCode": "800000279", "displayedResultTimestamp": "2026-07-16T22:32:00+05:30", "displayedItemCount": 14, "displayedPageSize": 10, "impliedPageCount": 2, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 14, "coverageUnitName": "Siruseri", "zoneName": "Chengalpattu", "sroName": "Navalur", "officialSroCode": "22604", "guidelineVillageName": "Sirucheri", "officialVillageCode": "800000275", "displayedResultTimestamp": "2026-07-16T22:32:00+05:30", "displayedItemCount": 20, "displayedPageSize": 10, "impliedPageCount": 2, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 15, "coverageUnitName": "Padur", "zoneName": "Chengalpattu", "sroName": "Navalur", "officialSroCode": "22604", "guidelineVillageName": "Padur", "officialVillageCode": "800000276", "displayedResultTimestamp": "2026-07-16T22:32:00+05:30", "displayedItemCount": 22, "displayedPageSize": 10, "impliedPageCount": 3, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 16, "coverageUnitName": "Kelambakkam", "zoneName": "Chengalpattu", "sroName": "Kelampakkam", "officialSroCode": "22605", "guidelineVillageName": "Kelambakkam", "officialVillageCode": "800000287", "displayedResultTimestamp": "2026-07-16T22:32:00+05:30", "displayedItemCount": 25, "displayedPageSize": 10, "impliedPageCount": 3, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 17, "coverageUnitName": "Thaiyur A", "zoneName": "Chengalpattu", "sroName": "Kelampakkam", "officialSroCode": "22605", "guidelineVillageName": "THAIYUR-A", "officialVillageCode": "800000289", "displayedResultTimestamp": "2026-07-16T22:33:00+05:30", "displayedItemCount": 100, "displayedPageSize": 10, "impliedPageCount": 10, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 18, "coverageUnitName": "Thaiyur B", "zoneName": "Chengalpattu", "sroName": "Kelampakkam", "officialSroCode": "22605", "guidelineVillageName": "THAIYUR - B", "officialVillageCode": "800000290", "displayedResultTimestamp": "2026-07-16T22:33:00+05:30", "displayedItemCount": 44, "displayedPageSize": 10, "impliedPageCount": 5, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 19, "coverageUnitName": "Alathur", "zoneName": "Chengalpattu", "sroName": "Thiruporur", "officialSroCode": "20096", "guidelineVillageName": "Alathoor", "officialVillageCode": "1308", "displayedResultTimestamp": "2026-07-16T22:33:00+05:30", "displayedItemCount": 4, "displayedPageSize": 10, "impliedPageCount": 1, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 20, "coverageUnitName": "Kalavakkam", "zoneName": "Chengalpattu", "sroName": "Thiruporur", "officialSroCode": "20096", "guidelineVillageName": "Kalavakkam", "officialVillageCode": "1318", "displayedResultTimestamp": "2026-07-16T22:33:00+05:30", "displayedItemCount": 26, "displayedPageSize": 10, "impliedPageCount": 3, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 21, "coverageUnitName": "Tiruporur", "zoneName": "Chengalpattu", "sroName": "Thiruporur", "officialSroCode": "20096", "guidelineVillageName": "Thiruporur", "officialVillageCode": "1365", "displayedResultTimestamp": "2026-07-16T22:34:00+05:30", "displayedItemCount": 31, "displayedPageSize": 10, "impliedPageCount": 4, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 22, "coverageUnitName": "Paiyanur", "zoneName": "Chengalpattu", "sroName": "Thiruporur", "officialSroCode": "20096", "guidelineVillageName": "Pyanoor", "officialVillageCode": "1353", "displayedResultTimestamp": "2026-07-16T22:34:00+05:30", "displayedItemCount": 5, "displayedPageSize": 10, "impliedPageCount": 1, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 23, "coverageUnitName": "Poonjeri", "zoneName": "Chengalpattu", "sroName": "Thirukazhukundram", "officialSroCode": "20095", "guidelineVillageName": "Pooncheri", "officialVillageCode": "1261", "displayedResultTimestamp": "2026-07-16T22:35:00+05:30", "displayedItemCount": 1, "displayedPageSize": 10, "impliedPageCount": 1, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false },
+    { "sequence": 24, "coverageUnitName": "Mamallapuram", "zoneName": "Chengalpattu", "sroName": "Thirukazhukundram", "officialSroCode": "20095", "guidelineVillageName": "Mamallapuram", "officialVillageCode": "1220", "displayedResultTimestamp": "2026-07-16T22:35:00+05:30", "displayedItemCount": 146, "displayedPageSize": 10, "impliedPageCount": 15, "officialStreetCodePublished": false, "rowDataStored": false, "rowDataRepublished": false }
+  ],
+  "publication": {
+    "status": "official_metadata_only",
+    "currentOfficialInventoryPublished": true,
+    "currentOfficialGuidelineValuesPublished": 0,
+    "currentOfficialRowsStored": 0,
+    "streetRegisterStatus": "collecting",
+    "blockerCode": "REDISTRIBUTION_PERMISSION_REQUIRED",
+    "nextAction": "Obtain written Registration Department permission or an authorized export/API licence before storing or republishing row-level register data."
+  },
+  "limitations": [
+    "The item counts prove the current official village inventory sizes, not that MITO has captured or may republish every row.",
+    "The public result table does not expose an official street code in its visible fields.",
+    "No street geometry is supplied, so no register row can be plotted from this audit.",
+    "The live portal may change after the displayed result timestamps; every later release needs a fresh audit."
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sipcot-siruseri-geometry-audit-2026-07-17",
+  "entityId": "sipcot-siruseri-it-park",
+  "auditedAt": "2026-07-17",
+  "decision": {
+    "status": "publish_open_geometry_as_approximate",
+    "summary": "MITO publishes the ODbL-licensed OpenStreetMap way as an approximate named footprint. SIPCOT's official GIS boundary is used only for transient verification because no explicit reuse licence or policy was found.",
+    "legalBoundaryClaim": false,
+    "officialBoundaryClaim": false,
+    "completeParkExtentClaim": false
+  },
+  "officialSource": {
+    "organization": "State Industries Promotion Corporation of Tamil Nadu Limited (SIPCOT)",
+    "title": "SIPCOT GIS — Siruseri industrial complex boundary",
+    "landingPageUrl": "https://sipcotgis.tn.gov.in/mainpage.aspx",
+    "serviceUrl": "https://sipcotgis.tn.gov.in:8086/geoserver/wfs",
+    "layerId": "cite:industrial_complex_boundary-Siruseri",
+    "retrievedAt": "2026-07-17",
+    "rightsStatus": "no_explicit_reuse_policy_found",
+    "publicationDecision": "verification_only_do_not_republish_geometry",
+    "declaredCrs": "EPSG:4326",
+    "featureCount": 1,
+    "geometryType": "MultiPolygon",
+    "partCount": 1,
+    "holeCount": 0,
+    "exteriorNodeCount": 820,
+    "sourceAttributeAreaAcres": 782.67,
+    "computedAreaAcresApprox": 785.33,
+    "boundingBox": [80.2071075439453, 12.8162546157837, 80.2312545776367, 12.8468465805054],
+    "districtLabelOnCurrentGisPage": "Chengalpattu",
+    "geometryStoredInRepository": false,
+    "geometryPublishedByMito": false,
+    "caveat": "A publicly queryable GIS service does not by itself grant MITO redistribution rights. The official coordinates are intentionally excluded from the repository and API."
+  },
+  "openSource": {
+    "organization": "OpenStreetMap contributors",
+    "title": "SIPCOT Siruseri",
+    "sourceUrl": "https://www.openstreetmap.org/way/98358103",
+    "licenseUrl": "https://www.openstreetmap.org/copyright",
+    "objectType": "way",
+    "objectId": 98358103,
+    "version": 8,
+    "timestamp": "2025-07-03T09:28:27Z",
+    "changeset": 168435415,
+    "license": "ODbL-1.0",
+    "rightsStatus": "publishable_with_attribution_and_odbl_compliance",
+    "geometryType": "Polygon",
+    "coordinateNodeCount": 40,
+    "uniqueCoordinateNodeCount": 39,
+    "areaAcresApprox": 694.26,
+    "centroid": [80.21796804620436, 12.82579068144368],
+    "boundingBox": [80.209651, 12.8166174, 80.2280251, 12.8370723],
+    "sourceTags": {
+      "name": "SIPCOT Siruseri",
+      "nameTa": "சிப்காட் சிறுசேரி",
+      "landuse": "commercial"
+    }
+  },
+  "comparison": {
+    "method": "Transient geometric comparison in EPSG:4326 with geodesic area calculations. SIPCOT coordinates were not retained after the audit.",
+    "openAreaAsPercentOfOfficialComputedArea": 88.40368,
+    "centroidDistanceMetresApprox": 270.23,
+    "boundingBoxIntersectionOverUnion": 0.51075,
+    "openCentroidInsideOfficialBoundary": true,
+    "openVerticesInsideOfficialBoundaryPercent": 42.5,
+    "officialVerticesInsideOpenBoundaryPercent": 30.6,
+    "interpretation": "The open polygon is correctly associated with the named park, but its smaller area and materially different outline make it unsuitable as an exact, official, cadastral or complete boundary."
+  },
+  "publication": {
+    "geometryFile": "data/geometry/sipcot-siruseri-osm-footprint-2026-07-17.json",
+    "publishableGeometryCount": 1,
+    "approximateGeometryCount": 1,
+    "exactGeometryCount": 0,
+    "officialGeometryPublishedCount": 0,
+    "officialGeometryStoredCount": 0,
+    "attributionRequired": "© OpenStreetMap contributors",
+    "displayRule": "Render with dashed outline and low-opacity fill. Always display approximate and partial wording near the geometry.",
+    "scopeRule": "The shared park footprint locates the SIPCOT schedule only; it does not attach either rate to a particular available parcel or to the whole Siruseri registration village."
+  }
+}

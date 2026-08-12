@@ -1,0 +1,86 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "id": "sipcot-siruseri-osm-footprint-2026-07-17",
+    "format": "GeoJSON",
+    "title": "Approximate OpenStreetMap footprint for SIPCOT Siruseri",
+    "publishedAt": "2026-07-17",
+    "license": "ODbL-1.0",
+    "attribution": "© OpenStreetMap contributors",
+    "publicationStatus": "publishable_approximate_geometry",
+    "caveat": "This is a named open-data footprint, not an official SIPCOT boundary, cadastral parcel, legal description or complete park extent. MITO's audit found material differences from the official SIPCOT GIS boundary."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "osm-way-98358103",
+      "properties": {
+        "entityId": "sipcot-siruseri-it-park",
+        "name": "SIPCOT Siruseri",
+        "nameTa": "சிப்காட் சிறுசேரி",
+        "sourceOrganization": "OpenStreetMap contributors",
+        "sourceObjectType": "way",
+        "sourceObjectId": 98358103,
+        "sourceVersion": 8,
+        "sourceTimestamp": "2025-07-03T09:28:27Z",
+        "sourceChangeset": 168435415,
+        "sourceUrl": "https://www.openstreetmap.org/way/98358103",
+        "license": "ODbL-1.0",
+        "licenseUrl": "https://www.openstreetmap.org/copyright",
+        "attribution": "© OpenStreetMap contributors",
+        "geometryStatus": "approximate",
+        "geometryPrecision": "partial_named_open_source_footprint",
+        "areaAcresApprox": 694.26,
+        "centroid": [80.21796804620436, 12.82579068144368],
+        "caveat": "Named OSM footprint only. It covers about 88.4% of the area computed from SIPCOT's official GIS geometry and differs materially in shape; do not use it as a legal or official boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [80.2158979, 12.8166828],
+            [80.217539, 12.8168712],
+            [80.2187164, 12.819542],
+            [80.2214114, 12.8186095],
+            [80.2234181, 12.8179152],
+            [80.2246915, 12.8178721],
+            [80.2249917, 12.8223549],
+            [80.2280251, 12.8228787],
+            [80.2278987, 12.8234025],
+            [80.2273931, 12.8234641],
+            [80.2274563, 12.8244192],
+            [80.2259712, 12.8246657],
+            [80.2250075, 12.8245116],
+            [80.2242192, 12.8289742],
+            [80.22387, 12.8309507],
+            [80.2258764, 12.8309199],
+            [80.2246915, 12.8344629],
+            [80.2245288, 12.8358264],
+            [80.2243979, 12.8369233],
+            [80.2243801, 12.8370723],
+            [80.2221064, 12.8370712],
+            [80.2220966, 12.8353427],
+            [80.2220972, 12.8341403],
+            [80.2203468, 12.8340316],
+            [80.2203468, 12.8327838],
+            [80.2161508, 12.8326733],
+            [80.2139167, 12.8326144],
+            [80.2139167, 12.8331997],
+            [80.2124158, 12.8339237],
+            [80.2122578, 12.8328917],
+            [80.2114837, 12.8329225],
+            [80.2115153, 12.8321523],
+            [80.2106463, 12.8317671],
+            [80.2105358, 12.8262524],
+            [80.2097358, 12.8263313],
+            [80.209651, 12.8228325],
+            [80.209796, 12.8194516],
+            [80.2127538, 12.8192748],
+            [80.2129513, 12.8166174],
+            [80.2158979, 12.8166828]
+          ]
+        ]
+      }
+    }
+  ]
+}

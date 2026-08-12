@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.1.0",
+  "scopeId": "omr-corridor-2026",
+  "source": {
+    "id": "tnreginet-sholinganallur-1-archived-screen-2025-04-16",
+    "organization": "Tamil Nadu Registration Department",
+    "url": "https://files.verified.realestate/rera/public/storage/upload/gAMF9vcMadEhzECE2OyUq4DVoMNaU7zkQKGBKgad.pdf",
+    "retrievedAt": "2026-07-16",
+    "sourceUpdatedAt": null,
+    "captureMethod": "archived_official_snapshot",
+    "snapshotHash": "sha256:dc8f1c50227f90bc83264e1ca0077635504fa9b6caf0e609aaa41f2d3718cf98",
+    "officialSourceUrl": "https://tnreginet.gov.in/portal/",
+    "archivedBy": "Verified.RealEstate",
+    "snapshotAsOf": "2025-04-16T20:09:00+05:30",
+    "evidenceForm": "portal_screenshot_in_project_file",
+    "streetInventoryCountAtSnapshot": 17,
+    "visibleUnredactedRowCount": 1,
+    "redactedRowsOnCapturedPage": 6,
+    "sourcePages": [2, 3],
+    "notes": "The project-file PDF embeds a TNREGINET result for Sholinganallur - 1. Row 11 is visible; rows 12 to 17 are blacked out, and rows 1 to 10 are not included. This is archived portal evidence, not a current official export."
+  },
+  "rows": [
+    {
+      "sourceRecordId": "tnreginet-sholinganallur-1-2025-04-16-row-11",
+      "officialSroCode": "20066",
+      "officialVillageCode": "254",
+      "officialStreetCode": null,
+      "sourceStreetName": "CHIDAMBARAM NAGAR 1ST STREET",
+      "sourceStreetNameTa": null,
+      "classification": "Residential Special Type - V",
+      "rawValueInr": 4400,
+      "rawValueUnit": "sqft",
+      "valueInrPerSqft": 4400,
+      "sourceMetricValueInrPerSqm": 47365,
+      "conversionMethod": null,
+      "effectiveFrom": "2024-07-01",
+      "effectiveTo": null,
+      "verificationStatus": "pending",
+      "verifiedAt": null,
+      "geometryStatus": "unplotted",
+      "geometryEvidence": null,
+      "locationEvidence": "The screenshot identifies Neelankarai SRO and Sholinganallur - 1. MITO's verified jurisdiction crosswalk maps those labels to SRO 20066 and village 254. No street code, coordinates or street geometry are visible.",
+      "sourcePage": 3,
+      "snapshotRowNumber": 11,
+      "qualityFlags": [
+        "archived_official_screen",
+        "live_official_recheck_pending",
+        "official_street_code_not_visible",
+        "unplotted",
+        "current_completeness_unknown"
+      ]
+    }
+  ]
+}

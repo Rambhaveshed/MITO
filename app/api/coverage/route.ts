@@ -1,8 +1,8 @@
-import { omrCoverage, omrCoverageByOffice, omrCoverageSummary, omrReleaseReady } from "../../../data/omr";
+import { omrCoverage, omrCoverageByOffice, omrCoverageSummary, omrReleaseReady, omrVillageEvidenceMatrix } from "../../../data/omr";
 
 export async function GET() {
   return Response.json({
-    generatedAt: "2026-07-15",
+    generatedAt: "2026-08-12",
     programme: {
       id: omrCoverage.id,
       name: omrCoverage.name,
@@ -15,5 +15,6 @@ export async function GET() {
     releaseGate: omrCoverage.releaseGate,
     source: omrCoverage.source,
     offices: omrCoverageByOffice,
+    evidenceMatrix: omrVillageEvidenceMatrix,
   });
 }

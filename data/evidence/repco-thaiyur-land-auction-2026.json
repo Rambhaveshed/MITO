@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "repco-thaiyur-land-auction-2026",
+  "title": "Repco Home Finance Thaiyur land auction reserve",
+  "auditedAt": "2026-07-21T14:45:00+05:30",
+  "scope": "One secured-creditor auction notice for a 693 sq-ft land parcel described only as Thaiyur Village",
+  "sources": [
+    {
+      "id": "repco-auction-sale-notices",
+      "organization": "Repco Home Finance Limited",
+      "title": "Auction Sale Notices",
+      "url": "https://www.repcohome.com/auction-sale-notices",
+      "sourceType": "official_lender_auction_notice_index",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "retrievedAt": "2026-07-21T13:55:00+05:30",
+      "verifiedAt": "2026-07-21T14:45:00+05:30",
+      "documentDigest": null,
+      "pagesInspected": [],
+      "rightsStatus": "official_public_record_factual_excerpt_only_no_open_licence_found"
+    },
+    {
+      "id": "repco-notice-02-134-thaiyur-2026-03-31",
+      "organization": "Repco Home Finance Limited",
+      "title": "Notice No. S.No.02/134 — Thaiyur land auction",
+      "url": "https://s3.ap-south-1.amazonaws.com/rhfl-strapi/land_at_sale_in_kelambakkam_region_KBM_129_31_03_2026_Mr_Kumar_26_a0d984bc14.pdf",
+      "sourceType": "official_secured_creditor_auction_notice_pdf",
+      "publicationDate": "2026-02-23",
+      "effectiveDate": "2026-03-31",
+      "auctionDate": "2026-03-31",
+      "retrievedAt": "2026-07-21T13:55:00+05:30",
+      "verifiedAt": "2026-07-21T14:45:00+05:30",
+      "documentDigest": "sha256:171ff6727d7fe72b43207846df79537a082234c7b83d801b569e963456a058d1",
+      "pagesInspected": [1, 2],
+      "rightsStatus": "official_public_record_factual_excerpt_only_no_open_licence_found"
+    }
+  ],
+  "privacy": {
+    "personalDataFieldsStored": 0,
+    "excludedFields": [
+      "borrower_names",
+      "co_borrower_names",
+      "guarantor_names",
+      "loan_account_number",
+      "debt_amount",
+      "personal_addresses",
+      "telephone_numbers",
+      "email_addresses",
+      "signatures"
+    ],
+    "publicationDecision": "Publish only asset, auction, source and uncertainty facts required to interpret the reserve price."
+  },
+  "location": {
+    "sourcePlaceName": "Thaiyur Village",
+    "sourceTalukName": "Thiruporur Taluk",
+    "sourceDistrictName": "Kancheepuram District",
+    "sourceSubRegistrationDistrictName": "Thiruporur",
+    "currentCandidateSroName": "Kelampakkam",
+    "currentCandidateSroCode": "22605",
+    "candidateVillageKeys": [
+      "22605:800000289",
+      "22605:800000290"
+    ],
+    "candidateVillageNames": [
+      "Thaiyur A",
+      "Thaiyur B"
+    ],
+    "mappingStatus": "unresolved_registration_subdivision",
+    "directVillageLink": false,
+    "historicalCurrentJurisdictionConflict": true,
+    "jurisdictionCaveat": "The notice names Thaiyur Village and Thiruporur sub-registration district. The current TNREGINET inventory splits Thaiyur into A and B under Kelampakkam SRO, but the notice does not identify either subdivision. MITO therefore links the record to neither registration village directly.",
+    "geometryStatus": "unplotted",
+    "geometryType": null,
+    "coordinateSource": null,
+    "coordinatePrecision": null,
+    "positionalUncertainty": "Parcel survey, plot dimensions and boundaries are textual evidence only; no verified coordinate or cadastral polygon is published."
+  },
+  "asset": {
+    "propertyClass": "vacant_residential_land",
+    "propertyDescription": "Land at Plot No. 15, Kandasamy Nagar Phase 1",
+    "layoutName": "Kandasamy Nagar Phase 1",
+    "layoutApprovalStatus": "unknown_from_source",
+    "plotNumber": "15",
+    "surveyNumber": "522/2",
+    "oldDoorNumber": "46",
+    "newDoorNumber": "22",
+    "landAreaSqft": 693,
+    "buildingAreaSqft": null,
+    "areaBasis": "source_published_land_extent",
+    "roadReference": "23 Feet Road",
+    "dimensionsFeet": {
+      "north": 21.3,
+      "south": 30.9,
+      "east": 26.9,
+      "west": 28.6
+    },
+    "boundaries": {
+      "north": "Survey No. 521/1",
+      "south": "Plot No. 14",
+      "east": "23 Feet Road",
+      "west": "Survey No. 521/1"
+    },
+    "possessionNoticeDate": "2020-12-22",
+    "currentOwnershipVerified": false,
+    "currentAvailabilityVerified": false
+  },
+  "records": [
+    {
+      "id": "repco-thaiyur-plot-15-reserve-2026-03-31",
+      "sourceId": "repco-notice-02-134-thaiyur-2026-03-31",
+      "noticeNumber": "S.No.02/134",
+      "noticeDate": "2026-02-23",
+      "auctionDate": "2026-03-31",
+      "auctionTime": "11:00–12:00 IST",
+      "evidenceType": "secured_creditor_land_auction_reserve_price",
+      "totalReservePriceInr": 1123000,
+      "earnestMoneyDepositInr": 112300,
+      "bidIncrementInr": 10000,
+      "landAreaSqft": 693,
+      "derivedReservePriceInrPerSqft": 1620.49,
+      "derivation": "1123000 / 693, rounded to two decimals",
+      "lifecycleStatus": "auction_offered_outcome_unpublished",
+      "auctionOutcomeVerified": false,
+      "winningBidInr": null,
+      "saleCertificateVerified": false,
+      "registeredTransferVerified": false,
+      "currentOwnershipVerified": false,
+      "currentAvailabilityVerified": false,
+      "directVillageLink": false,
+      "candidateVillageKeys": [
+        "22605:800000289",
+        "22605:800000290"
+      ],
+      "geometryStatus": "unplotted",
+      "geometryType": null,
+      "isLandReservePrice": true,
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "isWinningBid": false,
+      "confidence": "high_for_notice_facts_low_for_current_status_and_registration_subdivision",
+      "scopeCaveat": "This is one auction floor for one survey-referenced plot described only as Thaiyur Village. It is not a completed sale, current offer, guideline value, asking price, market estimate or rate for Thaiyur A or B."
+    }
+  ],
+  "publication": {
+    "recordCount": 1,
+    "assetCount": 1,
+    "candidateVillageCount": 2,
+    "candidateDisplayAssociationCount": 2,
+    "directVillageLinkCount": 0,
+    "landReservePriceRecords": 1,
+    "registeredTransactions": 0,
+    "winningBidRecords": 0,
+    "saleCertificateRecords": 0,
+    "plottedRecordCount": 0,
+    "exactParcelGeometryCount": 0,
+    "personalDataFieldsStored": 0
+  },
+  "publicationRule": "Publish the reserve and its transparent land-area normalization only as one unresolved Thaiyur auction-floor observation. It must never be relabelled as a winning bid, registered sale, guideline value, asking price, market estimate, current availability, direct Thaiyur A/B record or village-wide rate."
+}

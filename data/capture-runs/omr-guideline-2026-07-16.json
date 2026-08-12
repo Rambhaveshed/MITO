@@ -1,0 +1,20 @@
+{
+  "id": "capture-omr-guideline-2026-07-16-02",
+  "scopeId": "omr-corridor-2026",
+  "sourceId": "tnreginet-current-village-register-2026-07-16",
+  "method": "manual_public_interface_audit",
+  "status": "blocked",
+  "recordsSeen": 10,
+  "recordsAccepted": 0,
+  "recordsRejected": 0,
+  "recordsWithheld": 10,
+  "metadataRecordsAccepted": 1,
+  "startedAt": "2026-07-16",
+  "finishedAt": "2026-07-16",
+  "blockerCode": "REDISTRIBUTION_PERMISSION_REQUIRED",
+  "publicMessage": "The current official village inventory was verified; individual guideline-value rows have not been republished.",
+  "notes": "The normal public village-wise query returned 758 current items for Sholinganallur 1 and displayed 10 rows per page. The official copyright policy requires Registration Department permission before site contents are reproduced, so MITO accepted the current inventory metadata and withheld all row-level fields.",
+  "nextAction": "Obtain written reuse permission or an authorized export/API licence, then capture all 758 rows under the guideline-value import contract.",
+  "requiredImportSchema": "data/evidence/guideline-value-import.schema.json",
+  "auditLedger": "data/evidence/tnreginet-live-register-audit-2026-07-16.json"
+}

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "scopeId": "omr-corridor-2026",
+  "audit": {
+    "id": "proquiro-sholinganallur-1-targeted-audit-2026-07-16",
+    "sourceType": "third_party_mirror",
+    "organization": "Quiro Tech Solutions (Proquiro)",
+    "url": "https://proquiro.com/tools/tamil-nadu-guideline-value/neelankarai/sholinganallur-1",
+    "termsUrl": "https://proquiro.com/terms",
+    "retrievedAt": "2026-07-16",
+    "captureMethod": "single_page_targeted_audit",
+    "pageSnapshotHash": "sha256:1921581bb2f2347047e10be86137b11995f9d63a92a96d46ba2927bb36e7f868",
+    "statedUpstreamOrganization": "Tamil Nadu Registration Department",
+    "statedUpstreamUrl": "https://tnreginet.gov.in/portal/",
+    "statedRatesEffectiveFrom": "2024-07-01",
+    "statedLastVerifiedAt": "2026-07-14",
+    "reuseDecision": "do_not_bulk_ingest",
+    "reuseReason": "The provider's terms prohibit scraping at scale. MITO inspected one public page only to audit one already known archived official row. No bulk street data was copied or redistributed.",
+    "authorityCaveat": "This is a third-party mirror that names TNREGINET as its upstream source. It is not an official Tamil Nadu Registration Department export and cannot establish a current official value."
+  },
+  "scopeClaims": {
+    "sourceVillageName": "SHOLINGANALLUR - 1",
+    "officialSroCode": "20066",
+    "officialVillageCode": "254",
+    "claimedStreetCount": 758,
+    "claimedMinimumValueInrPerSqft": 1000,
+    "claimedMaximumValueInrPerSqft": 8800,
+    "claimStatus": "corroborated_by_live_official_query",
+    "corroboratedBy": "tnreginet-current-village-register-2026-07-16",
+    "corroboratedAt": "2026-07-16"
+  },
+  "matchedRows": [
+    {
+      "sourceRecordId": "proquiro-sholinganallur-1-street-index-80",
+      "relatedOfficialSnapshotRecordId": "tnreginet-sholinganallur-1-2025-04-16-row-11",
+      "officialSroCode": "20066",
+      "officialVillageCode": "254",
+      "officialStreetCode": null,
+      "sourceStreetIndex": 80,
+      "sourceStreetName": "CHIDAMBARAM  NAGAR 1ST STREET",
+      "normalizedStreetName": "CHIDAMBARAM NAGAR 1ST STREET",
+      "classification": "Residential Special Type - V",
+      "valueInrPerSqft": 4400,
+      "fieldMatch": {
+        "streetName": "normalized_exact",
+        "classification": "exact",
+        "valueInrPerSqft": "exact"
+      },
+      "corroborationStatus": "exact_field_match",
+      "publicationStatus": "secondary_corroboration_only",
+      "currentOfficialValue": false,
+      "verificationStatus": "pending_live_official_recheck",
+      "geometryStatus": "unplotted",
+      "locationEvidence": "The mirror labels the page SHOLINGANALLUR - 1 under Neelankarai SRO. MITO links the labels to its verified jurisdiction crosswalk only; no official street code or geometry is provided.",
+      "limitations": "A field match increases confidence that the archived row was transcribed correctly. It does not prove the mirror's freshness, completeness, official street identifier, current value or geometry."
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "sholinganallur-1-street-inventory-count-conflict",
+      "field": "streetInventoryCount",
+      "archivedOfficialSnapshotValue": 17,
+      "archivedOfficialSnapshotAsOf": "2025-04-16T20:09:00+05:30",
+      "secondarySourceValue": 758,
+      "secondarySourceClaimedEffectiveFrom": "2024-07-01",
+      "currentOfficialRegisterValue": 758,
+      "currentOfficialRegisterAsOf": "2026-07-16T21:52:00+05:30",
+      "status": "resolved_for_current_inventory",
+      "interpretation": "The live current official village-wise query returned 758 items, so MITO now uses 758 as the current release-gate target. The archived 17-item result is preserved as historical evidence from a different or older query state; the exact reason for that earlier count remains unknown."
+    }
+  ]
+}

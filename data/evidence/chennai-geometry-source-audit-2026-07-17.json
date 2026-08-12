@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "chennai-authoritative-geometry-audit-2026-07-17",
+  "name": "Chennai authoritative geometry source audit",
+  "scope": "Chennai District and Greater Chennai Corporation, with OMR overlaps retained as unresolved revenue-to-municipal crosswalk work.",
+  "auditedAt": "2026-07-17",
+  "decision": {
+    "status": "permission_required",
+    "publishableGeometryCount": 0,
+    "summary": "Official municipal geometry is discoverable and technically queryable, but MITO has not received permission to reproduce it. No boundary or road geometry has been copied, stored, plotted or redistributed.",
+    "nextAction": "Obtain written reuse permission from Greater Chennai Corporation and TNeGA/TNGIS, then capture a versioned source snapshot and reconcile ward, revenue-village and registration identifiers before plotting."
+  },
+  "sources": [
+    {
+      "id": "gcc-edp-mobile-2025-feature-service",
+      "authority": "Greater Chennai Corporation",
+      "title": "EDPMobile2025 ArcGIS Feature Service",
+      "sourceUrl": "https://gisgcc.chennaicorporation.gov.in/server/rest/services/GCCDepts/EDPMobile2025/FeatureServer/layers",
+      "rightsUrl": "https://chennaicorporation.gov.in/gcc/common/privacy-policy/",
+      "sourceKind": "arcgis_feature_service",
+      "accessStatus": "public_query_endpoint",
+      "rightsStatus": "permission_required",
+      "freshnessLabel": "2025 service name; live counts verified 2026-07-17",
+      "technicalEvidence": {
+        "nativeCrs": "EPSG:32644",
+        "supportedQueryFormats": ["JSON", "GeoJSON", "PBF"],
+        "layers": [
+          {
+            "layerId": 0,
+            "name": "EDP_Roads_2025",
+            "geometryType": "polyline",
+            "liveFeatureCount": 37225,
+            "wgs84Extent": [80.13435597859576, 12.852251240076281, 80.33083902620957, 13.232145889899439]
+          },
+          {
+            "layerId": 1,
+            "name": "EDP_zoneBoundary_2025",
+            "geometryType": "polygon",
+            "liveFeatureCount": 15,
+            "wgs84Extent": [80.13409479088227, 12.852092938839165, 80.33149353038425, 13.235049055200307]
+          },
+          {
+            "layerId": 2,
+            "name": "EDP_wardBoundary_2025",
+            "geometryType": "polygon",
+            "liveFeatureCount": 200,
+            "wgs84Extent": [80.13409479088227, 12.852092938839165, 80.33149353038425, 13.235049055200307]
+          }
+        ]
+      },
+      "rightsEvidence": "GCC's copyright policy says portal material may be reproduced only after proper permission from the respective organization or department, with accurate reproduction and prominent source acknowledgement.",
+      "qualityNotes": [
+        "The service publishes stable layer IDs, municipal ward and zone fields, geometry types and a declared projected coordinate system.",
+        "The service metadata has no populated copyright text or layer description; MITO therefore applies GCC's portal-wide copyright policy.",
+        "A municipal ward or road feature does not by itself establish a revenue-village, registration-village, street guideline record or parcel boundary."
+      ],
+      "publication": {
+        "metadataStored": true,
+        "geometryStored": false,
+        "geometryPublished": false,
+        "liveServiceEmbedded": false
+      }
+    },
+    {
+      "id": "tngis-cumta-map-editor",
+      "authority": "Tamil Nadu Geographical Information System, TNeGA",
+      "title": "CUMTA Map Editor and TNGIS administrative layers",
+      "sourceUrl": "https://tngis.tn.gov.in/apps/cumta/",
+      "rightsUrl": "https://tngis.tn.gov.in/apps.html",
+      "sourceKind": "government_web_gis",
+      "accessStatus": "public_visual_reference",
+      "rightsStatus": "permission_required",
+      "freshnessLabel": "Portal audited 2026-07-17",
+      "technicalEvidence": {
+        "availableLayerLabels": ["Districts", "Corporation Boundary", "CUMTA Boundary", "Revenue Villages"],
+        "nativeCrs": null,
+        "stableFeatureIdentifiersVerified": false,
+        "downloadableGeometryVerified": false
+      },
+      "rightsEvidence": "TNGIS terms restrict publishing or sharing portal GIS data without prior approval and require approval for commercial applications; ownership remains with the contributing departments.",
+      "qualityNotes": [
+        "The public interface proves that relevant administrative layers exist, but MITO has not verified a redistributable geometry endpoint, feature identifier contract or coordinate system for the revenue-village layer.",
+        "The layer is not used to infer a registration crosswalk or parcel boundary."
+      ],
+      "publication": {
+        "metadataStored": true,
+        "geometryStored": false,
+        "geometryPublished": false,
+        "liveServiceEmbedded": false
+      }
+    },
+    {
+      "id": "chennai-district-map-2026-07-14",
+      "authority": "Chennai District Administration",
+      "title": "Map of Chennai District",
+      "sourceUrl": "https://chennai.nic.in/about-district/map-of-district/",
+      "rightsUrl": "https://chennai.nic.in/website-policies/",
+      "sourceKind": "official_cartographic_reference",
+      "accessStatus": "public_visual_reference",
+      "rightsStatus": "permission_required",
+      "freshnessLabel": "Page updated 2026-07-14; audited 2026-07-17",
+      "technicalEvidence": {
+        "geometryType": "district_map_image",
+        "nativeCrs": null,
+        "machineReadableGeometry": false,
+        "stableVillageIdentifiers": false
+      },
+      "rightsEvidence": "The district website's copyright policy allows reproduction only after permission is obtained and the source is prominently acknowledged.",
+      "qualityNotes": [
+        "The map is suitable as an official visual reference, not as a machine-readable revenue-village or parcel geometry source.",
+        "MITO will not digitize or trace the map into claimed exact boundaries without source geometry and an approved reuse method."
+      ],
+      "publication": {
+        "metadataStored": true,
+        "geometryStored": false,
+        "geometryPublished": false,
+        "imageRepublished": false
+      }
+    }
+  ],
+  "summary": {
+    "sourcesAudited": 3,
+    "officialRoadFeaturesDiscovered": 37225,
+    "officialZonePolygonsDiscovered": 15,
+    "officialWardPolygonsDiscovered": 200,
+    "officialRevenueVillagePolygonsPublishable": 0,
+    "officialGeometryFeaturesStored": 0,
+    "officialGeometryFeaturesPublished": 0,
+    "permissionGatedSources": 3
+  },
+  "releaseGate": {
+    "status": "blocked_by_rights_and_crosswalk",
+    "requirements": [
+      "Written permission that covers storage, transformation, map display and redistribution for MITO's intended use.",
+      "A dated source snapshot with checksums, layer metadata, coordinate system and record counts.",
+      "Deterministic reconciliation between municipal ward or road IDs, revenue villages and registration villages.",
+      "Geometry validation for bounds, validity, duplicates and positional evidence before any plotted status is promoted."
+    ]
+  }
+}
