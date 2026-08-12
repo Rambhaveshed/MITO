@@ -1,0 +1,262 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "tata-navalur-residential-land-auctions-2025",
+  "scopeId": "omr-corridor-2026",
+  "auditedAt": "2026-08-12",
+  "sources": [
+    {
+      "id": "tata-navalur-auction-2025-07-22",
+      "organization": "Tata Capital Housing Finance Limited",
+      "title": "Statutory auction notice for Park Enclave, Navalur",
+      "url": "https://attachments.bankauctions.in/2025/06/TATA-CHENNAI-1.pdf",
+      "sourceType": "newspaper_copy_of_secured_creditor_statutory_auction_notice",
+      "publication": "Business Standard, Chennai edition",
+      "publicationHost": "Business Standard",
+      "mirrorHost": "BankAuctions.in attachments",
+      "publicationDate": "2025-06-21",
+      "auctionDate": "2025-07-22",
+      "retrievedAt": "2026-08-12",
+      "verifiedAt": "2026-08-12",
+      "pagesInspected": [15],
+      "documentDigest": "sha256:c4dcc2fc2c17e4a3c4055f8cb2eb82fcb60308d9e396f0766b2d24ccc72802ba",
+      "captureMethod": "visual_and_text_verification_of_targeted_factual_excerpt_from_newspaper_copy",
+      "rightsStatus": "public_statutory_notice_factual_excerpt_only_no_open_licence_found",
+      "officialHost": false
+    },
+    {
+      "id": "tata-navalur-auction-2025-10-17",
+      "organization": "Tata Capital Housing Finance Limited",
+      "title": "Statutory re-auction notice for Park Enclave, Navalur",
+      "url": "https://attachments.bankauctions.in/2025/09/bhuvanesh-1.pdf",
+      "sourceType": "newspaper_copy_of_secured_creditor_statutory_auction_notice",
+      "publication": "Business Standard, Chennai edition",
+      "publicationHost": "Business Standard",
+      "mirrorHost": "BankAuctions.in attachments",
+      "publicationDate": "2025-09-29",
+      "auctionDate": "2025-10-17",
+      "retrievedAt": "2026-08-12",
+      "verifiedAt": "2026-08-12",
+      "pagesInspected": [4],
+      "documentDigest": "sha256:8d01169b3088d801e5f8f715c63c879a785584b18d5b5780a5c8523e5b746183",
+      "captureMethod": "visual_and_text_verification_of_targeted_factual_excerpt_from_newspaper_copy",
+      "rightsStatus": "public_statutory_notice_factual_excerpt_only_no_open_licence_found",
+      "officialHost": false
+    },
+    {
+      "id": "tata-property-disposal-public-export-2026-08-12",
+      "organization": "Tata Capital",
+      "title": "Public property-disposal asset export",
+      "url": "https://www.tatacapital.com/api/master/web/api/mdm/export/assetdisposalmis.json",
+      "sourceType": "official_current_property_disposal_feed_audit",
+      "retrievedAt": "2026-08-12",
+      "verifiedAt": "2026-08-12",
+      "documentDigest": "sha256:11117c05d6121f939d0a3b97467534cc920101794732efa8a776585b3e69abab",
+      "recordCountScanned": 511,
+      "targetMatchCount": 0,
+      "captureMethod": "exact_target_search_of_public_official_json_export",
+      "rightsStatus": "official_public_feed_targeted_audit_only_no_bulk_redistribution",
+      "officialHost": true
+    }
+  ],
+  "sourceAuthority": {
+    "securedCreditor": "Tata Capital Housing Finance Limited",
+    "directOfficialPriceDocumentUrlLocated": false,
+    "statutoryNoticeCopiesVerified": true,
+    "officialCurrentFeedAuditAvailable": true,
+    "mirrorPromotedAsOfficialSource": false,
+    "publicationDecision": "Publish the two document-backed price observations as verified copies of Tata-issued statutory notices. Describe the document host explicitly and do not call it an official Tata URL.",
+    "negativeInferenceRule": "Absence from the 12 August 2026 Tata public export does not establish a sale, withdrawal, current availability or any other lifecycle outcome."
+  },
+  "privacy": {
+    "publicationBasis": "Asset, location and auction-floor facts needed for land-price evidence.",
+    "personalDataFieldsStored": 0,
+    "excludedFields": [
+      "borrower and co-borrower names",
+      "loan, agreement and account identifiers",
+      "outstanding balances and demand amounts",
+      "personal contact details and email addresses",
+      "signatures and unrelated notice rows"
+    ]
+  },
+  "location": {
+    "sourcePlaceName": "Navalur Village No.33",
+    "registrationVillageName": "Navalur",
+    "sourceTalukName": "Thiruporur Taluk",
+    "sourceDistrictName": "Chengalpattu District",
+    "sourceRegistrationDistrictName": "Chengalpet",
+    "sourceHistoricalSubRegistrationDistrictName": "Thiruporur",
+    "currentOfficialSubRegistrationOfficeName": "Navalur",
+    "officialSroCode": "22604",
+    "officialVillageCode": "800000277",
+    "mappingStatus": "exact_official_registration_village",
+    "mappingMethod": "exact_source_village_name_to_verified_current_registration_inventory",
+    "directVillageLink": true,
+    "locationEvidence": "Both statutory notices name Navalur Village No.33, Thiruporur Taluk and repeat the same plot, survey, patta, approval, boundary and dimension schedule. MITO links that exact place name to the current Navalur SRO inventory while preserving the historical Thiruporur sub-registration label printed in the notices.",
+    "geometryStatus": "unplotted",
+    "geometryType": null,
+    "geometry": null,
+    "coordinatePrecision": "none",
+    "positionalUncertainty": "No source coordinate or verified parcel polygon was published. The plot is kept searchable and unplotted; MITO does not substitute a layout, village, road or locality centroid.",
+    "oldSurveyReferences": ["169/1 part", "169/2 part"],
+    "newSurveyReferences": ["169/1A1", "169/1A2"],
+    "pattaReferences": ["975", "976"]
+  },
+  "asset": {
+    "assetDescription": "Vacant residential Plot No.108 G and A/B/C/D part in Park Enclave",
+    "propertyClass": "residential_land",
+    "landAreaSqft": 1043,
+    "buildingAreaSqft": null,
+    "layoutName": "Park Enclave",
+    "plotReference": "Plot No.108 G & (A,B,C,D) part",
+    "possessionType": "physical_possession_stated_in_notices",
+    "dimensions": {
+      "northFeet": 28,
+      "southFeet": 28,
+      "eastFeet": 38,
+      "westFeet": 36.5
+    },
+    "boundaries": {
+      "north": "20-foot layout road",
+      "south": "vacant land in Survey No.170",
+      "east": "Plot No.109 H and A/B/C/D part",
+      "west": "Plot No.108 H and A/B/C/D part"
+    },
+    "approvals": [
+      "DTCP/MLPA Na.Ka.No.151/2018/B1 dated 2018-09-18",
+      "MLPA Na.Ka.No.2476/2018/MLPA dated 2018-08-03",
+      "DTCP procedure Na.Ka.No.9862/10BA1 dated 2011-02-17",
+      "Subdivision approval Se.Mu.Na.Ka.No.3179-9/2022/B1 dated 2023-01-27",
+      "TNRERA file TNRERA/REG/0332/2023; project TN/29/Regularisation Layout/0759/2023 dated 2023-02-16"
+    ],
+    "currentLifecycleStatus": "historical_auction_notices_outcome_and_current_status_unpublished",
+    "currentLifecycleAsOf": "2026-08-12",
+    "currentAvailabilityVerified": false,
+    "saleOutcomeVerified": false
+  },
+  "records": [
+    {
+      "id": "tata-navalur-reserve-2025-07-22",
+      "sourceId": "tata-navalur-auction-2025-07-22",
+      "evidenceType": "secured_creditor_residential_land_auction_reserve_price",
+      "priceTypeLabel": "Document-backed secured-creditor residential-land auction reserve",
+      "propertyClass": "residential_land",
+      "auctionDate": "2025-07-22",
+      "totalReservePriceInr": 5736500,
+      "earnestMoneyDepositInr": 573650,
+      "landAreaSqft": 1043,
+      "derivedReservePriceInrPerSqft": 5500,
+      "reserveChangeFromPreviousPercent": null,
+      "lifecycleStatus": "auction_offered_outcome_unpublished",
+      "winningBidInr": null,
+      "saleCertificateVerified": false,
+      "registeredTransferVerified": false,
+      "geometryStatus": "unplotted",
+      "directVillageLink": true,
+      "isLandReservePrice": true,
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "isWinningBid": false,
+      "scopeCaveat": "This is an auction floor for one 1,043 sq-ft residential plot. It is not a winning bid, registered consideration, guideline value, asking price, market estimate, current availability or village-wide Navalur rate."
+    },
+    {
+      "id": "tata-navalur-reserve-2025-10-17",
+      "sourceId": "tata-navalur-auction-2025-10-17",
+      "evidenceType": "secured_creditor_residential_land_auction_reserve_price",
+      "priceTypeLabel": "Document-backed secured-creditor residential-land re-auction reserve",
+      "propertyClass": "residential_land",
+      "auctionDate": "2025-10-17",
+      "totalReservePriceInr": 4500000,
+      "earnestMoneyDepositInr": 450000,
+      "landAreaSqft": 1043,
+      "derivedReservePriceInrPerSqft": 4314.48,
+      "reserveChangeFromPreviousPercent": -21.56,
+      "lifecycleStatus": "reauction_offered_outcome_unpublished",
+      "winningBidInr": null,
+      "saleCertificateVerified": false,
+      "registeredTransferVerified": false,
+      "geometryStatus": "unplotted",
+      "directVillageLink": true,
+      "isLandReservePrice": true,
+      "isGuidelineValue": false,
+      "isRegisteredTransaction": false,
+      "isAskingPrice": false,
+      "isMarketEstimate": false,
+      "isWinningBid": false,
+      "scopeCaveat": "This later auction floor is a second verified checkpoint, not a complete auction history, completed sale or general Navalur land price."
+    }
+  ],
+  "secondaryClaims": {
+    "status": "not_normalized_pending_underlying_statutory_notices",
+    "normalizedRecordCount": 0,
+    "claims": [
+      {
+        "auctionDate": "2025-08-19",
+        "claimedReservePriceInr": 5160000,
+        "url": "https://www.eauctionsindia.com/properties/552591",
+        "sourceType": "secondary_auction_aggregator_claim"
+      },
+      {
+        "auctionDate": "2025-09-16",
+        "claimedReservePriceInr": 4650000,
+        "url": "https://www.eauctionsindia.com/properties/568674",
+        "sourceType": "secondary_auction_aggregator_claim"
+      },
+      {
+        "auctionDate": "2025-11-18",
+        "claimedReservePriceInr": 4500000,
+        "url": "https://www.eauctionsindia.com/properties/609911",
+        "sourceType": "secondary_auction_aggregator_claim"
+      },
+      {
+        "auctionDate": "2025-12-23",
+        "claimedReservePriceInr": 4500000,
+        "url": "https://chennaibankauction.com/e-auction-plot-sale-in-navalur/",
+        "sourceType": "secondary_auction_aggregator_claim"
+      },
+      {
+        "auctionDate": "2026-01-22",
+        "claimedReservePriceInr": 4200000,
+        "url": "https://chennaibankauction.com/e-auction-plot-sale-in-navalur/",
+        "sourceType": "secondary_auction_aggregator_claim"
+      }
+    ],
+    "publicationRule": "These secondary claims identify possible missing source documents. They are excluded from normalized records, ranges, trend calculations and coverage totals until the underlying statutory notices are captured and verified."
+  },
+  "officialCurrentFeedAudit": {
+    "sourceId": "tata-property-disposal-public-export-2026-08-12",
+    "recordCountScanned": 511,
+    "targetMatchCount": 0,
+    "targetTerms": ["Navalur", "Park Enclave", "Plot No.108", "169/1A1", "169/1A2"],
+    "conclusion": "No target match was found in the retrieved official export.",
+    "negativeInferenceRule": "The zero match cannot be interpreted as sold, withdrawn, available, unavailable or otherwise resolved."
+  },
+  "reconciliation": {
+    "sameAssetAcrossVerifiedRecords": true,
+    "sameAssetEvidence": "The plot reference, area, layout, village, survey and patta references, approvals, boundaries and dimensions agree across both inspected notices.",
+    "verifiedCheckpointCount": 2,
+    "completeReserveHistoryVerified": false,
+    "firstVerifiedReservePriceInr": 5736500,
+    "latestVerifiedReservePriceInr": 4500000,
+    "verifiedCheckpointReductionInr": 1236500,
+    "verifiedCheckpointReductionPercent": 21.56,
+    "sourceCoverageGap": "Five intervening or later auction claims were located only on secondary aggregators and remain outside normalized evidence pending capture of their underlying notices.",
+    "lifecycleConclusion": "Two auction offers are verified. No winning bid, sale certificate, registered transfer or current asset availability is verified."
+  },
+  "publication": {
+    "recordCount": 2,
+    "assetCount": 1,
+    "directVillageLinkCount": 1,
+    "landReservePriceRecords": 2,
+    "completedSaleRecords": 0,
+    "winningBidRecords": 0,
+    "registeredTransactions": 0,
+    "currentAvailabilityRecords": 0,
+    "plottedRecordCount": 0,
+    "exactParcelGeometryCount": 0,
+    "unnormalizedSecondaryClaimCount": 5,
+    "personalDataFieldsStored": 0
+  },
+  "publicationRule": "These are two document-backed historical secured-creditor auction floors for one 1,043 sq-ft Navalur residential plot. The copies are hosted outside Tata Capital and do not establish a complete reserve history. They must never be relabelled as winning bids, completed or registered sales, guideline values, asking prices, market estimates, current availability or a village-wide Navalur rate. The asset remains unplotted because no verified coordinate or parcel geometry was published."
+}

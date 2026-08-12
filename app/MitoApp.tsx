@@ -41,6 +41,7 @@ import {
   officialAuctionReservePricesForVillage,
   officialCommercialAuctionReservesForVillage,
   officialSecuredCreditorLandReservesForVillage,
+  navalurResidentialLandReservesForVillage,
   omrGuidelineCaptureRun,
   omrGuidelineLiveRegisterSummary,
   omrGuidelineOmrInventoryAudit,
@@ -55,6 +56,8 @@ import {
   omrOfficialCommercialAuctionReserveSummary,
   omrOfficialSecuredCreditorLandReserveLedger,
   omrOfficialSecuredCreditorLandReserveSummary,
+  omrNavalurResidentialLandReserveLedger,
+  omrNavalurResidentialLandReserveSummary,
   omrOfficialUnresolvedThaiyurLandReserveLedger,
   omrOfficialUnresolvedThaiyurLandReserveSummary,
   omrSemmancheriAcceptedLandBidOutcomeLedger,
@@ -248,6 +251,9 @@ export default function MitoApp() {
   const selectedCoverageSecuredCreditorLandReserves = selectedCoverageUnit
     ? officialSecuredCreditorLandReservesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
     : [];
+  const selectedCoverageNavalurResidentialLandReserves = selectedCoverageUnit
+    ? navalurResidentialLandReservesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
   const selectedCoverageUnresolvedThaiyurLandReserves = selectedCoverageUnit
     ? unresolvedThaiyurLandReservesForCandidateVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
     : [];
@@ -256,6 +262,9 @@ export default function MitoApp() {
     : [];
   const selectedCoverageLatestSecuredCreditorLandReserve = selectedCoverageSecuredCreditorLandReserves.length
     ? selectedCoverageSecuredCreditorLandReserves[selectedCoverageSecuredCreditorLandReserves.length - 1]
+    : null;
+  const selectedCoverageLatestNavalurResidentialLandReserve = selectedCoverageNavalurResidentialLandReserves.length
+    ? selectedCoverageNavalurResidentialLandReserves[selectedCoverageNavalurResidentialLandReserves.length - 1]
     : null;
   const selectedCoverageHousingOffers = selectedCoverageUnit
     ? tnhbHousingOffersForCandidateVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
@@ -570,9 +579,10 @@ export default function MitoApp() {
                 const auctionReserveRecordCount = officialAuctionReservePricesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const commercialAuctionReserveRecordCount = officialCommercialAuctionReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const securedCreditorLandReserveRecordCount = officialSecuredCreditorLandReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
+                const navalurResidentialLandReserveRecordCount = navalurResidentialLandReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const unresolvedThaiyurLandReserveRecordCount = unresolvedThaiyurLandReservesForCandidateVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const acceptedLandBidPriceCount = semmancheriAcceptedLandBidPricesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
-                const totalAuctionReserveRecordCount = auctionReserveRecordCount + commercialAuctionReserveRecordCount + securedCreditorLandReserveRecordCount + unresolvedThaiyurLandReserveRecordCount + acceptedLandBidPriceCount;
+                const totalAuctionReserveRecordCount = auctionReserveRecordCount + commercialAuctionReserveRecordCount + securedCreditorLandReserveRecordCount + navalurResidentialLandReserveRecordCount + unresolvedThaiyurLandReserveRecordCount + acceptedLandBidPriceCount;
                 const hasCurrentInventory = "streetTargetEvidenceStatus" in unit && unit.streetTargetEvidenceStatus === "live_official_metadata";
                 const unitKey = `${unit.officialSroCode}:${unit.officialVillageCode}`;
                 const match = coverageMatchByKey.get(unitKey);
@@ -590,7 +600,7 @@ export default function MitoApp() {
                       <span>{unit.nameTa}</span>
                       <small>{query && match ? `Matched “${match.matchedAlias}” · ` : ""}{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
                     </div>
-                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{auctionReserveRecordCount ? `${auctionReserveRecordCount} direct land reserve · not sale` : securedCreditorLandReserveRecordCount ? `${securedCreditorLandReserveRecordCount} land reserve events · source point` : commercialAuctionReserveRecordCount ? `${commercialAuctionReserveRecordCount} combined-asset reserve events · not sale` : unresolvedThaiyurLandReserveRecordCount ? "1 unresolved Thaiyur land reserve · not sale" : hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
+                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{auctionReserveRecordCount ? `${auctionReserveRecordCount} direct land reserve · not sale` : navalurResidentialLandReserveRecordCount ? `${navalurResidentialLandReserveRecordCount} document-backed land reserves · not sale` : securedCreditorLandReserveRecordCount ? `${securedCreditorLandReserveRecordCount} land reserve events · source point` : commercialAuctionReserveRecordCount ? `${commercialAuctionReserveRecordCount} combined-asset reserve events · not sale` : unresolvedThaiyurLandReserveRecordCount ? "1 unresolved Thaiyur land reserve · not sale" : hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
                   </button>
                 );
               })}
@@ -679,6 +689,8 @@ export default function MitoApp() {
                 ? selectedCoverageUnit
                   ? selectedCoverageAuctionReservePrices.length
                     ? <><strong>{formatRate(selectedCoverageAuctionReservePrices[0].derivedReservePriceRangeInrPerSqft.low)}–{formatRate(selectedCoverageAuctionReservePrices[0].derivedReservePriceRangeInrPerSqft.high)}</strong><span>per sq ft · liquidation reserve</span></>
+                    : selectedCoverageLatestNavalurResidentialLandReserve
+                      ? <><strong>{formatRate(selectedCoverageLatestNavalurResidentialLandReserve.derivedReservePriceInrPerSqft)}</strong><span>per land sq ft · latest verified reserve checkpoint</span></>
                     : selectedCoverageLatestSecuredCreditorLandReserve
                       ? <><strong>{formatRate(selectedCoverageLatestSecuredCreditorLandReserve.derivedReservePriceInrPerSqft)}</strong><span>per sq ft · latest land-auction reserve</span></>
                     : <><strong>{inr.format(selectedCoverageUnit.streetTargetCount)}</strong><span>current official inventory items</span></>
@@ -699,6 +711,8 @@ export default function MitoApp() {
               ? selectedCoverageUnit
                 ? selectedCoverageAuctionReservePrices.length
                   ? "Official 2025 liquidation reserve · auction outcome price unknown"
+                  : selectedCoverageLatestNavalurResidentialLandReserve
+                    ? "Latest document-backed Navalur auction floor · not a sale or market price"
                   : selectedCoverageLatestSecuredCreditorLandReserve
                     ? "Latest verified secured-creditor reserve · not a sale or market price"
                   : selectedCoverageCommercialAuctionReserves.length
@@ -756,6 +770,14 @@ export default function MitoApp() {
                     <div><MapPin size={17} /></div>
                     <p><strong>{selectedCoverageSecuredCreditorLandReserves.length} official industrial-land reserve events</strong><span>₹1.96 crore → ₹1.7955 crore · 8,017 sq ft · source-published asset point</span></p>
                     <em>Reserve price, not sale</em>
+                  </section>
+                )}
+
+                {selectedCoverageNavalurResidentialLandReserves.length > 0 && (
+                  <section className="auction-evidence-card">
+                    <div><Database size={17} /></div>
+                    <p><strong>{selectedCoverageNavalurResidentialLandReserves.length} document-backed Navalur land reserves</strong><span>₹57.365 lakh → ₹45.00 lakh · 1,043 sq ft · unplotted</span></p>
+                    <em>Historical floors, not a complete history or sale</em>
                   </section>
                 )}
 
@@ -822,11 +844,11 @@ export default function MitoApp() {
                   <div className="planning-evidence-summary village-evidence-summary">
                     <div><strong>{selectedCoveragePlanningRecords.length}</strong><span>planning records</span></div>
                     <div><strong>{selectedCoverageArchivedRecords.length}</strong><span>archived values</span></div>
-                    <div><strong>{selectedCoverageAuctionReservePrices.length + selectedCoverageCommercialAuctionReserves.length + selectedCoverageSecuredCreditorLandReserves.length + selectedCoverageUnresolvedThaiyurLandReserves.length + selectedCoverageAcceptedLandBidPrices.length}</strong><span>auction prices</span></div>
+                    <div><strong>{selectedCoverageAuctionReservePrices.length + selectedCoverageCommercialAuctionReserves.length + selectedCoverageSecuredCreditorLandReserves.length + selectedCoverageNavalurResidentialLandReserves.length + selectedCoverageUnresolvedThaiyurLandReserves.length + selectedCoverageAcceptedLandBidPrices.length}</strong><span>auction prices</span></div>
                     <div><strong>{selectedCoverageHousingOffers.length}</strong><span>unresolved housing prices</span></div>
                     <div><strong>0</strong><span>current values</span></div>
                   </div>
-                  <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAuctionReservePrices.length ? "One exact-village liquidation reserve is published, but the winning bid, registered transfer and parcel geometry remain unavailable." : selectedCoverageSecuredCreditorLandReserves.length ? "Five direct industrial-land reserves, one residential-land reserve and one accepted residential-land bid are verified. The accepted bid was later cancelled and is not a completed sale; the assets still lack parcel geometry." : selectedCoverageCommercialAuctionReserves.length ? "Two reserve observations are published for one Siruseri commercial asset, but they combine land and building, have no verified auction outcome and use only a named park association." : selectedCoverageUnresolvedThaiyurLandReserves.length ? "One land-auction reserve is published only against the unsplit Thaiyur place label. It is excluded from direct Thaiyur A/B coverage and has no verified outcome or parcel geometry." : selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
+                  <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAuctionReservePrices.length ? "One exact-village liquidation reserve is published, but the winning bid, registered transfer and parcel geometry remain unavailable." : selectedCoverageNavalurResidentialLandReserves.length ? "Two historical Navalur reserve checkpoints are document-backed. They are not a complete reserve history; the auction outcome, current status, registered transfer and parcel geometry remain unavailable." : selectedCoverageSecuredCreditorLandReserves.length ? "Five direct industrial-land reserves, one residential-land reserve and one accepted residential-land bid are verified. The accepted bid was later cancelled and is not a completed sale; the assets still lack parcel geometry." : selectedCoverageCommercialAuctionReserves.length ? "Two reserve observations are published for one Siruseri commercial asset, but they combine land and building, have no verified auction outcome and use only a named park association." : selectedCoverageUnresolvedThaiyurLandReserves.length ? "One land-auction reserve is published only against the unsplit Thaiyur place label. It is excluded from direct Thaiyur A/B coverage and has no verified outcome or parcel geometry." : selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
                 </section>
 
                 {selectedCoverageEvidenceMatrix && (
@@ -838,6 +860,7 @@ export default function MitoApp() {
                       <div><span>SIPCOT land schedule</span><strong>{selectedCoverageEvidenceMatrix.governmentAllotment.recordCount ? `${selectedCoverageEvidenceMatrix.governmentAllotment.recordCount} named park rates` : "No named park association"}</strong></div>
                       <div><span>IBBI liquidation auction</span><strong>{selectedCoverageEvidenceMatrix.officialAuctionReservePrices.recordCount ? "1 direct land reserve · outcome price unknown" : selectedCoverageEvidenceMatrix.officialCommercialAuctionReserves.recordCount ? `${selectedCoverageEvidenceMatrix.officialCommercialAuctionReserves.recordCount} named-park combined reserves · outcomes unknown` : "No record in current ledger"}</strong></div>
                       <div><span>TMB secured-creditor auction</span><strong>{selectedCoverageEvidenceMatrix.officialSecuredCreditorLandReserves.recordCount ? `${selectedCoverageEvidenceMatrix.officialSecuredCreditorLandReserves.recordCount} direct land reserves · source point` : "No record in current ledger"}</strong></div>
+                      <div><span>Tata Navalur auction notices</span><strong>{selectedCoverageEvidenceMatrix.navalurResidentialLandReserves.recordCount ? `${selectedCoverageEvidenceMatrix.navalurResidentialLandReserves.recordCount} document-backed reserves · outcome unknown` : "No record in current ledger"}</strong></div>
                       <div><span>DRT auction outcome</span><strong>{selectedCoverageEvidenceMatrix.officialAcceptedLandBidOutcome.acceptedBidRecordCount ? "1 accepted bid · cancelled, no sale" : "No record in current ledger"}</strong></div>
                       <div><span>Repco Thaiyur auction</span><strong>{selectedCoverageEvidenceMatrix.officialUnresolvedThaiyurLandReserve.recordCount ? "1 unresolved land reserve · A/B unknown" : "No candidate record in current ledger"}</strong></div>
                       <div><span>CMDA planning</span><strong>{selectedCoverageEvidenceMatrix.planning.directRecordCount ? `${selectedCoverageEvidenceMatrix.planning.directRecordCount} direct ${selectedCoverageEvidenceMatrix.planning.directRecordCount === 1 ? "record" : "records"}` : "No direct record in current ledger"}</strong></div>
@@ -894,6 +917,21 @@ export default function MitoApp() {
                   </section>
                 )}
 
+                {selectedCoverageNavalurResidentialLandReserves.length > 0 && (
+                  <section className="inspector-section auction-reserve-section">
+                    <div className="section-heading"><div><span>Document-backed statutory notices</span><h2>Navalur residential-land reserve checkpoints</h2></div><Database size={17} /></div>
+                    {selectedCoverageNavalurResidentialLandReserves.map((record) => (
+                      <article key={record.id} className="auction-reserve-card">
+                        <div><span>residential land</span><em>{record.auctionDate === "2025-07-22" ? "auction" : "re-auction"}</em></div>
+                        <strong>{formatRate(record.derivedReservePriceInrPerSqft)}<small>/land sq ft</small></strong>
+                        <p>₹{(record.totalReservePriceInr / 100_000).toFixed(2)} lakh reserve · {inr.format(record.landAreaSqft)} sq ft land</p>
+                        <footer><span>Auction {new Date(`${record.auctionDate}T00:00:00+05:30`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span><b>Unplotted</b></footer>
+                      </article>
+                    ))}
+                    <p className="coverage-method">Two inspected Business Standard copies of Tata-issued statutory notices support these checkpoints. The verified floor moved from ₹5,500 to ₹4,314.48 per land sq ft, 21.56% lower. Five aggregator-only claims are excluded pending their underlying notices, so this is not presented as a complete reserve history.</p>
+                  </section>
+                )}
+
                 {selectedCoverageCommercialAuctionReserves.length > 0 && (
                   <section className="inspector-section auction-reserve-section">
                     <div className="section-heading"><div><span>Official liquidation auction</span><h2>Siruseri commercial reserve timeline</h2></div><Building2 size={17} /></div>
@@ -923,13 +961,15 @@ export default function MitoApp() {
                   {selectedCoverageCommercialAuctionReserves.length > 0 && <div className="gate-row"><X size={14} /><span>Land-only value, winning bids, registered transfer and exact asset geometry are not published</span></div>}
                   {selectedCoverageSecuredCreditorLandReserves.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Five official Semmancheri industrial-land reserve observations and one source point reconciled</span></div>}
                   {selectedCoverageSecuredCreditorLandReserves.length > 0 && <div className="gate-row"><X size={14} /><span>Winning bid, sale certificate, registered transfer, current availability and parcel boundary are not published</span></div>}
+                  {selectedCoverageNavalurResidentialLandReserves.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Two Navalur statutory-notice copies reconciled to one 1,043 sq-ft residential plot</span></div>}
+                  {selectedCoverageNavalurResidentialLandReserves.length > 0 && <div className="gate-row"><X size={14} /><span>Five secondary claims lack underlying notices; complete reserve history, outcome, current status and parcel geometry remain unverified</span></div>}
                   {selectedCoverageAcceptedLandBidPrices.length > 0 && <div className="gate-row passed"><Check size={14} /><span>One residential-land reserve and accepted bid captured from the tribunal-stated outcome</span></div>}
                   {selectedCoverageAcceptedLandBidPrices.length > 0 && <div className="gate-row"><X size={14} /><span>The accepted bid was cancelled and did not become a completed or registered sale</span></div>}
                   <div className="gate-row"><X size={14} /><span>Authorized row-level guideline values not captured</span></div>
                   <div className="gate-row"><X size={14} /><span>No verified registered transactions in MITO yet</span></div>
                 </section>
 
-                <section className="gap-card"><AlertTriangle size={18} /><div><strong>{selectedCoverageAuctionReservePrices.length || selectedCoverageCommercialAuctionReserves.length || selectedCoverageSecuredCreditorLandReserves.length || selectedCoverageAcceptedLandBidPrices.length ? "Do not treat auction evidence as a completed sale" : "Do not treat the inventory count as a price"}</strong><p>{selectedCoverageAuctionReservePrices.length ? "₹4,505–₹4,514 per sq ft is the normalized floor set for one 2025 liquidation auction. It does not establish the winning bid, current market value or a village-wide rate." : selectedCoverageSecuredCreditorLandReserves.length ? "Semmancheri now has ₹2,240–₹2,445 industrial-land reserve evidence plus one ₹3,259.01 residential-land accepted bid. The latter was cancelled after the unpaid balance; neither establishes a registered sale or village-wide market rate." : selectedCoverageCommercialAuctionReserves.length ? "₹1,965–₹2,237 per building sq ft is a comparison of two floors for one combined land-and-building asset. It is not a land price, winning bid, registered consideration or village-wide Siruseri value." : `${selectedCoverageInventory.displayedItemCount} is the number of official register items returned for this village. MITO publishes no current ₹/sq ft figure until authorized row data or independently verified transaction evidence is available.`}</p></div></section>
+                <section className="gap-card"><AlertTriangle size={18} /><div><strong>{selectedCoverageAuctionReservePrices.length || selectedCoverageCommercialAuctionReserves.length || selectedCoverageSecuredCreditorLandReserves.length || selectedCoverageNavalurResidentialLandReserves.length || selectedCoverageAcceptedLandBidPrices.length ? "Do not treat auction evidence as a completed sale" : "Do not treat the inventory count as a price"}</strong><p>{selectedCoverageAuctionReservePrices.length ? "₹4,505–₹4,514 per sq ft is the normalized floor set for one 2025 liquidation auction. It does not establish the winning bid, current market value or a village-wide rate." : selectedCoverageNavalurResidentialLandReserves.length ? "₹5,500 and ₹4,314.48 per land sq ft are historical reserve checkpoints for one Navalur plot. They do not establish a winning bid, completed sale, current availability, current market value or village-wide rate." : selectedCoverageSecuredCreditorLandReserves.length ? "Semmancheri now has ₹2,240–₹2,445 industrial-land reserve evidence plus one ₹3,259.01 residential-land accepted bid. The latter was cancelled after the unpaid balance; neither establishes a registered sale or village-wide market rate." : selectedCoverageCommercialAuctionReserves.length ? "₹1,965–₹2,237 per building sq ft is a comparison of two floors for one combined land-and-building asset. It is not a land price, winning bid, registered consideration or village-wide Siruseri value." : `${selectedCoverageInventory.displayedItemCount} is the number of official register items returned for this village. MITO publishes no current ₹/sq ft figure until authorized row data or independently verified transaction evidence is available.`}</p></div></section>
               </>
             ) : (
             <>
@@ -982,6 +1022,12 @@ export default function MitoApp() {
               </section>
 
               <section className="auction-evidence-card">
+                <div><Database size={17} /></div>
+                <p><strong>{omrNavalurResidentialLandReserveSummary.recordCount} Navalur residential-land reserve checkpoints</strong><span>One 1,043 sq-ft plot · ₹57.365 lakh → ₹45 lakh · unplotted, outcome unknown</span></p>
+                <em>Document-backed floors · incomplete history</em>
+              </section>
+
+              <section className="auction-evidence-card">
                 <div><AlertTriangle size={17} /></div>
                 <p><strong>{omrOfficialUnresolvedThaiyurLandReserveSummary.recordCount} Thaiyur land-auction reserve</strong><span>One 693 sq-ft plot · ₹11.23 lakh · unresolved between Thaiyur A and B</span></p>
                 <em>One record · zero direct village links</em>
@@ -1010,6 +1056,7 @@ export default function MitoApp() {
                 <div className="coverage-progress-row"><div><span>Official auction reserve prices</span><strong>{omrCoverageSummary.officialAuctionReservePriceCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialAuctionReservePriceVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One exact-village liquidation reserve · zero winning-bid or registered-transaction records</small></div>
                 <div className="coverage-progress-row"><div><span>Commercial auction reserve history</span><strong>{omrCoverageSummary.officialCommercialAuctionReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialCommercialAuctionNamedParkAssociationCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One Siruseri combined land-and-building asset · named park association · zero winning-bid or land-rate records</small></div>
                 <div className="coverage-progress-row"><div><span>Secured-creditor land reserve history</span><strong>{omrCoverageSummary.officialSecuredCreditorLandReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialSecuredCreditorLandReserveVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One directly linked Semmancheri industrial-land asset · five reserve observations · zero winning bids or registered transfers</small></div>
+                <div className="coverage-progress-row"><div><span>Navalur residential-land reserve checkpoints</span><strong>{omrCoverageSummary.navalurResidentialLandReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.navalurResidentialLandReserveVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One directly linked plot · two document-backed observations · five secondary claims excluded · zero completed or registered sales</small></div>
                 <div className="coverage-progress-row"><div><span>Unresolved Thaiyur land reserve</span><strong>{omrCoverageSummary.officialUnresolvedThaiyurLandReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: "0%" }} /></div><small>One Repco reserve shown to two candidate villages · zero direct links, winning bids or registered transfers</small></div>
                 <div className="coverage-progress-row"><div><span>Accepted land-auction bids</span><strong>{omrCoverageSummary.officialAcceptedLandBidRecordCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialAcceptedLandBidVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One tribunal-stated accepted Semmancheri bid · cancelled after unpaid balance · zero completed or registered sales</small></div>
                 <div className="coverage-progress-row"><div><span>Publishable approximate geometries</span><strong>{omrCoverageSummary.publishableApproximateGeometryCount}</strong></div><div className="coverage-progress geometry"><i style={{ width: `${Math.round((omrCoverageSummary.publishableApproximateGeometryCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named OSM park footprint · zero exact, official or cadastral geometries published</small></div>
@@ -1074,6 +1121,28 @@ export default function MitoApp() {
                       </article>
                     ))}
                     <p className="coverage-method">{omrOfficialSecuredCreditorLandReserveLedger.publication.caveat} The Mayana Salai/Pondicherry Salai conflict and historical taluk labels remain explicit; the repeated coordinate is not promoted to a parcel boundary.</p>
+                  </section>
+                )}
+
+                {selectedCoverageNavalurResidentialLandReserves.length > 0 && (
+                  <section className="inspector-section evidence-section auction-source-section">
+                    <div className="section-heading"><div><span>Document-backed secured-creditor evidence</span><h2>Tata Navalur source chain</h2></div><Database size={17} /></div>
+                    {omrNavalurResidentialLandReserveLedger.sources.map((source) => (
+                      <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="source-card auction-source">
+                        <span className={`source-kind ${source.officialHost ? "official" : "snapshot"}`}>{source.officialHost ? "official feed" : "notice copy"}</span>
+                        <div><strong>{source.title}</strong><p>{source.organization}</p><small>{"auctionDate" in source ? `auction ${source.auctionDate} · page ${source.pagesInspected.join(", ")}` : `${source.recordCountScanned} current-feed rows audited · ${source.targetMatchCount} target matches`} · factual audit only</small></div>
+                        <ExternalLink size={15} />
+                      </a>
+                    ))}
+                    {selectedCoverageNavalurResidentialLandReserves.map((record) => (
+                      <article key={record.id} className="auction-reserve-card detailed">
+                        <div><span>{record.priceTypeLabel}</span><em>{record.lifecycleStatus.replaceAll("_", " ")}</em></div>
+                        <strong>{formatRate(record.derivedReservePriceInrPerSqft)}<small>/land sq ft</small></strong>
+                        <p>₹{(record.totalReservePriceInr / 100_000).toFixed(2)} lakh reserve divided by {inr.format(record.landAreaSqft)} sq ft.</p>
+                        <footer><span>Winning bid: unpublished</span><b>Direct village · unplotted</b></footer>
+                      </article>
+                    ))}
+                    <p className="coverage-method">The copies reproduce Tata-issued statutory notices, but their host is not promoted as an official Tata source. The official 12 August 2026 Tata export had zero target matches; absence cannot establish that the plot sold, was withdrawn or is currently available. Five secondary claims remain unnormalized.</p>
                   </section>
                 )}
 
@@ -1285,6 +1354,16 @@ export default function MitoApp() {
                   <div><strong>{omrOfficialSecuredCreditorLandReserveLedger.sources[5].title}</strong><p>{omrOfficialSecuredCreditorLandReserveLedger.sources[5].organization}</p><small>Same 8,017 sq-ft land listed as security possessed at 30 Jun 2026 · not proof of current auction availability</small></div>
                   <ExternalLink size={15} />
                 </a>
+                <a href={omrNavalurResidentialLandReserveLedger.sources[1].url} target="_blank" rel="noreferrer" className="source-card auction-source">
+                  <span className="source-kind snapshot">notice copy</span>
+                  <div><strong>{omrNavalurResidentialLandReserveLedger.sources[1].title}</strong><p>{omrNavalurResidentialLandReserveLedger.sources[1].organization}</p><small>2 document-backed Navalur reserve checkpoints · ₹5,500 → ₹4,314.48/land sq ft · incomplete history, no sale outcome</small></div>
+                  <ExternalLink size={15} />
+                </a>
+                <a href={omrNavalurResidentialLandReserveLedger.sources[2].url} target="_blank" rel="noreferrer" className="source-card auction-source">
+                  <span className="source-kind official">official feed</span>
+                  <div><strong>{omrNavalurResidentialLandReserveLedger.sources[2].title}</strong><p>{omrNavalurResidentialLandReserveLedger.sources[2].organization}</p><small>511 rows audited on 12 Aug 2026 · zero target matches · absence does not prove sale, withdrawal or current status</small></div>
+                  <ExternalLink size={15} />
+                </a>
                 <a href={omrSemmancheriAcceptedLandBidOutcomeLedger.sources[0].url} target="_blank" rel="noreferrer" className="source-card auction-source">
                   <span className="source-kind official">official docket</span>
                   <div><strong>{omrSemmancheriAcceptedLandBidOutcomeLedger.sources[0].title}</strong><p>{omrSemmancheriAcceptedLandBidOutcomeLedger.sources[0].organization}</p><small>Corroborates SA 137/2025 and its Union Bank case identity · not the order text</small></div>
@@ -1433,6 +1512,23 @@ export default function MitoApp() {
                     <p className="coverage-method">The same asset moved from ₹1.96 crore to ₹1.7955 crore, or ₹2,444.80 to ₹2,239.62 per land sq ft. Repeated auction notices do not prove a failed auction, and the current possession register does not prove current availability, title transfer or a completed sale.</p>
                     <a className="resolver-api-link" href={omrOfficialSecuredCreditorLandReserveLedger.sources[0].url} target="_blank" rel="noreferrer">Open the first official auction notice <ArrowUpRight size={13} /></a>
                     <a className="resolver-api-link" href={omrOfficialSecuredCreditorLandReserveLedger.sources[5].url} target="_blank" rel="noreferrer">Open the 30 June 2026 secured-assets register <ArrowUpRight size={13} /></a>
+                  </section>
+                )}
+
+                {selectedCoverageNavalurResidentialLandReserves.length > 0 && (
+                  <section className="inspector-section context-section">
+                    <div className="section-heading"><div><span>Price interpretation</span><h2>What the Navalur checkpoints mean</h2></div><CircleHelp size={17} /></div>
+                    <dl className="detail-grid">
+                      <div><dt>Evidence</dt><dd>Residential-land auction floors</dd></div>
+                      <div><dt>Verified points</dt><dd>2 · Jul and Oct 2025</dd></div>
+                      <div><dt>Asset</dt><dd>Park Enclave plot · 1,043 sq ft</dd></div>
+                      <div><dt>Checkpoint change</dt><dd>−{omrNavalurResidentialLandReserveSummary.verifiedCheckpointReductionPercent}%</dd></div>
+                      <div><dt>Outcome/current status</dt><dd>Not published</dd></div>
+                      <div><dt>Geometry</dt><dd>Unplotted</dd></div>
+                    </dl>
+                    <p className="coverage-method">The verified checkpoints moved from ₹57.365 lakh to ₹45 lakh. That shows a lower later auction floor for the same plot, not a market-price decline or sale result. Five intervening or later aggregator claims are visible as capture gaps and excluded from calculations.</p>
+                    <a className="resolver-api-link" href={omrNavalurResidentialLandReserveLedger.sources[0].url} target="_blank" rel="noreferrer">Open the July statutory-notice copy <ArrowUpRight size={13} /></a>
+                    <a className="resolver-api-link" href={omrNavalurResidentialLandReserveLedger.sources[2].url} target="_blank" rel="noreferrer">Open the current official Tata feed <ArrowUpRight size={13} /></a>
                   </section>
                 )}
 

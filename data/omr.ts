@@ -6,12 +6,14 @@ import {
   officialAuctionReservePricesForVillage,
   officialCommercialAuctionReservesForVillage,
   officialSecuredCreditorLandReservesForVillage,
+  navalurResidentialLandReservesForVillage,
   omrGuidelineOmrInventoryAudit,
   omrGuidelineSnapshotSummary,
   omrOfficialAllotmentRateSummary,
   omrOfficialAuctionReservePriceSummary,
   omrOfficialCommercialAuctionReserveSummary,
   omrOfficialSecuredCreditorLandReserveSummary,
+  omrNavalurResidentialLandReserveSummary,
   omrOfficialUnresolvedThaiyurLandReserveSummary,
   omrSemmancheriAcceptedLandBidOutcomeSummary,
   omrPlanningSummary,
@@ -217,6 +219,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   const officialAuctionReservePrices = officialAuctionReservePricesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const officialCommercialAuctionReserves = officialCommercialAuctionReservesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const officialSecuredCreditorLandReserves = officialSecuredCreditorLandReservesForVillage(unit.officialSroCode, unit.officialVillageCode);
+  const navalurResidentialLandReserves = navalurResidentialLandReservesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const unresolvedThaiyurLandReserves = unresolvedThaiyurLandReservesForCandidateVillage(unit.officialSroCode, unit.officialVillageCode);
   const acceptedLandBidPrices = semmancheriAcceptedLandBidPricesForVillage(unit.officialSroCode, unit.officialVillageCode);
   const unresolvedHousingOffers = tnhbHousingOffersForCandidateVillage(unit.officialSroCode, unit.officialVillageCode);
@@ -229,6 +232,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   if (officialAuctionReservePrices.length) availableEvidenceTypes.push("official_liquidation_auction_reserve_price");
   if (officialCommercialAuctionReserves.length) availableEvidenceTypes.push("official_liquidation_combined_asset_reserve_history");
   if (officialSecuredCreditorLandReserves.length) availableEvidenceTypes.push("official_secured_creditor_land_reserve_history");
+  if (navalurResidentialLandReserves.length) availableEvidenceTypes.push("document_backed_secured_creditor_residential_land_reserve_checkpoints");
   if (unresolvedThaiyurLandReserves.length) availableEvidenceTypes.push("unresolved_official_land_auction_reserve_price");
   if (acceptedLandBidPrices.length) availableEvidenceTypes.push("tribunal_verified_auction_reserve_and_accepted_bid_outcome");
   if (unresolvedHousingOffers.length) availableEvidenceTypes.push("unresolved_official_housing_prices");
@@ -245,6 +249,7 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
   if (officialAuctionReservePrices.length) primaryBlockers.push("The concluded liquidation auction's winning bid and registered transfer are not published.");
   if (officialCommercialAuctionReserves.length) primaryBlockers.push("The Siruseri auction outcome and asset-to-registration-polygon crosswalk are not published.");
   if (officialSecuredCreditorLandReserves.length) primaryBlockers.push("The Semmancheri auction outcome, registered transfer and parcel boundary are not published.");
+  if (navalurResidentialLandReserves.length) primaryBlockers.push("The Navalur documents establish only two historical reserve checkpoints; the complete reserve history, outcome, current status and parcel geometry are not published.");
   if (unresolvedThaiyurLandReserves.length) primaryBlockers.push("The Repco notice does not resolve Thaiyur A versus B, and its auction outcome and transfer are unpublished.");
   if (acceptedLandBidPrices.length) primaryBlockers.push("The Semmancheri accepted bid was cancelled after the unpaid balance and did not become a completed or registered sale.");
 
@@ -312,6 +317,34 @@ export const omrVillageEvidenceMatrix = units.map((unit) => {
       exactParcelGeometryCount: 0,
       registeredTransactionCount: 0,
       winningBidRecordCount: 0,
+    },
+    navalurResidentialLandReserves: {
+      status: navalurResidentialLandReserves.length ? "direct_document_backed_reserve_checkpoints_found" : "no_direct_record_in_ledger",
+      recordCount: navalurResidentialLandReserves.length,
+      assetCount: navalurResidentialLandReserves.length ? 1 : 0,
+      directRecordCount: navalurResidentialLandReserves.length,
+      lifecycleStatus: navalurResidentialLandReserves.length ? omrNavalurResidentialLandReserveSummary.currentLifecycleStatus : null,
+      lifecycleAsOf: navalurResidentialLandReserves.length ? omrNavalurResidentialLandReserveSummary.currentLifecycleAsOf : null,
+      reservePriceRangeInr: navalurResidentialLandReserves.length ? omrNavalurResidentialLandReserveSummary.reservePriceRangeInr : null,
+      derivedLandReserveRangeInrPerSqft: navalurResidentialLandReserves.length
+        ? omrNavalurResidentialLandReserveSummary.derivedLandReserveRangeInrPerSqft
+        : null,
+      verifiedCheckpointReductionPercent: navalurResidentialLandReserves.length
+        ? omrNavalurResidentialLandReserveSummary.verifiedCheckpointReductionPercent
+        : null,
+      completeReserveHistoryVerified: navalurResidentialLandReserves.length
+        ? omrNavalurResidentialLandReserveSummary.completeReserveHistoryVerified
+        : false,
+      unnormalizedSecondaryClaimCount: navalurResidentialLandReserves.length
+        ? omrNavalurResidentialLandReserveSummary.unnormalizedSecondaryClaimCount
+        : 0,
+      currentOfficialFeedTargetMatchCount: navalurResidentialLandReserves.length
+        ? omrNavalurResidentialLandReserveSummary.officialCurrentFeedTargetMatchCount
+        : 0,
+      registeredTransactionCount: 0,
+      completedSaleRecordCount: 0,
+      winningBidRecordCount: 0,
+      plottedRecordCount: 0,
     },
     officialUnresolvedThaiyurLandReserve: {
       status: unresolvedThaiyurLandReserves.length ? "unresolved_registration_subdivision" : "no_candidate_record_in_ledger",
@@ -396,6 +429,12 @@ export const omrCoverageSummary = {
   officialSecuredCreditorLandReserveAssetCount: omrOfficialSecuredCreditorLandReserveSummary.assetCount,
   officialSecuredCreditorLandReserveVillageCount: omrOfficialSecuredCreditorLandReserveSummary.directVillageLinkCount,
   officialSecuredCreditorLandReserveWinningBidRecordCount: omrOfficialSecuredCreditorLandReserveSummary.winningBidRecordCount,
+  navalurResidentialLandReserveCount: omrNavalurResidentialLandReserveSummary.recordCount,
+  navalurResidentialLandReserveAssetCount: omrNavalurResidentialLandReserveSummary.assetCount,
+  navalurResidentialLandReserveVillageCount: omrNavalurResidentialLandReserveSummary.directVillageLinkCount,
+  navalurResidentialLandReserveWinningBidRecordCount: omrNavalurResidentialLandReserveSummary.winningBidRecordCount,
+  navalurResidentialLandReserveRegisteredTransactionCount: omrNavalurResidentialLandReserveSummary.registeredTransactionCount,
+  navalurResidentialLandReserveUnnormalizedSecondaryClaimCount: omrNavalurResidentialLandReserveSummary.unnormalizedSecondaryClaimCount,
   officialUnresolvedThaiyurLandReserveCount: omrOfficialUnresolvedThaiyurLandReserveSummary.recordCount,
   officialUnresolvedThaiyurLandReserveAssetCount: omrOfficialUnresolvedThaiyurLandReserveSummary.assetCount,
   officialUnresolvedThaiyurCandidateVillageCount: omrOfficialUnresolvedThaiyurLandReserveSummary.candidateVillageCount,

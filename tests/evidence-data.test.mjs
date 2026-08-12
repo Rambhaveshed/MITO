@@ -18,6 +18,7 @@ const tnhbSholinganallurHousingOffersUrl = new URL("../data/evidence/tnhb-sholin
 const ibbiSholinganallurLandAuctionUrl = new URL("../data/evidence/ibbi-sholinganallur-land-auction-2025.json", import.meta.url);
 const ibbiTecproSiruseriCommercialAuctionsUrl = new URL("../data/evidence/ibbi-tecpro-siruseri-commercial-auctions-2022.json", import.meta.url);
 const tmbSemmancheriIndustrialLandAuctionsUrl = new URL("../data/evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json", import.meta.url);
+const tataNavalurResidentialLandAuctionsUrl = new URL("../data/evidence/tata-navalur-residential-land-auctions-2025.json", import.meta.url);
 const repcoThaiyurLandAuctionUrl = new URL("../data/evidence/repco-thaiyur-land-auction-2026.json", import.meta.url);
 const drtSemmancheriLandBidOutcomeUrl = new URL("../data/evidence/drt-semmancheri-residential-land-bid-outcome-2024-2026.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
@@ -240,6 +241,52 @@ test("TMB Semmancheri reserve history stays land-only, source-pointed and outcom
   assert.equal(ledger.publication.winningBidRecords, 0);
   assert.equal(ledger.publication.sourcePublishedPointCount, 1);
   assert.equal(ledger.publication.exactParcelGeometryCount, 0);
+  assert.equal(ledger.privacy.personalDataFieldsStored, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
+});
+
+test("Tata Navalur reserve checkpoints stay document-host-qualified, incomplete and outcome-unknown", async () => {
+  const ledger = await readJson(tataNavalurResidentialLandAuctionsUrl);
+  const records = ledger.records;
+
+  assert.deepEqual(ledger.sources.map((source) => source.documentDigest), [
+    "sha256:c4dcc2fc2c17e4a3c4055f8cb2eb82fcb60308d9e396f0766b2d24ccc72802ba",
+    "sha256:8d01169b3088d801e5f8f715c63c879a785584b18d5b5780a5c8523e5b746183",
+    "sha256:11117c05d6121f939d0a3b97467534cc920101794732efa8a776585b3e69abab",
+  ]);
+  assert.equal(ledger.sourceAuthority.directOfficialPriceDocumentUrlLocated, false);
+  assert.equal(ledger.sourceAuthority.statutoryNoticeCopiesVerified, true);
+  assert.equal(ledger.sourceAuthority.mirrorPromotedAsOfficialSource, false);
+  assert.equal(ledger.sources.filter((source) => source.officialHost).length, 1);
+  assert.equal(ledger.location.mappingStatus, "exact_official_registration_village");
+  assert.equal(ledger.location.officialSroCode, "22604");
+  assert.equal(ledger.location.officialVillageCode, "800000277");
+  assert.equal(ledger.location.directVillageLink, true);
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.location.geometryType, null);
+  assert.equal(ledger.asset.propertyClass, "residential_land");
+  assert.equal(ledger.asset.landAreaSqft, 1043);
+  assert.equal(ledger.asset.buildingAreaSqft, null);
+  assert.deepEqual(records.map((record) => record.totalReservePriceInr), [5736500, 4500000]);
+  assert.deepEqual(records.map((record) => record.derivedReservePriceInrPerSqft), [5500, 4314.48]);
+  assert.ok(records.every((record) => record.derivedReservePriceInrPerSqft === Math.round((record.totalReservePriceInr / record.landAreaSqft) * 100) / 100));
+  assert.equal(ledger.reconciliation.verifiedCheckpointReductionInr, 1236500);
+  assert.equal(ledger.reconciliation.verifiedCheckpointReductionPercent, 21.56);
+  assert.equal(ledger.reconciliation.completeReserveHistoryVerified, false);
+  assert.equal(ledger.secondaryClaims.claims.length, 5);
+  assert.equal(ledger.secondaryClaims.normalizedRecordCount, 0);
+  assert.equal(ledger.officialCurrentFeedAudit.recordCountScanned, 511);
+  assert.equal(ledger.officialCurrentFeedAudit.targetMatchCount, 0);
+  assert.match(ledger.officialCurrentFeedAudit.negativeInferenceRule, /cannot be interpreted as sold/i);
+  assert.ok(records.every((record) => record.isLandReservePrice && record.directVillageLink));
+  assert.ok(records.every((record) => record.winningBidInr === null && !record.saleCertificateVerified && !record.registeredTransferVerified));
+  assert.ok(records.every((record) => !record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate && !record.isWinningBid));
+  assert.equal(ledger.publication.recordCount, 2);
+  assert.equal(ledger.publication.completedSaleRecords, 0);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.winningBidRecords, 0);
+  assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.publication.unnormalizedSecondaryClaimCount, 5);
   assert.equal(ledger.privacy.personalDataFieldsStored, 0);
   assert.equal(ledger.publication.personalDataFieldsStored, 0);
 });

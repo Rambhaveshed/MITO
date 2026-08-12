@@ -16,6 +16,8 @@ import {
   omrOfficialCommercialAuctionReserveSummary,
   omrOfficialSecuredCreditorLandReserveLedger,
   omrOfficialSecuredCreditorLandReserveSummary,
+  omrNavalurResidentialLandReserveLedger,
+  omrNavalurResidentialLandReserveSummary,
   omrOfficialUnresolvedThaiyurLandReserveLedger,
   omrOfficialUnresolvedThaiyurLandReserveSummary,
   omrSemmancheriAcceptedLandBidOutcomeLedger,
@@ -31,7 +33,7 @@ import {
 
 export async function GET() {
   return Response.json({
-    generatedAt: "2026-07-21",
+    generatedAt: "2026-08-12",
     scopeId: omrPlanningLedger.scopeId,
     planning: {
       summary: omrPlanningSummary,
@@ -93,6 +95,20 @@ export async function GET() {
       reconciliation: omrOfficialSecuredCreditorLandReserveLedger.reconciliation,
       publication: omrOfficialSecuredCreditorLandReserveLedger.publication,
       publicationRule: "These are secured-creditor auction floors for one 8,017 sq-ft industrial-land asset. They must never be relabelled as winning bids, registered consideration, guideline values, asking prices, market estimates, current availability or a village-wide Semmancheri rate. The source point is not a parcel boundary.",
+    },
+    navalurResidentialLandReserves: {
+      summary: omrNavalurResidentialLandReserveSummary,
+      sources: omrNavalurResidentialLandReserveLedger.sources,
+      sourceAuthority: omrNavalurResidentialLandReserveLedger.sourceAuthority,
+      privacy: omrNavalurResidentialLandReserveLedger.privacy,
+      location: omrNavalurResidentialLandReserveLedger.location,
+      asset: omrNavalurResidentialLandReserveLedger.asset,
+      records: omrNavalurResidentialLandReserveLedger.records,
+      secondaryClaims: omrNavalurResidentialLandReserveLedger.secondaryClaims,
+      officialCurrentFeedAudit: omrNavalurResidentialLandReserveLedger.officialCurrentFeedAudit,
+      reconciliation: omrNavalurResidentialLandReserveLedger.reconciliation,
+      publication: omrNavalurResidentialLandReserveLedger.publication,
+      publicationRule: omrNavalurResidentialLandReserveLedger.publicationRule,
     },
     officialUnresolvedThaiyurLandReserve: {
       summary: omrOfficialUnresolvedThaiyurLandReserveSummary,
