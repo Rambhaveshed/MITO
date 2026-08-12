@@ -12,6 +12,7 @@ import planningLedger from "./evidence/omr-planning-records.json";
 import repcoThaiyurLandAuction from "./evidence/repco-thaiyur-land-auction-2026.json";
 import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
+import sbiKazhipatturCombinedAssetAuctions from "./evidence/sbi-kazhipattur-combined-asset-auctions-2023-2025.json";
 import tnhbSholinganallurHousingOffers from "./evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json";
 import tataNavalurResidentialLandAuctions from "./evidence/tata-navalur-residential-land-auctions-2025.json";
 import tmbSemmancheriIndustrialLandAuctions from "./evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json";
@@ -38,6 +39,7 @@ export const omrOfficialAuctionReservePriceLedger = ibbiSholinganallurLandAuctio
 export const omrOfficialCommercialAuctionReserveLedger = ibbiTecproSiruseriCommercialAuctions;
 export const omrOfficialSecuredCreditorLandReserveLedger = tmbSemmancheriIndustrialLandAuctions;
 export const omrNavalurResidentialLandReserveLedger = tataNavalurResidentialLandAuctions;
+export const omrKazhipatturCombinedAssetReserveLedger = sbiKazhipatturCombinedAssetAuctions;
 export const omrOfficialUnresolvedThaiyurLandReserveLedger = repcoThaiyurLandAuction;
 export const omrSemmancheriAcceptedLandBidOutcomeLedger = drtSemmancheriResidentialLandBidOutcome;
 export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
@@ -239,6 +241,21 @@ export const omrNavalurResidentialLandReserveSummary = {
   verifiedAt: tataNavalurResidentialLandAuctions.auditedAt,
 };
 
+export const omrKazhipatturCombinedAssetReserveSummary = {
+  recordCount: sbiKazhipatturCombinedAssetAuctions.publication.recordCount,
+  assetCount: sbiKazhipatturCombinedAssetAuctions.publication.assetCount,
+  directVillageLinkCount: sbiKazhipatturCombinedAssetAuctions.publication.directVillageLinkCount,
+  combinedLandBuildingReserveRecordCount: sbiKazhipatturCombinedAssetAuctions.publication.combinedLandBuildingReserveRecords,
+  landReservePriceRecordCount: sbiKazhipatturCombinedAssetAuctions.publication.landReservePriceRecords,
+  completedSaleRecordCount: sbiKazhipatturCombinedAssetAuctions.publication.completedSaleRecords,
+  registeredTransactionCount: sbiKazhipatturCombinedAssetAuctions.publication.registeredTransactions,
+  winningBidRecordCount: sbiKazhipatturCombinedAssetAuctions.publication.winningBidRecords,
+  plottedRecordCount: sbiKazhipatturCombinedAssetAuctions.publication.plottedRecordCount,
+  completeReserveHistoryVerified: sbiKazhipatturCombinedAssetAuctions.reconciliation.completeReserveHistoryVerified,
+  assetComparisons: sbiKazhipatturCombinedAssetAuctions.reconciliation.assets,
+  verifiedAt: sbiKazhipatturCombinedAssetAuctions.auditedAt,
+};
+
 export const omrOfficialUnresolvedThaiyurLandReserveSummary = {
   recordCount: repcoThaiyurLandAuction.publication.recordCount,
   assetCount: repcoThaiyurLandAuction.publication.assetCount,
@@ -317,6 +334,12 @@ export function navalurResidentialLandReservesForVillage(officialSroCode: string
   const location = tataNavalurResidentialLandAuctions.location;
   if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
   return tataNavalurResidentialLandAuctions.records;
+}
+
+export function kazhipatturCombinedAssetReservesForVillage(officialSroCode: string, officialVillageCode: string) {
+  const location = sbiKazhipatturCombinedAssetAuctions.location;
+  if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
+  return sbiKazhipatturCombinedAssetAuctions.records;
 }
 
 export function unresolvedThaiyurLandReservesForCandidateVillage(officialSroCode: string, officialVillageCode: string) {
