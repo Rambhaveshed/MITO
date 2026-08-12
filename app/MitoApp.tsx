@@ -43,6 +43,7 @@ import {
   officialSecuredCreditorLandReservesForVillage,
   navalurResidentialLandReservesForVillage,
   kazhipatturCombinedAssetReservesForVillage,
+  kalavakkamVillaCombinedAssetReservesForVillage,
   omrGuidelineCaptureRun,
   omrGuidelineLiveRegisterSummary,
   omrGuidelineOmrInventoryAudit,
@@ -61,6 +62,8 @@ import {
   omrNavalurResidentialLandReserveSummary,
   omrKazhipatturCombinedAssetReserveLedger,
   omrKazhipatturCombinedAssetReserveSummary,
+  omrKalavakkamVillaCombinedAssetReserveLedger,
+  omrKalavakkamVillaCombinedAssetReserveSummary,
   omrOfficialUnresolvedThaiyurLandReserveLedger,
   omrOfficialUnresolvedThaiyurLandReserveSummary,
   omrSemmancheriAcceptedLandBidOutcomeLedger,
@@ -259,6 +262,9 @@ export default function MitoApp() {
     : [];
   const selectedCoverageKazhipatturCombinedAssetReserves = selectedCoverageUnit
     ? kazhipatturCombinedAssetReservesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
+    : [];
+  const selectedCoverageKalavakkamVillaCombinedAssetReserves = selectedCoverageUnit
+    ? kalavakkamVillaCombinedAssetReservesForVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
     : [];
   const selectedCoverageUnresolvedThaiyurLandReserves = selectedCoverageUnit
     ? unresolvedThaiyurLandReservesForCandidateVillage(selectedCoverageUnit.officialSroCode, selectedCoverageUnit.officialVillageCode)
@@ -587,9 +593,10 @@ export default function MitoApp() {
                 const securedCreditorLandReserveRecordCount = officialSecuredCreditorLandReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const navalurResidentialLandReserveRecordCount = navalurResidentialLandReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const kazhipatturCombinedAssetReserveRecordCount = kazhipatturCombinedAssetReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
+                const kalavakkamVillaCombinedAssetReserveRecordCount = kalavakkamVillaCombinedAssetReservesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const unresolvedThaiyurLandReserveRecordCount = unresolvedThaiyurLandReservesForCandidateVillage(unit.officialSroCode, unit.officialVillageCode).length;
                 const acceptedLandBidPriceCount = semmancheriAcceptedLandBidPricesForVillage(unit.officialSroCode, unit.officialVillageCode).length;
-                const totalAuctionReserveRecordCount = auctionReserveRecordCount + commercialAuctionReserveRecordCount + securedCreditorLandReserveRecordCount + navalurResidentialLandReserveRecordCount + kazhipatturCombinedAssetReserveRecordCount + unresolvedThaiyurLandReserveRecordCount + acceptedLandBidPriceCount;
+                const totalAuctionReserveRecordCount = auctionReserveRecordCount + commercialAuctionReserveRecordCount + securedCreditorLandReserveRecordCount + navalurResidentialLandReserveRecordCount + kazhipatturCombinedAssetReserveRecordCount + kalavakkamVillaCombinedAssetReserveRecordCount + unresolvedThaiyurLandReserveRecordCount + acceptedLandBidPriceCount;
                 const hasCurrentInventory = "streetTargetEvidenceStatus" in unit && unit.streetTargetEvidenceStatus === "live_official_metadata";
                 const unitKey = `${unit.officialSroCode}:${unit.officialVillageCode}`;
                 const match = coverageMatchByKey.get(unitKey);
@@ -607,7 +614,7 @@ export default function MitoApp() {
                       <span>{unit.nameTa}</span>
                       <small>{query && match ? `Matched “${match.matchedAlias}” · ` : ""}{office?.nameEn} SRO · ID {unit.officialVillageCode}</small>
                     </div>
-                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{auctionReserveRecordCount ? `${auctionReserveRecordCount} direct land reserve · not sale` : navalurResidentialLandReserveRecordCount ? `${navalurResidentialLandReserveRecordCount} document-backed land reserves · not sale` : kazhipatturCombinedAssetReserveRecordCount ? `${kazhipatturCombinedAssetReserveRecordCount} combined-asset reserves · not land rates` : securedCreditorLandReserveRecordCount ? `${securedCreditorLandReserveRecordCount} land reserve events · source point` : commercialAuctionReserveRecordCount ? `${commercialAuctionReserveRecordCount} combined-asset reserve events · not sale` : unresolvedThaiyurLandReserveRecordCount ? "1 unresolved Thaiyur land reserve · not sale" : hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
+                    <div className="coverage-unit-state"><i /> jurisdiction<br /><b>{auctionReserveRecordCount ? `${auctionReserveRecordCount} direct land reserve · not sale` : navalurResidentialLandReserveRecordCount ? `${navalurResidentialLandReserveRecordCount} document-backed land reserves · not sale` : kazhipatturCombinedAssetReserveRecordCount ? `${kazhipatturCombinedAssetReserveRecordCount} combined-asset reserves · not land rates` : kalavakkamVillaCombinedAssetReserveRecordCount ? `${kalavakkamVillaCombinedAssetReserveRecordCount} villa reserve checkpoints · not land rates` : securedCreditorLandReserveRecordCount ? `${securedCreditorLandReserveRecordCount} land reserve events · source point` : commercialAuctionReserveRecordCount ? `${commercialAuctionReserveRecordCount} combined-asset reserve events · not sale` : unresolvedThaiyurLandReserveRecordCount ? "1 unresolved Thaiyur land reserve · not sale" : hasCurrentInventory ? `${unit.streetTargetCount} current official ${unit.streetTargetCount === 1 ? "street" : "streets"} · values withheld` : archivedRateCount ? `${archivedRateCount} archived rate · recheck` : planningRecordCount ? `${planningRecordCount} CMDA ${planningRecordCount === 1 ? "record" : "records"}` : "street data pending"}</b></div>
                   </button>
                 );
               })}
@@ -698,6 +705,8 @@ export default function MitoApp() {
                     ? <><strong>{formatRate(selectedCoverageAuctionReservePrices[0].derivedReservePriceRangeInrPerSqft.low)}–{formatRate(selectedCoverageAuctionReservePrices[0].derivedReservePriceRangeInrPerSqft.high)}</strong><span>per sq ft · liquidation reserve</span></>
                     : selectedCoverageKazhipatturCombinedAssetReserves.length
                       ? <><strong>{selectedCoverageKazhipatturCombinedAssetReserves.length}</strong><span>verified combined-asset reserve checkpoints</span></>
+                    : selectedCoverageKalavakkamVillaCombinedAssetReserves.length
+                      ? <><strong>{selectedCoverageKalavakkamVillaCombinedAssetReserves.length}</strong><span>verified villa-and-UDS reserve checkpoints</span></>
                     : selectedCoverageLatestNavalurResidentialLandReserve
                       ? <><strong>{formatRate(selectedCoverageLatestNavalurResidentialLandReserve.derivedReservePriceInrPerSqft)}</strong><span>per land sq ft · latest verified reserve checkpoint</span></>
                     : selectedCoverageLatestSecuredCreditorLandReserve
@@ -722,6 +731,8 @@ export default function MitoApp() {
                   ? "Official 2025 liquidation reserve · auction outcome price unknown"
                   : selectedCoverageKazhipatturCombinedAssetReserves.length
                     ? "Two land-and-building assets · comparison densities are not land rates"
+                  : selectedCoverageKalavakkamVillaCombinedAssetReserves.length
+                    ? "One villa-and-undivided-land-share asset · comparison densities are not land rates"
                   : selectedCoverageLatestNavalurResidentialLandReserve
                     ? "Latest document-backed Navalur auction floor · not a sale or market price"
                   : selectedCoverageLatestSecuredCreditorLandReserve
@@ -800,6 +811,29 @@ export default function MitoApp() {
                   </section>
                 )}
 
+                {selectedCoverageKalavakkamVillaCombinedAssetReserves.length > 0 && (
+                  <section className="inspector-section auction-reserve-section">
+                    <div className="section-heading"><div><span>Official SBI secured-creditor terms</span><h2>Kalavakkam villa reserve checkpoints</h2></div><Building2 size={17} /></div>
+                    {selectedCoverageKalavakkamVillaCombinedAssetReserves.map((record) => (
+                      <article key={record.id} className="auction-reserve-card">
+                        <div><span>villa + undivided land share</span><em>{record.auctionDate === "2022-12-27" ? "auction" : "re-auction"}</em></div>
+                        <strong>{formatRate(record.derivedCombinedReserveDividedBySuperBuiltUpAreaInrPerSqft)}<small>/super-built-up sq ft</small></strong>
+                        <p>₹{(record.totalReservePriceInr / 10_000_000).toFixed(3).replace(/0+$/, "").replace(/\.$/, "")} crore combined reserve · {inr.format(record.superBuiltUpAreaSqft)} sq ft</p>
+                        <footer><span>Auction {new Date(`${record.auctionDate}T00:00:00+05:30`).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</span><b>Unplotted</b></footer>
+                      </article>
+                    ))}
+                    <p className="coverage-method">The same villa&apos;s combined floor fell 14.98%, from ₹1.529 crore to ₹1.30 crore. The displayed denominator includes the building and cannot establish land value. An August 2023 official sale-notice schedule corroborates the same possessed asset but publishes no reserve or auction date.</p>
+                  </section>
+                )}
+
+                {selectedCoverageKalavakkamVillaCombinedAssetReserves.length > 0 && (
+                  <section className="auction-evidence-card">
+                    <div><Building2 size={17} /></div>
+                    <p><strong>{selectedCoverageKalavakkamVillaCombinedAssetReserves.length} official Kalavakkam villa reserve checkpoints</strong><span>1 villa + undivided land share · ₹1.529 crore → ₹1.30 crore · unplotted</span></p>
+                    <em>Combined floors, not land rates or sales</em>
+                  </section>
+                )}
+
                 {selectedCoverageAcceptedLandBidPrices.length > 0 && (
                   <section className="auction-evidence-card">
                     <div><Check size={17} /></div>
@@ -863,11 +897,11 @@ export default function MitoApp() {
                   <div className="planning-evidence-summary village-evidence-summary">
                     <div><strong>{selectedCoveragePlanningRecords.length}</strong><span>planning records</span></div>
                     <div><strong>{selectedCoverageArchivedRecords.length}</strong><span>archived values</span></div>
-                    <div><strong>{selectedCoverageAuctionReservePrices.length + selectedCoverageCommercialAuctionReserves.length + selectedCoverageSecuredCreditorLandReserves.length + selectedCoverageNavalurResidentialLandReserves.length + selectedCoverageKazhipatturCombinedAssetReserves.length + selectedCoverageUnresolvedThaiyurLandReserves.length + selectedCoverageAcceptedLandBidPrices.length}</strong><span>auction prices</span></div>
+                    <div><strong>{selectedCoverageAuctionReservePrices.length + selectedCoverageCommercialAuctionReserves.length + selectedCoverageSecuredCreditorLandReserves.length + selectedCoverageNavalurResidentialLandReserves.length + selectedCoverageKazhipatturCombinedAssetReserves.length + selectedCoverageKalavakkamVillaCombinedAssetReserves.length + selectedCoverageUnresolvedThaiyurLandReserves.length + selectedCoverageAcceptedLandBidPrices.length}</strong><span>auction prices</span></div>
                     <div><strong>{selectedCoverageHousingOffers.length}</strong><span>unresolved housing prices</span></div>
                     <div><strong>0</strong><span>current values</span></div>
                   </div>
-                  <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAuctionReservePrices.length ? "One exact-village liquidation reserve is published, but the winning bid, registered transfer and parcel geometry remain unavailable." : selectedCoverageKazhipatturCombinedAssetReserves.length ? "Six exact-village reserves trace two Kazhipattur land-and-building assets across three checkpoints each. They establish combined auction floors—not land value—and still lack outcomes, current status and parcel geometry." : selectedCoverageNavalurResidentialLandReserves.length ? "Two historical Navalur reserve checkpoints are document-backed. They are not a complete reserve history; the auction outcome, current status, registered transfer and parcel geometry remain unavailable." : selectedCoverageSecuredCreditorLandReserves.length ? "Five direct industrial-land reserves, one residential-land reserve and one accepted residential-land bid are verified. The accepted bid was later cancelled and is not a completed sale; the assets still lack parcel geometry." : selectedCoverageCommercialAuctionReserves.length ? "Two reserve observations are published for one Siruseri commercial asset, but they combine land and building, have no verified auction outcome and use only a named park association." : selectedCoverageUnresolvedThaiyurLandReserves.length ? "One land-auction reserve is published only against the unsplit Thaiyur place label. It is excluded from direct Thaiyur A/B coverage and has no verified outcome or parcel geometry." : selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
+                  <p className="coverage-method">The official inventory size and jurisdiction are verified. {selectedCoverageAuctionReservePrices.length ? "One exact-village liquidation reserve is published, but the winning bid, registered transfer and parcel geometry remain unavailable." : selectedCoverageKazhipatturCombinedAssetReserves.length ? "Six exact-village reserves trace two Kazhipattur land-and-building assets across three checkpoints each. They establish combined auction floors—not land value—and still lack outcomes, current status and parcel geometry." : selectedCoverageKalavakkamVillaCombinedAssetReserves.length ? "Two exact-village reserve checkpoints trace one Kalavakkam villa and its undivided land share. A later unpriced sale-notice schedule is also verified, but no outcome, current status or parcel geometry is published." : selectedCoverageNavalurResidentialLandReserves.length ? "Two historical Navalur reserve checkpoints are document-backed. They are not a complete reserve history; the auction outcome, current status, registered transfer and parcel geometry remain unavailable." : selectedCoverageSecuredCreditorLandReserves.length ? "Five direct industrial-land reserves, one residential-land reserve and one accepted residential-land bid are verified. The accepted bid was later cancelled and is not a completed sale; the assets still lack parcel geometry." : selectedCoverageCommercialAuctionReserves.length ? "Two reserve observations are published for one Siruseri commercial asset, but they combine land and building, have no verified auction outcome and use only a named park association." : selectedCoverageUnresolvedThaiyurLandReserves.length ? "One land-auction reserve is published only against the unsplit Thaiyur place label. It is excluded from direct Thaiyur A/B coverage and has no verified outcome or parcel geometry." : selectedCoverageAllotmentRates.length ? "Siruseri has one approximate park footprint; individual streets, transactions, parcels and legal boundaries remain unpublished." : selectedCoverageHousingOffers.length ? "TNHB names Sholinganallur but does not identify which registration subdivision applies, so these closed apartment prices are excluded from direct village and land-price totals." : "Individual streets, prices, transactions, parcels and legal boundaries remain unpublished."}</p>
                 </section>
 
                 {selectedCoverageEvidenceMatrix && (
@@ -881,6 +915,7 @@ export default function MitoApp() {
                       <div><span>TMB secured-creditor auction</span><strong>{selectedCoverageEvidenceMatrix.officialSecuredCreditorLandReserves.recordCount ? `${selectedCoverageEvidenceMatrix.officialSecuredCreditorLandReserves.recordCount} direct land reserves · source point` : "No record in current ledger"}</strong></div>
                       <div><span>Tata Navalur auction notices</span><strong>{selectedCoverageEvidenceMatrix.navalurResidentialLandReserves.recordCount ? `${selectedCoverageEvidenceMatrix.navalurResidentialLandReserves.recordCount} document-backed reserves · outcome unknown` : "No record in current ledger"}</strong></div>
                       <div><span>SBI Kazhipattur auctions</span><strong>{selectedCoverageEvidenceMatrix.kazhipatturCombinedAssetReserves.recordCount ? `${selectedCoverageEvidenceMatrix.kazhipatturCombinedAssetReserves.recordCount} combined-asset reserves · 0 land rates` : "No record in current ledger"}</strong></div>
+                      <div><span>SBI Kalavakkam villa auctions</span><strong>{selectedCoverageEvidenceMatrix.kalavakkamVillaCombinedAssetReserves.recordCount ? `${selectedCoverageEvidenceMatrix.kalavakkamVillaCombinedAssetReserves.recordCount} combined villa reserves · 0 land rates` : "No record in current ledger"}</strong></div>
                       <div><span>DRT auction outcome</span><strong>{selectedCoverageEvidenceMatrix.officialAcceptedLandBidOutcome.acceptedBidRecordCount ? "1 accepted bid · cancelled, no sale" : "No record in current ledger"}</strong></div>
                       <div><span>Repco Thaiyur auction</span><strong>{selectedCoverageEvidenceMatrix.officialUnresolvedThaiyurLandReserve.recordCount ? "1 unresolved land reserve · A/B unknown" : "No candidate record in current ledger"}</strong></div>
                       <div><span>CMDA planning</span><strong>{selectedCoverageEvidenceMatrix.planning.directRecordCount ? `${selectedCoverageEvidenceMatrix.planning.directRecordCount} direct ${selectedCoverageEvidenceMatrix.planning.directRecordCount === 1 ? "record" : "records"}` : "No direct record in current ledger"}</strong></div>
@@ -1003,13 +1038,15 @@ export default function MitoApp() {
                   {selectedCoverageNavalurResidentialLandReserves.length > 0 && <div className="gate-row"><X size={14} /><span>Five secondary claims lack underlying notices; complete reserve history, outcome, current status and parcel geometry remain unverified</span></div>}
                   {selectedCoverageKazhipatturCombinedAssetReserves.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Three official SBI checkpoints reconciled for each of two exact-village Kazhipattur assets</span></div>}
                   {selectedCoverageKazhipatturCombinedAssetReserves.length > 0 && <div className="gate-row"><X size={14} /><span>Combined values cannot isolate land; outcomes, current status and parcel geometry are unknown, and one building area is unpublished</span></div>}
+                  {selectedCoverageKalavakkamVillaCombinedAssetReserves.length > 0 && <div className="gate-row passed"><Check size={14} /><span>Two priced SBI checkpoints and one later unpriced schedule reconciled to the same Kalavakkam villa</span></div>}
+                  {selectedCoverageKalavakkamVillaCombinedAssetReserves.length > 0 && <div className="gate-row"><X size={14} /><span>Combined values cannot isolate land; complete history, outcome, current status and parcel geometry remain unverified</span></div>}
                   {selectedCoverageAcceptedLandBidPrices.length > 0 && <div className="gate-row passed"><Check size={14} /><span>One residential-land reserve and accepted bid captured from the tribunal-stated outcome</span></div>}
                   {selectedCoverageAcceptedLandBidPrices.length > 0 && <div className="gate-row"><X size={14} /><span>The accepted bid was cancelled and did not become a completed or registered sale</span></div>}
                   <div className="gate-row"><X size={14} /><span>Authorized row-level guideline values not captured</span></div>
                   <div className="gate-row"><X size={14} /><span>No verified registered transactions in MITO yet</span></div>
                 </section>
 
-                <section className="gap-card"><AlertTriangle size={18} /><div><strong>{selectedCoverageAuctionReservePrices.length || selectedCoverageCommercialAuctionReserves.length || selectedCoverageSecuredCreditorLandReserves.length || selectedCoverageNavalurResidentialLandReserves.length || selectedCoverageKazhipatturCombinedAssetReserves.length || selectedCoverageAcceptedLandBidPrices.length ? "Do not treat auction evidence as a completed sale" : "Do not treat the inventory count as a price"}</strong><p>{selectedCoverageAuctionReservePrices.length ? "₹4,505–₹4,514 per sq ft is the normalized floor set for one 2025 liquidation auction. It does not establish the winning bid, current market value or a village-wide rate." : selectedCoverageKazhipatturCombinedAssetReserves.length ? "₹2,785.45→₹2,647.33 and ₹2,091.63→₹2,423.64 per land-area sq ft are combined-asset reserve densities for two different assets. They are not land rates, sales or village-wide values." : selectedCoverageNavalurResidentialLandReserves.length ? "₹5,500 and ₹4,314.48 per land sq ft are historical reserve checkpoints for one Navalur plot. They do not establish a winning bid, completed sale, current availability, current market value or village-wide rate." : selectedCoverageSecuredCreditorLandReserves.length ? "Semmancheri now has ₹2,240–₹2,445 industrial-land reserve evidence plus one ₹3,259.01 residential-land accepted bid. The latter was cancelled after the unpaid balance; neither establishes a registered sale or village-wide market rate." : selectedCoverageCommercialAuctionReserves.length ? "₹1,965–₹2,237 per building sq ft is a comparison of two floors for one combined land-and-building asset. It is not a land price, winning bid, registered consideration or village-wide Siruseri value." : `${selectedCoverageInventory.displayedItemCount} is the number of official register items returned for this village. MITO publishes no current ₹/sq ft figure until authorized row data or independently verified transaction evidence is available.`}</p></div></section>
+                <section className="gap-card"><AlertTriangle size={18} /><div><strong>{selectedCoverageAuctionReservePrices.length || selectedCoverageCommercialAuctionReserves.length || selectedCoverageSecuredCreditorLandReserves.length || selectedCoverageNavalurResidentialLandReserves.length || selectedCoverageKazhipatturCombinedAssetReserves.length || selectedCoverageKalavakkamVillaCombinedAssetReserves.length || selectedCoverageAcceptedLandBidPrices.length ? "Do not treat auction evidence as a completed sale" : "Do not treat the inventory count as a price"}</strong><p>{selectedCoverageAuctionReservePrices.length ? "₹4,505–₹4,514 per sq ft is the normalized floor set for one 2025 liquidation auction. It does not establish the winning bid, current market value or a village-wide rate." : selectedCoverageKazhipatturCombinedAssetReserves.length ? "₹2,785.45→₹2,647.33 and ₹2,091.63→₹2,423.64 per land-area sq ft are combined-asset reserve densities for two different assets. They are not land rates, sales or village-wide values." : selectedCoverageKalavakkamVillaCombinedAssetReserves.length ? "₹5,652.50→₹4,805.91 per super-built-up sq ft compares two combined villa-and-UDS floors. It is not a land rate, completed sale, current value or village-wide Kalavakkam price." : selectedCoverageNavalurResidentialLandReserves.length ? "₹5,500 and ₹4,314.48 per land sq ft are historical reserve checkpoints for one Navalur plot. They do not establish a winning bid, completed sale, current availability, current market value or village-wide rate." : selectedCoverageSecuredCreditorLandReserves.length ? "Semmancheri now has ₹2,240–₹2,445 industrial-land reserve evidence plus one ₹3,259.01 residential-land accepted bid. The latter was cancelled after the unpaid balance; neither establishes a registered sale or village-wide market rate." : selectedCoverageCommercialAuctionReserves.length ? "₹1,965–₹2,237 per building sq ft is a comparison of two floors for one combined land-and-building asset. It is not a land price, winning bid, registered consideration or village-wide Siruseri value." : `${selectedCoverageInventory.displayedItemCount} is the number of official register items returned for this village. MITO publishes no current ₹/sq ft figure until authorized row data or independently verified transaction evidence is available.`}</p></div></section>
               </>
             ) : (
             <>
@@ -1074,6 +1111,12 @@ export default function MitoApp() {
               </section>
 
               <section className="auction-evidence-card">
+                <div><Building2 size={17} /></div>
+                <p><strong>{omrKalavakkamVillaCombinedAssetReserveSummary.recordCount} Kalavakkam villa reserve checkpoints</strong><span>One villa + 2,000 sq-ft UDS · ₹1.529 crore → ₹1.30 crore · later unpriced schedule</span></p>
+                <em>Combined floors · not land values</em>
+              </section>
+
+              <section className="auction-evidence-card">
                 <div><AlertTriangle size={17} /></div>
                 <p><strong>{omrOfficialUnresolvedThaiyurLandReserveSummary.recordCount} Thaiyur land-auction reserve</strong><span>One 693 sq-ft plot · ₹11.23 lakh · unresolved between Thaiyur A and B</span></p>
                 <em>One record · zero direct village links</em>
@@ -1104,6 +1147,7 @@ export default function MitoApp() {
                 <div className="coverage-progress-row"><div><span>Secured-creditor land reserve history</span><strong>{omrCoverageSummary.officialSecuredCreditorLandReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialSecuredCreditorLandReserveVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One directly linked Semmancheri industrial-land asset · five reserve observations · zero winning bids or registered transfers</small></div>
                 <div className="coverage-progress-row"><div><span>Navalur residential-land reserve checkpoints</span><strong>{omrCoverageSummary.navalurResidentialLandReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.navalurResidentialLandReserveVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One directly linked plot · two document-backed observations · five secondary claims excluded · zero completed or registered sales</small></div>
                 <div className="coverage-progress-row"><div><span>Kazhipattur combined-asset reserve checkpoints</span><strong>{omrCoverageSummary.kazhipatturCombinedAssetReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.kazhipatturCombinedAssetReserveVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>Two direct land-and-building assets · six official checkpoints · zero land-only prices, winning bids or registered transfers</small></div>
+                <div className="coverage-progress-row"><div><span>Kalavakkam villa reserve checkpoints</span><strong>{omrCoverageSummary.kalavakkamVillaCombinedAssetReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.kalavakkamVillaCombinedAssetReserveVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One direct villa-and-UDS asset · two priced checkpoints + one later unpriced schedule · zero land-only prices or sales</small></div>
                 <div className="coverage-progress-row"><div><span>Unresolved Thaiyur land reserve</span><strong>{omrCoverageSummary.officialUnresolvedThaiyurLandReserveCount}</strong></div><div className="coverage-progress auction"><i style={{ width: "0%" }} /></div><small>One Repco reserve shown to two candidate villages · zero direct links, winning bids or registered transfers</small></div>
                 <div className="coverage-progress-row"><div><span>Accepted land-auction bids</span><strong>{omrCoverageSummary.officialAcceptedLandBidRecordCount}</strong></div><div className="coverage-progress auction"><i style={{ width: `${Math.round((omrCoverageSummary.officialAcceptedLandBidVillageCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One tribunal-stated accepted Semmancheri bid · cancelled after unpaid balance · zero completed or registered sales</small></div>
                 <div className="coverage-progress-row"><div><span>Publishable approximate geometries</span><strong>{omrCoverageSummary.publishableApproximateGeometryCount}</strong></div><div className="coverage-progress geometry"><i style={{ width: `${Math.round((omrCoverageSummary.publishableApproximateGeometryCount / omrCoverageSummary.unitCount) * 100)}%` }} /></div><small>One named OSM park footprint · zero exact, official or cadastral geometries published</small></div>
@@ -1215,6 +1259,28 @@ export default function MitoApp() {
                       );
                     })}
                     <p className="coverage-method">{omrKazhipatturCombinedAssetReserveLedger.publicationRule}</p>
+                  </section>
+                )}
+
+                {selectedCoverageKalavakkamVillaCombinedAssetReserves.length > 0 && (
+                  <section className="inspector-section evidence-section auction-source-section">
+                    <div className="section-heading"><div><span>Official secured-creditor evidence</span><h2>SBI Kalavakkam source chain</h2></div><Building2 size={17} /></div>
+                    {omrKalavakkamVillaCombinedAssetReserveLedger.sources.map((source) => (
+                      <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="source-card auction-source">
+                        <span className="source-kind official">official</span>
+                        <div><strong>{source.title}</strong><p>{source.organization}</p><small>notice {source.noticeDate}{source.auctionDate ? ` · auction ${source.auctionDate}` : " · no price or auction date in file"} · pages {source.pagesInspected.join(", ")}</small></div>
+                        <ExternalLink size={15} />
+                      </a>
+                    ))}
+                    {selectedCoverageKalavakkamVillaCombinedAssetReserves.map((record) => (
+                      <article key={record.id} className="auction-reserve-card detailed">
+                        <div><span>{record.priceTypeLabel}</span><em>{record.lifecycleStatus.replaceAll("_", " ")}</em></div>
+                        <strong>{formatRate(record.derivedCombinedReserveDividedBySuperBuiltUpAreaInrPerSqft)}<small>/super-built-up sq ft</small></strong>
+                        <p>₹{(record.totalReservePriceInr / 100_000).toFixed(0)} lakh combined reserve divided by {inr.format(record.superBuiltUpAreaSqft)} sq ft.</p>
+                        <footer><span>Winning bid: unpublished</span><b>Direct village · unplotted</b></footer>
+                      </article>
+                    ))}
+                    <p className="coverage-method">{omrKalavakkamVillaCombinedAssetReserveLedger.publicationRule}</p>
                   </section>
                 )}
 
@@ -1441,6 +1507,11 @@ export default function MitoApp() {
                   <div><strong>{omrKazhipatturCombinedAssetReserveLedger.sources[2].title}</strong><p>{omrKazhipatturCombinedAssetReserveLedger.sources[2].organization}</p><small>6 Kazhipattur combined land-and-building reserves · 2 assets · no sale outcomes or land-only values</small></div>
                   <ExternalLink size={15} />
                 </a>
+                <a href={omrKalavakkamVillaCombinedAssetReserveLedger.sources[1].url} target="_blank" rel="noreferrer" className="source-card auction-source">
+                  <span className="source-kind official">official</span>
+                  <div><strong>{omrKalavakkamVillaCombinedAssetReserveLedger.sources[1].title}</strong><p>{omrKalavakkamVillaCombinedAssetReserveLedger.sources[1].organization}</p><small>2 Kalavakkam combined villa-and-UDS reserves · 1 later unpriced schedule · no sale outcome or land-only value</small></div>
+                  <ExternalLink size={15} />
+                </a>
                 <a href={omrSemmancheriAcceptedLandBidOutcomeLedger.sources[0].url} target="_blank" rel="noreferrer" className="source-card auction-source">
                   <span className="source-kind official">official docket</span>
                   <div><strong>{omrSemmancheriAcceptedLandBidOutcomeLedger.sources[0].title}</strong><p>{omrSemmancheriAcceptedLandBidOutcomeLedger.sources[0].organization}</p><small>Corroborates SA 137/2025 and its Union Bank case identity · not the order text</small></div>
@@ -1623,6 +1694,23 @@ export default function MitoApp() {
                     <p className="coverage-method">The same two assets recur in three official notices, but the floors include both land and buildings. The contrasting changes are asset-specific reserve decisions—not market trends—and one asset has no published building area. No winning bid, sale certificate, registered transfer or current availability is verified.</p>
                     <a className="resolver-api-link" href={omrKazhipatturCombinedAssetReserveLedger.sources[0].url} target="_blank" rel="noreferrer">Open the first official SBI notice <ArrowUpRight size={13} /></a>
                     <a className="resolver-api-link" href={omrKazhipatturCombinedAssetReserveLedger.sources[2].url} target="_blank" rel="noreferrer">Open the latest verified SBI notice <ArrowUpRight size={13} /></a>
+                  </section>
+                )}
+
+                {selectedCoverageKalavakkamVillaCombinedAssetReserves.length > 0 && (
+                  <section className="inspector-section context-section">
+                    <div className="section-heading"><div><span>Price interpretation</span><h2>What the Kalavakkam villa checkpoints mean</h2></div><CircleHelp size={17} /></div>
+                    <dl className="detail-grid">
+                      <div><dt>Evidence</dt><dd>Combined villa-and-UDS auction floors</dd></div>
+                      <div><dt>Checkpoints</dt><dd>2 · Dec 2022 and Mar 2023</dd></div>
+                      <div><dt>Asset</dt><dd>2,000 sq-ft UDS + 2,705 sq-ft villa</dd></div>
+                      <div><dt>Reserve change</dt><dd>−{omrKalavakkamVillaCombinedAssetReserveSummary.verifiedCheckpointReductionPercent}%</dd></div>
+                      <div><dt>Later evidence</dt><dd>Unpriced sale notice · Aug 2023</dd></div>
+                      <div><dt>Outcome / geometry</dt><dd>Unpublished · unplotted</dd></div>
+                    </dl>
+                    <p className="coverage-method">The floor moved from ₹1.529 crore to ₹1.30 crore for the same villa and undivided land share. That is an asset-specific reserve reduction, not a land-price decline. The later official schedule proves another sale notice was issued, but not why, whether earlier auctions failed, or whether the asset later sold.</p>
+                    <a className="resolver-api-link" href={omrKalavakkamVillaCombinedAssetReserveLedger.sources[0].url} target="_blank" rel="noreferrer">Open the first official SBI terms <ArrowUpRight size={13} /></a>
+                    <a className="resolver-api-link" href={omrKalavakkamVillaCombinedAssetReserveLedger.sources[2].url} target="_blank" rel="noreferrer">Open the later unpriced SBI schedule <ArrowUpRight size={13} /></a>
                   </section>
                 )}
 

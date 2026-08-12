@@ -13,6 +13,7 @@ import repcoThaiyurLandAuction from "./evidence/repco-thaiyur-land-auction-2026.
 import sipcotSiruseriGeometryAudit from "./evidence/sipcot-siruseri-geometry-audit-2026-07-17.json";
 import sipcotSiruseriLandRates from "./evidence/sipcot-siruseri-land-rates-2026-07-17.json";
 import sbiKazhipatturCombinedAssetAuctions from "./evidence/sbi-kazhipattur-combined-asset-auctions-2023-2025.json";
+import sbiKalavakkamVillaCombinedAssetAuctions from "./evidence/sbi-kalavakkam-villa-combined-asset-auctions-2022-2023.json";
 import tnhbSholinganallurHousingOffers from "./evidence/tnhb-sholinganallur-housing-offers-2026-07-17.json";
 import tataNavalurResidentialLandAuctions from "./evidence/tata-navalur-residential-land-auctions-2025.json";
 import tmbSemmancheriIndustrialLandAuctions from "./evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json";
@@ -40,6 +41,7 @@ export const omrOfficialCommercialAuctionReserveLedger = ibbiTecproSiruseriComme
 export const omrOfficialSecuredCreditorLandReserveLedger = tmbSemmancheriIndustrialLandAuctions;
 export const omrNavalurResidentialLandReserveLedger = tataNavalurResidentialLandAuctions;
 export const omrKazhipatturCombinedAssetReserveLedger = sbiKazhipatturCombinedAssetAuctions;
+export const omrKalavakkamVillaCombinedAssetReserveLedger = sbiKalavakkamVillaCombinedAssetAuctions;
 export const omrOfficialUnresolvedThaiyurLandReserveLedger = repcoThaiyurLandAuction;
 export const omrSemmancheriAcceptedLandBidOutcomeLedger = drtSemmancheriResidentialLandBidOutcome;
 export const omrTnhbHousingOfferLedger = tnhbSholinganallurHousingOffers;
@@ -256,6 +258,22 @@ export const omrKazhipatturCombinedAssetReserveSummary = {
   verifiedAt: sbiKazhipatturCombinedAssetAuctions.auditedAt,
 };
 
+export const omrKalavakkamVillaCombinedAssetReserveSummary = {
+  recordCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.recordCount,
+  assetCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.assetCount,
+  directVillageLinkCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.directVillageLinkCount,
+  combinedLandBuildingReserveRecordCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.combinedLandBuildingReserveRecords,
+  landReservePriceRecordCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.landReservePriceRecords,
+  completedSaleRecordCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.completedSaleRecords,
+  registeredTransactionCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.registeredTransactions,
+  winningBidRecordCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.winningBidRecords,
+  plottedRecordCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.plottedRecordCount,
+  laterUnpricedLifecycleSourceCount: sbiKalavakkamVillaCombinedAssetAuctions.publication.laterUnpricedLifecycleSourceCount,
+  verifiedCheckpointReductionPercent: Math.abs(sbiKalavakkamVillaCombinedAssetAuctions.reconciliation.verifiedCheckpointChangePercent),
+  completeReserveHistoryVerified: sbiKalavakkamVillaCombinedAssetAuctions.reconciliation.completeReserveHistoryVerified,
+  verifiedAt: sbiKalavakkamVillaCombinedAssetAuctions.auditedAt,
+};
+
 export const omrOfficialUnresolvedThaiyurLandReserveSummary = {
   recordCount: repcoThaiyurLandAuction.publication.recordCount,
   assetCount: repcoThaiyurLandAuction.publication.assetCount,
@@ -340,6 +358,12 @@ export function kazhipatturCombinedAssetReservesForVillage(officialSroCode: stri
   const location = sbiKazhipatturCombinedAssetAuctions.location;
   if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
   return sbiKazhipatturCombinedAssetAuctions.records;
+}
+
+export function kalavakkamVillaCombinedAssetReservesForVillage(officialSroCode: string, officialVillageCode: string) {
+  const location = sbiKalavakkamVillaCombinedAssetAuctions.location;
+  if (location.officialSroCode !== officialSroCode || location.officialVillageCode !== officialVillageCode) return [];
+  return sbiKalavakkamVillaCombinedAssetAuctions.records;
 }
 
 export function unresolvedThaiyurLandReservesForCandidateVillage(officialSroCode: string, officialVillageCode: string) {

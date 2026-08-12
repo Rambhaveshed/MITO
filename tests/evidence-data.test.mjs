@@ -20,6 +20,7 @@ const ibbiTecproSiruseriCommercialAuctionsUrl = new URL("../data/evidence/ibbi-t
 const tmbSemmancheriIndustrialLandAuctionsUrl = new URL("../data/evidence/tmb-semmancheri-industrial-land-auctions-2024-2026.json", import.meta.url);
 const tataNavalurResidentialLandAuctionsUrl = new URL("../data/evidence/tata-navalur-residential-land-auctions-2025.json", import.meta.url);
 const sbiKazhipatturCombinedAssetAuctionsUrl = new URL("../data/evidence/sbi-kazhipattur-combined-asset-auctions-2023-2025.json", import.meta.url);
+const sbiKalavakkamVillaCombinedAssetAuctionsUrl = new URL("../data/evidence/sbi-kalavakkam-villa-combined-asset-auctions-2022-2023.json", import.meta.url);
 const repcoThaiyurLandAuctionUrl = new URL("../data/evidence/repco-thaiyur-land-auction-2026.json", import.meta.url);
 const drtSemmancheriLandBidOutcomeUrl = new URL("../data/evidence/drt-semmancheri-residential-land-bid-outcome-2024-2026.json", import.meta.url);
 const reuseRequestUrl = new URL("../docs/data-licensing/tnreginet-guideline-reuse-request.md", import.meta.url);
@@ -332,6 +333,48 @@ test("SBI Kazhipattur checkpoints stay combined-asset, incomplete, unplotted and
   assert.equal(ledger.privacy.personalDataFieldsStored, 0);
   assert.equal(ledger.publication.personalDataFieldsStored, 0);
   assert.match(ledger.publicationRule, /must never be relabelled as winning bids/i);
+});
+
+test("SBI Kalavakkam villa checkpoints stay combined, incomplete, unplotted and privacy-safe", async () => {
+  const ledger = await readJson(sbiKalavakkamVillaCombinedAssetAuctionsUrl);
+
+  assert.deepEqual(ledger.sources.map((source) => source.documentDigest), [
+    "sha256:3aab439e9a15c5de82cfe7090559a37c95f0996d5ead4fb986badebc99cb573b",
+    "sha256:90933c67fba334b40e6f3b9a449e922b53eaf5b241627e26fffa6a7e164b5b2e",
+    "sha256:700b7a4ddd996161d896fa31f5e38418585b434530b0f14a60cc510e1b211d71",
+  ]);
+  assert.ok(ledger.sources.every((source) => source.url.startsWith("https://sbi.bank.in/") && source.organization === "State Bank of India"));
+  assert.equal(ledger.sources.at(-1).priceEvidenceRole, "lifecycle_corroboration_only_no_reserve_or_auction_date_published_in_file");
+  assert.equal(ledger.location.mappingStatus, "exact_official_registration_village");
+  assert.equal(ledger.location.officialSroCode, "20096");
+  assert.equal(ledger.location.officialVillageCode, "1318");
+  assert.equal(ledger.location.directVillageLink, true);
+  assert.equal(ledger.location.geometryStatus, "unplotted");
+  assert.equal(ledger.location.geometry, null);
+  assert.equal(ledger.asset.undividedLandShareSqft, 2000);
+  assert.equal(ledger.asset.superBuiltUpAreaSqft, 2705);
+  assert.equal(ledger.asset.currentAvailabilityVerified, false);
+  assert.deepEqual(ledger.records.map((record) => record.totalReservePriceInr), [15290000, 13000000]);
+  assert.ok(ledger.records.every((record) => record.derivedCombinedReserveDividedByUdsInrPerSqft === Math.round((record.totalReservePriceInr / record.undividedLandShareSqft) * 100) / 100));
+  assert.ok(ledger.records.every((record) => record.derivedCombinedReserveDividedBySuperBuiltUpAreaInrPerSqft === Math.round((record.totalReservePriceInr / record.superBuiltUpAreaSqft) * 100) / 100));
+  assert.equal(ledger.reconciliation.verifiedCheckpointChangePercent, -14.98);
+  assert.equal(ledger.reconciliation.completeReserveHistoryVerified, false);
+  assert.ok(ledger.records.every((record) => record.isCombinedLandBuildingReservePrice && !record.isLandReservePrice));
+  assert.ok(ledger.records.every((record) => record.winningBidInr === null && !record.saleCertificateVerified && !record.registeredTransferVerified));
+  assert.ok(ledger.records.every((record) => record.geometryStatus === "unplotted" && record.directVillageLink));
+  assert.ok(ledger.records.every((record) => !record.isGuidelineValue && !record.isRegisteredTransaction && !record.isAskingPrice && !record.isMarketEstimate && !record.isWinningBid));
+  assert.equal(ledger.laterLifecycleEvidence.reservePricePublished, false);
+  assert.equal(ledger.laterLifecycleEvidence.auctionDatePublished, false);
+  assert.equal(ledger.publication.recordCount, 2);
+  assert.equal(ledger.publication.landReservePriceRecords, 0);
+  assert.equal(ledger.publication.laterUnpricedLifecycleSourceCount, 1);
+  assert.equal(ledger.publication.completedSaleRecords, 0);
+  assert.equal(ledger.publication.registeredTransactions, 0);
+  assert.equal(ledger.publication.winningBidRecords, 0);
+  assert.equal(ledger.publication.plottedRecordCount, 0);
+  assert.equal(ledger.privacy.personalDataFieldsStored, 0);
+  assert.equal(ledger.publication.personalDataFieldsStored, 0);
+  assert.match(ledger.publicationRule, /must never be relabelled as a winning bid/i);
 });
 
 function pointInRing([x, y], ring) {
